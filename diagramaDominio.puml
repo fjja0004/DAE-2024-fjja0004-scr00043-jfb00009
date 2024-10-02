@@ -52,7 +52,7 @@ class Temporada <<entidad>> {
 
 Solicitud "*" -- "1" Socio : > solicitante
 Actividad "1" *-- "*" Solicitud : > solicitud
-Temporada "1" *-- "*" Actividad : > actividad
+Temporada "1" *-- "*" Actividad : > actividades
 ServicioClub "1" *-- "*" Socio : > socio
 ServicioClub "1" *-- "*" Temporada : > temporada
 
