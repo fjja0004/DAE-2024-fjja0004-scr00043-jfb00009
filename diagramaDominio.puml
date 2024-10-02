@@ -1,0 +1,59 @@
+@startuml
+title "Capa de dominio"
+hide circle
+'skinparam classAttributeIconSize 0
+
+class ServicioClub <<servicio>> <<repositorio>> {
+    + login(email: String, clave: String): Socio
+    + añadirSocio(nombre: String, apellido: String, email: String, teléfono: String, clave: String): Boolean
+    + borrarSocio(email: String): Boolean
+    + añadirActividad(título: String, descripción: String, precio: Double, nPlazas: Integer, fechaCelebración: Date, fechaInicioInscripción: Date, fechaFinInscripción: Date): Boolean
+    + borrarActividad(título: String): Boolean
+    + revisarSolicitudes(): void
+    + marcarCuotaPagada(socio: Socio): void
+    + buscarActividad(título: String): Actividad
+    + realizarSolicitud(nAcompañantes: Integer, actividad: Actividad): Boolean
+    + añadirAcompañante(): Boolean
+    + quitarAcompañante(): Boolean
+    + borrarSolicitud(actividad: Actividad): void
+    + pagarCuota(): void
+}
+
+class Socio <<entidad>> {
+- nombre: String
+- apellido: String
+- email: String
+- teléfono: String
+- clave: String
+- cuotaPagada: Boolean
+}
+
+class Actividad <<entidad>> {
+- título: String
+- descripción: String
+- precio: Double
+- nPlazas: Integer
+- fechaCelebración: Date
+- fechaInicioInscripción: Date
+- fechaFinInscripción: Date
+}
+
+class Solicitud <<objeto-valor>> {
+- nAcompañantes: Integer
+- fecha: Date
+- insAceptadas: Integer
+}
+
+class Temporada <<entidad>> {
+- año: Integer
+- fechaInicio: Date
+- fechaFin: Date
+}
+
+Solicitud "*" --"solicitante" Socio: >
+Actividad "1" *-- "*" Solicitud : > solicitud
+Temporada "1" *-- "*" Actividad : > actividad
+ServicioClub "1" *-- "*" Socio : > socio
+ServicioClub "1" *-- "*" Temporada : > temporada
+
+@enduml
