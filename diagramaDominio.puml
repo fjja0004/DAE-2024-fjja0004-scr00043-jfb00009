@@ -26,6 +26,7 @@ class Socio <<entidad>> {
 - teléfono: String
 - clave: String
 - cuotaPagada: Boolean
+- administrador: Boolean
 }
 
 class Actividad <<entidad>> {
@@ -50,7 +51,7 @@ class Temporada <<entidad>> {
 - fechaFin: Date
 }
 
-Solicitud "*" --"solicitante" Socio: >
+Solicitud "*" --"1" Socio: > Solicitante
 Actividad "1" *-- "*" Solicitud : > solicitud
 Temporada "1" *-- "*" Actividad : > actividad
 ServicioClub "1" *-- "*" Socio : > socio
