@@ -11,7 +11,7 @@ class ServicioClub <<servicio>> <<repositorio>> {
     + borrarActividad(título: String): Boolean
     + revisarSolicitudes(): void
     + marcarCuotaPagada(socio: Socio): void
-    + buscarActividad(título: String): Actividad
+    + buscarActividad(título: String, año: int): Actividad
     + realizarSolicitud(nAcompañantes: Integer, actividad: Actividad): Boolean
     + añadirAcompañante(): Boolean
     + quitarAcompañante(): Boolean
