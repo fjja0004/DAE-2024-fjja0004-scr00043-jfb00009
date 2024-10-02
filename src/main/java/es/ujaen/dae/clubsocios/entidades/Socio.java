@@ -1,5 +1,6 @@
-package src.main.java.es.ujaen.dae.clubsocios.entidades;
-public enum Pagos {
+package es.ujaen.dae.clubsocios.entidades;
+
+enum Pagos {
     noPagado, pendiente, pagado;
 }
 
@@ -27,12 +28,12 @@ public class Socio {
     }
 
     /**
-     * @brief Contructor parametrizado para crear socios.
      * @param nombre
      * @param apellidos
      * @param email
      * @param telefono
      * @param clave
+     * @brief Contructor parametrizado para crear socios.
      */
     public Socio(String nombre, String apellidos, String email, String telefono, String clave) {
         this.nombre = nombre;
@@ -88,11 +89,11 @@ public class Socio {
         return admin;
     }
 
-    public src.main.java.es.ujaen.dae.clubsocios.entidades.Pagos getCuotaPagada() {
+    public Pagos getCuotaPagada() {
         return cuotaPagada;
     }
 
-    public void setCuotaPagada(src.main.java.es.ujaen.dae.clubsocios.entidades.Pagos cuotaPagada) {
+    public void setCuotaPagada(Pagos cuotaPagada) {
         this.cuotaPagada = cuotaPagada;
     }
 }

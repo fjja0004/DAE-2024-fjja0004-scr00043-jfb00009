@@ -1,4 +1,4 @@
-package src.main.java.es.ujaen.dae.clubsocios.entidades;
+package es.ujaen.dae.clubsocios.entidades;
 
 import java.util.HashMap;
 

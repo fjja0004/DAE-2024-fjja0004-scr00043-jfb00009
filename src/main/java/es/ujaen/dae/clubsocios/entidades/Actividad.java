@@ -15,8 +15,11 @@ public class Actividad {
     private int precio;
     @Positive
     private int plazas;
+    @NotBlank
     private LocalDate fechaCelebracion;
+    @NotBlank
     private LocalDate fechaInicioInscripcion;
+    @NotBlank
     private LocalDate fechaFinInscripcion;
     //private ArrayList<Solicitud> solicitudes;
 
@@ -24,7 +27,13 @@ public class Actividad {
      * @brief Constructor por defecto de la clase Actividad
      */
     public Actividad() {
-
+        this.titulo = "";
+        this.descripcion = "";
+        this.precio = 0;
+        this.plazas = 0;
+        this.fechaCelebracion = LocalDate.now();
+        this.fechaInicioInscripcion = LocalDate.now();
+        this.fechaFinInscripcion = LocalDate.now();
     }
 
     /**
@@ -47,4 +56,59 @@ public class Actividad {
         this.fechaFinInscripcion = fechaFinInscripcion;
     }
 
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public int getPrecio() {
+        return precio;
+    }
+
+    public void setPrecio(int precio) {
+        this.precio = precio;
+    }
+
+    public int getPlazas() {
+        return plazas;
+    }
+
+    public void setPlazas(int plazas) {
+        this.plazas = plazas;
+    }
+
+    public LocalDate getFechaCelebracion() {
+        return fechaCelebracion;
+    }
+
+    public void setFechaCelebracion(LocalDate fechaCelebracion) {
+        this.fechaCelebracion = fechaCelebracion;
+    }
+
+    public LocalDate getFechaInicioInscripcion() {
+        return fechaInicioInscripcion;
+    }
+
+    public void setFechaInicioInscripcion(LocalDate fechaInicioInscripcion) {
+        this.fechaInicioInscripcion = fechaInicioInscripcion;
+    }
+
+    public LocalDate getFechaFinInscripcion() {
+        return fechaFinInscripcion;
+    }
+
+    public void setFechaFinInscripcion(LocalDate fechaFinInscripcion) {
+        this.fechaFinInscripcion = fechaFinInscripcion;
+    }
 }
