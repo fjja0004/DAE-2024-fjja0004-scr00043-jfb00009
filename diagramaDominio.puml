@@ -16,7 +16,7 @@ class ServicioClub <<servicio>> <<repositorio>> {
     + añadirAcompañante(): Boolean
     + quitarAcompañante(): Boolean
     + borrarSolicitud(actividad: Actividad): void
-    + pagarCuota(): void
+    + pagarCuota(socio: Socio): void
 }
 
 class Socio <<entidad>> {
@@ -25,7 +25,8 @@ class Socio <<entidad>> {
 - email: String
 - teléfono: String
 - clave: String
-- cuotaPagada: Boolean
+- cuotaPagada: Enum[NoPagado, Pendiente, Pagado]
+- admin: Boolean
 }
 
 class Actividad <<entidad>> {
@@ -46,11 +47,9 @@ class Solicitud <<objeto-valor>> {
 
 class Temporada <<entidad>> {
 - año: Integer
-- fechaInicio: Date
-- fechaFin: Date
 }
 
-Solicitud "*" --"solicitante" Socio: >
+Solicitud "*" -- "1" Socio : > solicitante
 Actividad "1" *-- "*" Solicitud : > solicitud
 Temporada "1" *-- "*" Actividad : > actividad
 ServicioClub "1" *-- "*" Socio : > socio
