@@ -1,5 +1,4 @@
-package es.ujaen.dae.clubsocios;
-
+package src.main.java.es.ujaen.dae.clubsocios.entidades;
 enum Pagos {
     noPagado, pendiente, pagado;
 }
@@ -18,11 +17,11 @@ public class Socio {
      * @brief Constructor para la creación del Administrador.
      */
     public Socio() {
-        this.nombre = admin;
-        this.apellidos = admin;
-        this.email = admin_club@gmail.com;
-        this.telefono = 111111111;
-        this.clave = admin;
+        this.nombre = "admin";
+        this.apellidos = "admin";
+        this.email = "admin_club@gmail.com";
+        this.telefono = "111111111";
+        this.clave = "admin";
         this.admin = true;
         this.cuotaPagada = Pagos.pagado;
     }
