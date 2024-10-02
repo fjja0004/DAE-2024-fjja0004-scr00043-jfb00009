@@ -1,15 +1,22 @@
 package es.ujaen.dae.clubsocios.entidades;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+
 enum Pagos {
     noPagado, pendiente, pagado;
 }
 
 public class Socio {
-
+    @NotBlank
     private String nombre;
+    @NotBlank
     private String apellidos;
+    @Pattern(regexp = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$", message = "El email no es válido")
     private String email;
+    @Pattern(regexp = "^(\\+34|0034|34)?[6789]\\d{8}$")
     private String telefono;
+    @NotBlank
     private String clave;
     private Boolean admin;
     private Pagos cuotaPagada;
