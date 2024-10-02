@@ -18,12 +18,4 @@ public class Temporada {
     public void setAnio(int anio) {
         this.anio = anio;
     }
-
-    public HashMap<String, Actividad> getActividades() {
-        return actividades;
-    }
-
-    public void setActividades(HashMap<String, Actividad> actividades) {
-        this.actividades = actividades;
-    }
 }
