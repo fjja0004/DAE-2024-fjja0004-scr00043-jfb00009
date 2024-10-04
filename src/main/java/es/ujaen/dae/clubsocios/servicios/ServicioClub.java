@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Validated
@@ -18,10 +19,15 @@ public class ServicioClub {
     // Socio especial que representa al administrador del club
     private static final Socio admin = new Socio("administrador", "-", "admin@club.es", "670743332", "ElAdMiN");
 
-    Socio login(String email, String clave) {
+    Optional<Socio> login(String email, String clave) {
+
+        if (admin.getEmail().equals(email) && admin.getClave().equals(clave))
+            return Optional.of(admin);
+
+        Socio socio = socios.get(email);
+        return (socio != null && socio.getClave().equals(clave)) ? Optional.of(socio): Optional.empty();
 
 
-        return null;
     }
 
     public void anadirSocio(@Valid Socio socio) {
