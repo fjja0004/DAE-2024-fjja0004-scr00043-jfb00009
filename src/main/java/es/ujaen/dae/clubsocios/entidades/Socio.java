@@ -18,7 +18,6 @@ public class Socio {
     private String telefono;
     @NotBlank
     private String clave;
-    private Boolean admin;
     private Pagos cuotaPagada;
 
     /**
@@ -30,7 +29,6 @@ public class Socio {
         this.email = "admin_club@gmail.com";
         this.telefono = "111111111";
         this.clave = "admin";
-        this.admin = true;
         this.cuotaPagada = Pagos.pagado;
     }
 
@@ -48,7 +46,6 @@ public class Socio {
         this.email = email;
         this.telefono = telefono;
         this.clave = clave;
-        this.admin = false;
         this.cuotaPagada = Pagos.noPagado;
     }
 
@@ -90,10 +87,6 @@ public class Socio {
 
     public void setClave(String clave) {
         this.clave = clave;
-    }
-
-    public Boolean getAdmin() {
-        return admin;
     }
 
     public Pagos getCuotaPagada() {
