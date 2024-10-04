@@ -17,7 +17,7 @@ public class Solicitud {
     @NotBlank
     private int insAceptadas;
     @NotBlank
-    Socio  solicitante;
+    Socio solicitante;
 
     /**
      * @brief Constructor por defecto de la clase solicitud
