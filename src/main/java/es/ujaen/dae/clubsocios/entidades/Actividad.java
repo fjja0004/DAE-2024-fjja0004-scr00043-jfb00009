@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 //import java.util.ArrayList;
 
 public class Actividad {
@@ -21,7 +22,8 @@ public class Actividad {
     private LocalDate fechaInicioInscripcion;
     @NotBlank
     private LocalDate fechaFinInscripcion;
-    //private ArrayList<Solicitud> solicitudes;
+
+    private ArrayList<Solicitud> solicitudes;
 
     /**
      * @brief Constructor por defecto de la clase Actividad
