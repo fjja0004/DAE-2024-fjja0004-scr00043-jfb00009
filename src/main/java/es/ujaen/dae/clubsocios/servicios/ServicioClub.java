@@ -1,25 +1,23 @@
 package es.ujaen.dae.clubsocios.servicios;
 
-import es.ujaen.dae.clubsocios.entidades.Actividad;
-import es.ujaen.dae.clubsocios.entidades.Socio;
+import es.ujaen.dae.clubsocios.entidades.*;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Validated
 public class ServicioClub {
-    Map<String, Socio> socios;
+    private Map<String, Socio> socios = new HashMap<String, Socio>();
+    private ArrayList<Temporada> temporada = new ArrayList<>();
 
     // Socio especial que representa al administrador del club
-    private static final Socio admin = new Socio("administrador", "-", "admin@club.es", "670743332", "ElAdMiN");
+    private static final Socio admin = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
 
-    Optional<Socio> login(String email, String clave) {
+    public Optional<Socio> login(String email, String clave) {
 
         if (admin.getEmail().equals(email) && admin.getClave().equals(clave))
             return Optional.of(admin);
