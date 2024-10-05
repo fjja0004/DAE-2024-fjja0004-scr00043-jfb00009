@@ -21,18 +21,6 @@ public class Socio {
     private Pagos cuotaPagada;
 
     /**
-     * @brief Constructor para la creación del Administrador.
-     */
-    public Socio() {
-        this.nombre = "admin";
-        this.apellidos = "admin";
-        this.email = "admin_club@gmail.com";
-        this.telefono = "111111111";
-        this.clave = "admin";
-        this.cuotaPagada = Pagos.pagado;
-    }
-
-    /**
      * @param nombre
      * @param apellidos
      * @param email

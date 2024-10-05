@@ -1,12 +1,13 @@
 package es.ujaen.dae.clubsocios.entidades;
 
+import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 import es.ujaen.dae.clubsocios.servicios.ServicioClub;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestServicioClub {
 
@@ -44,5 +45,16 @@ public class TestServicioClub {
 
     @Test
     void testAniadirSocio() {
+        //verificamos que no se pueda añadir un socio igual al admin.
+        Socio admin = servicioClub.login("admin@club.es", "ElAdMiN").get();
+        assertThrows(SocioYaRegistrado.class, () -> servicioClub.anadirSocio(admin));
+
+        //verificamos que no se pueda añadir un socio igual al otro usuario ya registrado.
+        Socio socio = servicioClub.login("socio_prueba@club.com", "password123").get();
+        assertThrows(SocioYaRegistrado.class, () -> servicioClub.anadirSocio(socio));
+
+        //verificamos que se pueda añadir un socio no registrado.
+        Socio socioNoRegistrado = new Socio("Socio", "-", "socio_no_registrado@club.com", "+34 123456789", "password123");
+        assertDoesNotThrow( () -> servicioClub.anadirSocio(socioNoRegistrado));
     }
 }

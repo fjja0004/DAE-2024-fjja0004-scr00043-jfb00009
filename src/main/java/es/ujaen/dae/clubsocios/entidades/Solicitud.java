@@ -22,11 +22,11 @@ public class Solicitud {
     /**
      * @brief Constructor por defecto de la clase solicitud
      */
-    public Solicitud() {
+    public Solicitud(Socio socio) {
         this.nAcompanantes = 0;
         this.fecha = LocalDate.now();
         this.insAceptadas = 0;
-        this.solicitante = new Socio();
+        this.solicitante = socio;
     }
 
 

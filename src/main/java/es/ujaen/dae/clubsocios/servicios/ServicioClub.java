@@ -11,8 +11,8 @@ import java.util.*;
 @Service
 @Validated
 public class ServicioClub {
-    private Map<String, Socio> socios = new HashMap<String, Socio>();
-    private ArrayList<Temporada> temporada = new ArrayList<>();
+    private final Map<String, Socio> socios = new HashMap<>();
+    private final ArrayList<Temporada> temporada = new ArrayList<>();
 
     // Socio especial que representa al administrador del club
     private static final Socio admin = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
