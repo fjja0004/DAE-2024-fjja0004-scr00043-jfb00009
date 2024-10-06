@@ -2,6 +2,7 @@ package es.ujaen.dae.clubsocios.servicios;
 
 import es.ujaen.dae.clubsocios.entidades.*;
 import es.ujaen.dae.clubsocios.excepciones.IntentoBorrarAdmin;
+import es.ujaen.dae.clubsocios.excepciones.SocioNoRegistrado;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Repository;
@@ -33,7 +34,6 @@ public class ServicioClub {
         Socio socio = socios.get(email);
         return (socio != null && socio.getClave().equals(clave)) ? Optional.of(socio) : Optional.empty();
 
-
     }
 
     public void anadirSocio(@Valid Socio socio) {
@@ -52,6 +52,13 @@ public class ServicioClub {
         // Evitar que se borre el usuario con la cuenta de administrador
         if (socio.getEmail().equals(admin.getEmail()))
             throw new IntentoBorrarAdmin();
+
+        if (socios.containsKey(socio.getEmail()))
+            socios.remove(socio.getEmail());
+        else {
+            // Lanzar excepción si el socio no está registrado
+            throw new SocioNoRegistrado();
+        }
     }
 
     Boolean anadirActividad(String titulo, String descripcion, double precio, int nPlazas, Date fechaCelebracion, Date fechaInscripcion) {

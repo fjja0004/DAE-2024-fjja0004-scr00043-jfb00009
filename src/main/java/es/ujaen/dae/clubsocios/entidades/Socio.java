@@ -14,7 +14,7 @@ public class Socio {
     private String apellidos;
     @Pattern(regexp = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$", message = "El email no es válido")
     private String email;
-    @Pattern(regexp = "^(\\+34|0034|34)?[6789]\\d{8}$")
+    @Pattern(regexp = "^(\\+34|0034|34)?[6789]\\d{8}$", message = "El teléfono no es válido")
     private String telefono;
     @NotBlank
     private String clave;
