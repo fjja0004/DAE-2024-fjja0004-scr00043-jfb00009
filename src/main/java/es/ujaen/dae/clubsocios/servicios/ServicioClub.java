@@ -1,21 +1,29 @@
 package es.ujaen.dae.clubsocios.servicios;
 
 import es.ujaen.dae.clubsocios.entidades.*;
+import es.ujaen.dae.clubsocios.excepciones.IntentoBorrarAdmin;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 import jakarta.validation.Valid;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.*;
 
 @Service
+@Repository
 @Validated
 public class ServicioClub {
-    private final Map<String, Socio> socios = new HashMap<>();
-    private final ArrayList<Temporada> temporada = new ArrayList<>();
+    private final Map<String, Socio> socios;
+    private final ArrayList<Temporada> temporada;
 
     // Socio especial que representa al administrador del club
     private static final Socio admin = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
+
+    public ServicioClub() {
+        socios = new HashMap<>();
+        temporada = new ArrayList<>();
+    }
 
     public Optional<Socio> login(String email, String clave) {
 
@@ -23,13 +31,13 @@ public class ServicioClub {
             return Optional.of(admin);
 
         Socio socio = socios.get(email);
-        return (socio != null && socio.getClave().equals(clave)) ? Optional.of(socio): Optional.empty();
+        return (socio != null && socio.getClave().equals(clave)) ? Optional.of(socio) : Optional.empty();
 
 
     }
 
     public void anadirSocio(@Valid Socio socio) {
-        // Evitar que se cree un usuario con la cuenta de direccion
+        // Evitar que se cree un usuario con la cuenta de administrador
         if (socio.getEmail().equals(admin.getEmail()))
             throw new SocioYaRegistrado();
 
@@ -40,8 +48,10 @@ public class ServicioClub {
 
     }
 
-    Boolean borrarSocio(String email) {
-        return null;
+    public void borrarSocio(@Valid Socio socio) {
+        // Evitar que se borre el usuario con la cuenta de administrador
+        if (socio.getEmail().equals(admin.getEmail()))
+            throw new IntentoBorrarAdmin();
     }
 
     Boolean anadirActividad(String titulo, String descripcion, double precio, int nPlazas, Date fechaCelebracion, Date fechaInscripcion) {
