@@ -8,7 +8,7 @@ class ServicioClub <<servicio>> <<repositorio>> {
     + añadirSocio(nombre: String, apellido: String, email: String, teléfono: String, clave: String): Boolean
     + borrarSocio(email: String): Boolean
     + añadirActividad(título: String, descripción: String, precio: Double, nPlazas: Integer, fechaCelebración: Date, fechaInicioInscripción: Date, fechaFinInscripción: Date): Boolean
-    + borrarActividad(título: String): Boolean
+    + borrarActividad(título: String,año: int): Boolean
     + revisarSolicitudes(): void
     + marcarCuotaPagada(socio: Socio): void
     + buscarActividad(título: String, año: int): Actividad
