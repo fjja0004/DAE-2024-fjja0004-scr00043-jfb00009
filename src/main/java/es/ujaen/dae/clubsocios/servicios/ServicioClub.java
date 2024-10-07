@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -61,8 +62,17 @@ public class ServicioClub {
         }
     }
 
-    Boolean anadirActividad(String titulo, String descripcion, double precio, int nPlazas, Date fechaCelebracion, Date fechaInscripcion) {
-        return null;
+    Boolean anadirActividad(String titulo, String descripcion, int precio, int nPlazas, LocalDate fechaCelebracion, LocalDate fechaInscripcion) {
+
+        if(temporada.get(temporada.size()).getActividades().containsKey(titulo)){
+
+            return false;
+        }else{
+            Actividad nuevaActividad= new Actividad(titulo,descripcion,precio,nPlazas,fechaCelebracion,fechaInscripcion,fechaCelebracion);
+            //¿ seria la ultima temporada , es decir , la actual?
+            temporada.get(temporada.size()).anadirNuevaActividad(nuevaActividad);
+            return true;
+        }
     }
 
     Boolean borrarActividad(String titulo) {
