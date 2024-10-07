@@ -5,6 +5,10 @@ import es.ujaen.dae.clubsocios.excepciones.IntentoBorrarAdmin;
 import es.ujaen.dae.clubsocios.excepciones.SocioNoRegistrado;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -27,7 +31,7 @@ public class ServicioClub {
         temporada = new ArrayList<>();
     }
 
-    public Optional<Socio> login(String email, String clave) {
+    public Optional<Socio> login(@Email String email, String clave) {
 
         if (admin.getEmail().equals(email) && admin.getClave().equals(clave))
             return Optional.of(admin);
@@ -64,7 +68,7 @@ public class ServicioClub {
         //TODO borrar solicitudes del socio, si son para actividades que no se han celebrado
     }
 
-    Boolean anadirActividad(String titulo, String descripcion, int precio, int nPlazas, LocalDate fechaCelebracion, LocalDate fechaInscripcion) {
+    Boolean anadirActividad(@NotBlank String titulo, String descripcion, int precio, int nPlazas, @FutureOrPresent LocalDate fechaCelebracion, LocalDate fechaInscripcion) {
 
         if (temporada.get(temporada.size()).getActividades().containsKey(titulo)) {
 
@@ -89,7 +93,12 @@ public class ServicioClub {
 
     }
 
-    Actividad buscarActividad(String titulo, int anio) {
+    Actividad buscarActividad(@NotBlank String titulo,@NotBlank int anio) {
+        for (Temporada elemento : temporada) {
+            if (elemento.getAnio()==anio) {
+                return elemento.getActividades().get(titulo);
+            }
+        }
         return null;
     }
 
