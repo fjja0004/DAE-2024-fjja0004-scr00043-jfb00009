@@ -31,7 +31,8 @@ public class Temporada {
     public void setActividades(HashMap<String, Actividad> actividades) {
         this.actividades = actividades;
     }
-    public void anadirNuevaActividad(Actividad actividad){
-        actividades.put(actividad.getTitulo(),actividad);
+
+    public void anadirNuevaActividad(Actividad actividad) {
+        actividades.put(actividad.getTitulo(), actividad);
     }
 }

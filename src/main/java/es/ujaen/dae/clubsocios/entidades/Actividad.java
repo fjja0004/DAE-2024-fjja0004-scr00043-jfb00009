@@ -4,9 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
-//import java.util.ArrayList;
 
 public class Actividad {
     @NotBlank
@@ -37,6 +35,7 @@ public class Actividad {
         this.fechaCelebracion = LocalDate.now();
         this.fechaInicioInscripcion = LocalDate.now();
         this.fechaFinInscripcion = LocalDate.now();
+        this.solicitudes = new HashMap<>();
     }
 
     /**

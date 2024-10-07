@@ -60,15 +60,17 @@ public class ServicioClub {
             // Lanzar excepción si el socio no está registrado
             throw new SocioNoRegistrado();
         }
+
+        //TODO borrar solicitudes del socio, si son para actividades que no se han celebrado
     }
 
     Boolean anadirActividad(String titulo, String descripcion, int precio, int nPlazas, LocalDate fechaCelebracion, LocalDate fechaInscripcion) {
 
-        if(temporada.get(temporada.size()).getActividades().containsKey(titulo)){
+        if (temporada.get(temporada.size()).getActividades().containsKey(titulo)) {
 
             return false;
-        }else{
-            Actividad nuevaActividad= new Actividad(titulo,descripcion,precio,nPlazas,fechaCelebracion,fechaInscripcion,fechaCelebracion);
+        } else {
+            Actividad nuevaActividad = new Actividad(titulo, descripcion, precio, nPlazas, fechaCelebracion, fechaInscripcion, fechaCelebracion);
             //¿ seria la ultima temporada , es decir , la actual?
             temporada.get(temporada.size()).anadirNuevaActividad(nuevaActividad);
             return true;

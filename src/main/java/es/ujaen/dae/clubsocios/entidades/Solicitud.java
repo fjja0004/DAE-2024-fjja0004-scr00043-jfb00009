@@ -29,9 +29,6 @@ public class Solicitud {
         this.solicitante = socio;
     }
 
-
-
-
     /**
      * @brief Constructor parametrizado
      * @param nAcompanantes numero de acompañantes
