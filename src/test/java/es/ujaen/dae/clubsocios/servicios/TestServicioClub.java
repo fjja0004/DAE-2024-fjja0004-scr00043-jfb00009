@@ -4,7 +4,9 @@ import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.excepciones.IntentoBorrarAdmin;
 import es.ujaen.dae.clubsocios.excepciones.SocioNoRegistrado;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.annotation.DirtiesContext;
@@ -77,4 +79,5 @@ public class TestServicioClub {
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123").get();
         assertDoesNotThrow(() -> servicioClub.borrarSocio(socio));
     }
+
 }
