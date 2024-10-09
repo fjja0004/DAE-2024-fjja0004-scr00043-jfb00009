@@ -3,9 +3,7 @@ package es.ujaen.dae.clubsocios.entidades;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
-public enum Pagos {
-    noPagado, pendiente, pagado;
-}
+
 
 public class Socio {
     @NotBlank
@@ -18,7 +16,7 @@ public class Socio {
     private String telefono;
     @NotBlank
     private String clave;
-    private Pagos cuotaPagada;
+    private boolean cuotaPagada;
 
     /**
      * @param nombre
@@ -34,7 +32,7 @@ public class Socio {
         this.email = email;
         this.telefono = telefono;
         this.clave = clave;
-        this.cuotaPagada = Pagos.noPagado;
+        this.cuotaPagada = false;
     }
 
     public String getNombre() {
@@ -77,11 +75,11 @@ public class Socio {
         this.clave = clave;
     }
 
-    public Pagos getCuotaPagada() {
+    public boolean isCuotaPagada() {
         return cuotaPagada;
     }
 
-    public void setCuotaPagada(Pagos cuotaPagada) {
+    public void setCuotaPagada(boolean cuotaPagada) {
         this.cuotaPagada = cuotaPagada;
     }
 }

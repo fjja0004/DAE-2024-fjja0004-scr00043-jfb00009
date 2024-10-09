@@ -11,10 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.time.LocalDate;
 import java.util.*;
-
-import static es.ujaen.dae.clubsocios.entidades.Pagos.*;
 
 @Service
 @Repository
@@ -98,16 +95,11 @@ public class ServicioClub {
 
     void marcarCuotaPagada(@Valid Socio socio) {
 
-        if(socios.get(socio).getCuotaPagada()==noPagado){
-            socios.get(socio).setCuotaPagada(pagado);
-        }
-        if(socios.get(socio).getCuotaPagada()==pendiente){
-            socios.get(socio).setCuotaPagada(pagado);
-        }
-        if (socios.get(socio).getCuotaPagada()==pagado){
+        if(!socios.get(socio).isCuotaPagada()) {
+            socios.get(socio).setCuotaPagada(true);
+        } else{
             throw new PagoYaRealizado();
         }
-
     }
 
     /**Actividad buscarActividad(@NotBlank String titulo,@Positive @PositiveOrZero int anio) {
@@ -135,11 +127,8 @@ public class ServicioClub {
 
     }
 
-    void pagarCuota(Socio socio) {
 
-    }
-
-    void crearNuevaTemporada(Socio socio) {
+    void crearNuevaTemporada() {
 
     }
 }

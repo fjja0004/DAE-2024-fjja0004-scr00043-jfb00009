@@ -14,7 +14,6 @@ class ServicioClub <<servicio>> <<repositorio>> {
     + añadirAcompañante(): void
     + quitarAcompañante(): void
     + borrarSolicitud(actividad: Actividad): void
-    + pagarCuota(socio: Socio): void
     + crearNuevaTemporada(socio: Socio): void
 }
 
