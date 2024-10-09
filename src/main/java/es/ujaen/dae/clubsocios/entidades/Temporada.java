@@ -1,8 +1,11 @@
 package es.ujaen.dae.clubsocios.entidades;
 
+import jakarta.validation.constraints.Positive;
+
 import java.util.HashMap;
 
 public class Temporada {
+    @Positive
     private int anio;
     private HashMap<String, Actividad> actividades;
 

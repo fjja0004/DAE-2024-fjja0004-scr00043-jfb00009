@@ -1,9 +1,7 @@
 package es.ujaen.dae.clubsocios.entidades;
 
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
@@ -12,11 +10,11 @@ public class Solicitud {
 
     @Min(0) @Max(5)
     private int nAcompanantes;
-    @NotBlank
+
     private LocalDate fecha;
-    @NotBlank
+    @PositiveOrZero
     private int insAceptadas;
-    @NotBlank
+
     Socio solicitante;
 
     /**

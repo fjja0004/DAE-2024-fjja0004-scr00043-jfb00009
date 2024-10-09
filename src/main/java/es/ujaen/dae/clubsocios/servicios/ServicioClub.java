@@ -97,7 +97,7 @@ public class ServicioClub {
 
     }
 
-    Actividad buscarActividad(@NotBlank String titulo,@Positive @NotBlank int anio) {
+    Actividad buscarActividad(@NotBlank String titulo,@Positive @PositiveOrZero int anio) {
         for (Temporada elemento : temporada) {
             if (elemento.getAnio()==anio) {
                 return elemento.getActividades().get(titulo);
