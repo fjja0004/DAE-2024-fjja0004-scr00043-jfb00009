@@ -39,36 +39,8 @@ public class Solicitud {
         this.solicitante = solicitante;
     }
 
-    // getters y setters de los diferentes atributos
-    public int getnAcompanantes() {
-        return nAcompanantes;
-    }
-
-    public void setnAcompanantes(int nAcompanantes) {
-        this.nAcompanantes = nAcompanantes;
-    }
-
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
     public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
 
-    public int getInsAceptadas() {
-        return insAceptadas;
-    }
-
-    public void setInsAceptadas(int insAceptadas) {
-        this.insAceptadas = insAceptadas;
-    }
-
-    public Socio getSolicitante() {
-        return solicitante;
-    }
-
-    public void setSolicitante(Socio solicitante) {
-        this.solicitante = solicitante;
-    }
 }

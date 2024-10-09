@@ -62,55 +62,8 @@ public class Actividad {
         return titulo;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    public int getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(int precio) {
-        this.precio = precio;
-    }
-
-    public int getPlazas() {
-        return plazas;
-    }
-
     public void setPlazas(int plazas) {
         this.plazas = plazas;
     }
 
-    public LocalDate getFechaCelebracion() {
-        return fechaCelebracion;
-    }
-
-    public void setFechaCelebracion(LocalDate fechaCelebracion) {
-        this.fechaCelebracion = fechaCelebracion;
-    }
-
-    public LocalDate getFechaInicioInscripcion() {
-        return fechaInicioInscripcion;
-    }
-
-    public void setFechaInicioInscripcion(LocalDate fechaInicioInscripcion) {
-        this.fechaInicioInscripcion = fechaInicioInscripcion;
-    }
-
-    public LocalDate getFechaFinInscripcion() {
-        return fechaFinInscripcion;
-    }
-
-    public void setFechaFinInscripcion(LocalDate fechaFinInscripcion) {
-        this.fechaFinInscripcion = fechaFinInscripcion;
-    }
 }

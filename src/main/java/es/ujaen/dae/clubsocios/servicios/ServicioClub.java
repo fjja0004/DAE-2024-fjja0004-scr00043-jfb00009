@@ -65,7 +65,7 @@ public class ServicioClub {
         //TODO borrar solicitudes del socio, si son para actividades que no se han celebrado
     }
 
-    Boolean anadirActividad(@NotBlank String titulo, String descripcion, @PositiveOrZero int precio,@PositiveOrZero int nPlazas, @FutureOrPresent LocalDate fechaCelebracion, LocalDate fechaInscripcion) {
+    /**Boolean anadirActividad(@NotBlank String titulo, String descripcion, @PositiveOrZero int precio,@PositiveOrZero int nPlazas, @FutureOrPresent LocalDate fechaCelebracion, LocalDate fechaInscripcion) {
 
         if (temporada.get(temporada.size()).getActividades().containsKey(titulo)) {
 
@@ -76,9 +76,9 @@ public class ServicioClub {
             temporada.get(temporada.size()).anadirNuevaActividad(nuevaActividad);
             return true;
         }
-    }
+    }*/
 
-    Boolean borrarActividad(@NotBlank String titulo,@Positive int anio) {
+    /**Boolean borrarActividad(@NotBlank String titulo,@Positive int anio) {
 
         for (Temporada t: temporada){
             if(t.getAnio()==anio){ //si existe el año en las temporadas
@@ -87,7 +87,7 @@ public class ServicioClub {
             }
         }
         return false;
-    }
+    }*/
 
     void revisarSolicitudes() {
 
@@ -97,14 +97,14 @@ public class ServicioClub {
 
     }
 
-    Actividad buscarActividad(@NotBlank String titulo,@Positive @PositiveOrZero int anio) {
+    /**Actividad buscarActividad(@NotBlank String titulo,@Positive @PositiveOrZero int anio) {
         for (Temporada elemento : temporada) {
             if (elemento.getAnio()==anio) {
                 return elemento.getActividades().get(titulo);
             }
         }
         return null;
-    }
+    }*/
 
     Boolean realizarSolicitud(int nAcompanantes, Actividad actividad) {
         return null;
