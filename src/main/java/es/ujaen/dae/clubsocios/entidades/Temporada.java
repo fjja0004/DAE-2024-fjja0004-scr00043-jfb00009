@@ -1,38 +1,24 @@
 package es.ujaen.dae.clubsocios.entidades;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Temporada {
     private int anio;
-    private HashMap<String, Actividad> actividades;
-
-    public Temporada(int anio, HashMap<String, Actividad> actividades) {
-        this.anio = anio;
-        this.actividades = actividades;
-    }
+    private List<Actividad> actividades;
 
     public Temporada(int anio) {
         this.anio = anio;
-        actividades = new HashMap<String, Actividad>();
+        actividades = new LinkedList<>();
     }
 
     public int getAnio() {
         return anio;
     }
 
-    public void setAnio(int anio) {
-        this.anio = anio;
-    }
-
-    public HashMap<String, Actividad> getActividades() {
-        return actividades;
-    }
-
-    public void setActividades(HashMap<String, Actividad> actividades) {
-        this.actividades = actividades;
-    }
-
     public void anadirNuevaActividad(Actividad actividad) {
-        actividades.put(actividad.getTitulo(), actividad);
+        actividades.add(actividad);
     }
 }

@@ -65,7 +65,7 @@ public class ServicioClub {
         //TODO borrar solicitudes del socio, si son para actividades que no se han celebrado
     }
 
-    Boolean anadirActividad(@NotBlank String titulo, String descripcion, @PositiveOrZero int precio,@PositiveOrZero int nPlazas, @FutureOrPresent LocalDate fechaCelebracion, LocalDate fechaInscripcion) {
+    /**Boolean anadirActividad(@NotBlank String titulo, String descripcion, @PositiveOrZero int precio,@PositiveOrZero int nPlazas, @FutureOrPresent LocalDate fechaCelebracion, LocalDate fechaInscripcion) {
 
         if (temporada.get(temporada.size()).getActividades().containsKey(titulo)) {
 
@@ -76,9 +76,9 @@ public class ServicioClub {
             temporada.get(temporada.size()).anadirNuevaActividad(nuevaActividad);
             return true;
         }
-    }
+    }*/
 
-    Boolean borrarActividad(@NotBlank String titulo,@Positive int anio) {
+    /**Boolean borrarActividad(@NotBlank String titulo,@Positive int anio) {
 
         for (Temporada t: temporada){
             if(t.getAnio()==anio){ //si existe el año en las temporadas
@@ -87,7 +87,7 @@ public class ServicioClub {
             }
         }
         return false;
-    }
+    }*/
 
     void revisarSolicitudes() {
 
@@ -97,17 +97,28 @@ public class ServicioClub {
 
     }
 
-    Actividad buscarActividad(@NotBlank String titulo,@Positive @NotBlank int anio) {
+    /**Actividad buscarActividad(@NotBlank String titulo,@Positive @NotBlank int anio) {
         for (Temporada elemento : temporada) {
             if (elemento.getAnio()==anio) {
                 return elemento.getActividades().get(titulo);
             }
         }
         return null;
-    }
+    }*/
 
-    Boolean realizarSolicitud(int nAcompanantes, Actividad actividad) {
-        return null;
+    /**
+     * Realiza una solicitud de inscripción a una actividad, siempre que haya plazas disponibles,
+     * el socio no esté ya inscrito en la actividad y no se haya superado el plazo de inscripción.
+     *
+     * @param socio socio que realiza la solicitud de inscripción
+     * @param nAcompanantes número de acompañantes de la solicitud (sin incluir al solicitante)
+     * @param actividad actividad a la que se desea inscribir
+     * @return la solicitud creada, si se ha podido realizar
+     */
+    Solicitud realizarSolicitud(Socio socio, int nAcompanantes, Actividad actividad) {
+        var solicitud = new Solicitud(nAcompanantes, LocalDate.now(), socio);
+        actividad.realizarSolicitud(solicitud);
+        return solicitud;
     }
 
     Boolean anadirAcompanante() {
