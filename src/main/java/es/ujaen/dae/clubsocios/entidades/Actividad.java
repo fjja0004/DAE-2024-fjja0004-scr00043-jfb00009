@@ -78,14 +78,6 @@ public class Actividad {
         solicitudes.put(solicitud.getSolicitante().getEmail(), solicitud);
     }
 
-    public String getTitulo() {
-        return titulo;
-    }
-
-    public void setPlazas(int plazas) {
-        this.plazas = plazas;
-    }
-
     /**
      * @return true si es posible realizar una solicitud, false en caso contrario
      * @brief Comprueba si es posible realizar una solicitud
@@ -96,5 +88,25 @@ public class Actividad {
         if (LocalDate.now().isBefore(fechaInicioInscripcion) || LocalDate.now().isAfter(fechaFinInscripcion))
             return false;
         return true;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setPlazas(int plazas) {
+        this.plazas = plazas;
+    }
+
+    public LocalDate getFechaCelebracion() {
+        return fechaCelebracion;
+    }
+
+    public LocalDate getFechaInicioInscripcion() {
+        return fechaInicioInscripcion;
+    }
+
+    public LocalDate getFechaFinInscripcion() {
+        return fechaFinInscripcion;
     }
 }
