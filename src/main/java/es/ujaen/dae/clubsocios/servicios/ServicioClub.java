@@ -108,9 +108,20 @@ public class ServicioClub {
      * return null;
      * }
      */
-
-    Boolean realizarSolicitud(int nAcompanantes, Actividad actividad) {
-        return null;
+    /**
+     * @brief realiza la solicitud de una actividad
+     * @param nAcompanantes número entero de acompañantes
+     * @param actividad Actividad para la que se realiza la solicitud
+     * @param socio Socio que va a realizar la solicitud
+     */
+    void realizarSolicitud(int nAcompanantes, Actividad actividad, Socio socio) {
+        if (temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo())==null){
+            throw new NoHayActividades();
+        }else {
+            LocalDate fechaActual = LocalDate.now();
+            Solicitud nuevaSolicitud = new Solicitud(nAcompanantes, fechaActual, socio);
+            temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).realizarSolicitud(nuevaSolicitud);
+        }
     }
 
     void anadirAcompanante() {
