@@ -5,6 +5,7 @@ import es.ujaen.dae.clubsocios.excepciones.SolicitudNoValida;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDate;
@@ -19,11 +20,11 @@ public class Actividad {
     private int precio;
     @Positive
     private int plazas;
-
+    @NotNull
     private LocalDate fechaCelebracion;
-
+    @NotNull
     private LocalDate fechaInicioInscripcion;
-
+    @NotNull
     private LocalDate fechaFinInscripcion;
 
     private HashMap<String, Solicitud> solicitudes;
@@ -84,4 +85,15 @@ public class Actividad {
         this.plazas = plazas;
     }
 
+    /**
+     * @return true si es posible realizar una solicitud, false en caso contrario
+     * @brief Comprueba si es posible realizar una solicitud
+     */
+    public boolean isAbierta() {
+        if (solicitudes.size() >= plazas)
+            return false;
+        if (LocalDate.now().isBefore(fechaInicioInscripcion) || LocalDate.now().isAfter(fechaFinInscripcion))
+            return false;
+        return true;
+    }
 }
