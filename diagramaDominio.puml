@@ -6,9 +6,7 @@ hide circle
 class ServicioClub <<servicio>> <<repositorio>> {
     + login(email: String, clave: String): Socio
     + añadirSocio(nombre: String, apellido: String, email: String, teléfono: String, clave: String): void
-    + borrarSocio(email: String): void
     + añadirActividad(título: String, descripción: String, precio: Double, nPlazas: Integer, fechaCelebración: Date, fechaInicioInscripción: Date, fechaFinInscripción: Date): Boolean
-    + borrarActividad(título: String): void
     + revisarSolicitudes(): void
     + marcarCuotaPagada(socio: Socio): void
     + buscarActividad(título: String, año: int): Actividad
@@ -49,6 +47,7 @@ class Solicitud <<objeto-valor>> {
 class Temporada <<entidad>> {
 - año: Integer
     + añadirActividad(actividad: Actividad)): void
+    + buscarActividad(String: titulo)): void
 
 }
 

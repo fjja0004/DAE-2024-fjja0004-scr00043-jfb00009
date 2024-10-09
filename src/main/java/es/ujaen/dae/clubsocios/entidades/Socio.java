@@ -3,7 +3,7 @@ package es.ujaen.dae.clubsocios.entidades;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
-enum Pagos {
+public enum Pagos {
     noPagado, pendiente, pagado;
 }
 
