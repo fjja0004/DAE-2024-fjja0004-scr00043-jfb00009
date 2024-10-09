@@ -1,6 +1,7 @@
 package es.ujaen.dae.clubsocios.servicios;
 
 import es.ujaen.dae.clubsocios.entidades.*;
+import es.ujaen.dae.clubsocios.excepciones.ActividadYaExistente;
 import es.ujaen.dae.clubsocios.excepciones.IntentoBorrarAdmin;
 import es.ujaen.dae.clubsocios.excepciones.PagoYaRealizado;
 import es.ujaen.dae.clubsocios.excepciones.SocioNoRegistrado;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -18,14 +20,15 @@ import java.util.*;
 @Validated
 public class ServicioClub {
     private final Map<String, Socio> socios;
-    private final ArrayList<Temporada> temporada;
+    private final ArrayList<Temporada> temporadas;
 
     // Socio especial que representa al administrador del club
     private static final Socio admin = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
 
     public ServicioClub() {
         socios = new HashMap<>();
-        temporada = new ArrayList<>();
+        temporadas = new ArrayList<>();
+        temporadas.add(new Temporada(LocalDate.now().getYear()));
     }
 
     public Optional<Socio> login(@Email String email, String clave) {
@@ -65,29 +68,16 @@ public class ServicioClub {
         //TODO borrar solicitudes del socio, si son para actividades que no se han celebrado
     }
 
-    /**Boolean anadirActividad(@NotBlank String titulo, String descripcion, @PositiveOrZero int precio,@PositiveOrZero int nPlazas, @FutureOrPresent LocalDate fechaCelebracion, LocalDate fechaInscripcion) {
+    void anadirActividad(@NotBlank String titulo, String descripcion, @PositiveOrZero int precio, @PositiveOrZero int nPlazas, @FutureOrPresent LocalDate fechaCelebracion, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion) {
 
-        if (temporada.get(temporada.size()).getActividades().containsKey(titulo)) {
+        Temporada temporadaActual = temporadas.getLast();
 
-            return false;
-        } else {
-            Actividad nuevaActividad = new Actividad(titulo, descripcion, precio, nPlazas, fechaCelebracion, fechaInscripcion, fechaCelebracion);
-            //¿ seria la ultima temporada , es decir , la actual?
-            temporada.get(temporada.size()).anadirNuevaActividad(nuevaActividad);
-            return true;
-        }
-    }*/
+        if (temporadaActual.buscarActividadPorTitulo(titulo))
+            throw new ActividadYaExistente();
 
-    /**Boolean borrarActividad(@NotBlank String titulo,@Positive int anio) {
-
-        for (Temporada t: temporada){
-            if(t.getAnio()==anio){ //si existe el año en las temporadas
-                t.getActividades().remove(titulo); //si existe actividad con ese titulo lo borra
-                return true;
-            }
-        }
-        return false;
-    }*/
+        Actividad actividad = new Actividad(titulo, descripcion, precio, nPlazas, fechaCelebracion, fechaInicioInscripcion, fechaFinInscripcion);
+        temporadas.getLast().crearActividad(actividad);
+    }
 
     void revisarSolicitudes() {
 
@@ -102,14 +92,16 @@ public class ServicioClub {
         }
     }
 
-    /**Actividad buscarActividad(@NotBlank String titulo,@Positive @PositiveOrZero int anio) {
-        for (Temporada elemento : temporada) {
-            if (elemento.getAnio()==anio) {
-                return elemento.getActividades().get(titulo);
-            }
-        }
-        return null;
-    }*/
+    /**
+     * Actividad buscarActividad(@NotBlank String titulo,@Positive @PositiveOrZero int anio) {
+     * for (Temporada elemento : temporada) {
+     * if (elemento.getAnio()==anio) {
+     * return elemento.getActividades().get(titulo);
+     * }
+     * }
+     * return null;
+     * }
+     */
 
     Boolean realizarSolicitud(int nAcompanantes, Actividad actividad) {
         return null;
