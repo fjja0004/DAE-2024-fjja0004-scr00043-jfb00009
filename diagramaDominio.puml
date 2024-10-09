@@ -5,16 +5,16 @@ hide circle
 
 class ServicioClub <<servicio>> <<repositorio>> {
     + login(email: String, clave: String): Socio
-    + añadirSocio(nombre: String, apellido: String, email: String, teléfono: String, clave: String): Boolean
-    + borrarSocio(email: String): Boolean
+    + añadirSocio(nombre: String, apellido: String, email: String, teléfono: String, clave: String): void
+    + borrarSocio(email: String): void
     + añadirActividad(título: String, descripción: String, precio: Double, nPlazas: Integer, fechaCelebración: Date, fechaInicioInscripción: Date, fechaFinInscripción: Date): Boolean
-    + borrarActividad(título: String,año: int): Boolean
+    + borrarActividad(título: String): void
     + revisarSolicitudes(): void
     + marcarCuotaPagada(socio: Socio): void
     + buscarActividad(título: String, año: int): Actividad
-    + realizarSolicitud(nAcompañantes: Integer, actividad: Actividad): Boolean
-    + añadirAcompañante(): Boolean
-    + quitarAcompañante(): Boolean
+    + realizarSolicitud(nAcompañantes: Integer, actividad: Actividad): void
+    + añadirAcompañante(): void
+    + quitarAcompañante(): void
     + borrarSolicitud(actividad: Actividad): void
     + pagarCuota(socio: Socio): void
     + crearNuevaTemporada(socio: Socio): void
@@ -48,6 +48,8 @@ class Solicitud <<objeto-valor>> {
 
 class Temporada <<entidad>> {
 - año: Integer
+    + añadirActividad(actividad: Actividad)): void
+
 }
 
 Solicitud "*" -- "1" Socio : > solicitante
