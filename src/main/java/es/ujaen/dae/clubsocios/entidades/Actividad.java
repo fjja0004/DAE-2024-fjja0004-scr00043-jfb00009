@@ -61,6 +61,7 @@ public class Actividad {
         this.fechaCelebracion = fechaCelebracion;
         this.fechaInicioInscripcion = fechaInicioInscripcion;
         this.fechaFinInscripcion = fechaFinInscripcion;
+        this.solicitudes = new HashMap<>();
     }
 
     public void realizarSolicitud(@Valid Solicitud solicitud) {

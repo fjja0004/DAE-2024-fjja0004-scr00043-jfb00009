@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestTemporada {
-    
+
     @Test
     void testCrearActividad() {
         Temporada temporada = new Temporada(2021);
