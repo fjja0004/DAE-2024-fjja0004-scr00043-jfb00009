@@ -15,11 +15,11 @@ public class Actividad {
     private int precio;
     @Positive
     private int plazas;
-    @NotBlank
+
     private LocalDate fechaCelebracion;
-    @NotBlank
+
     private LocalDate fechaInicioInscripcion;
-    @NotBlank
+
     private LocalDate fechaFinInscripcion;
 
     private HashMap<String, Solicitud> solicitudes;
