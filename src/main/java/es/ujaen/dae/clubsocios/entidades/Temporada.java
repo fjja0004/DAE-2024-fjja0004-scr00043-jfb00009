@@ -1,11 +1,14 @@
 package es.ujaen.dae.clubsocios.entidades;
 
+import jakarta.validation.constraints.PositiveOrZero;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Temporada {
+    @PositiveOrZero
     private int anio;
     private List<Actividad> actividades;
 
