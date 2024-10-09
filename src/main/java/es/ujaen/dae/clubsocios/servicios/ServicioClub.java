@@ -1,11 +1,7 @@
 package es.ujaen.dae.clubsocios.servicios;
 
 import es.ujaen.dae.clubsocios.entidades.*;
-import es.ujaen.dae.clubsocios.excepciones.ActividadYaExistente;
-import es.ujaen.dae.clubsocios.excepciones.IntentoBorrarAdmin;
-import es.ujaen.dae.clubsocios.excepciones.PagoYaRealizado;
-import es.ujaen.dae.clubsocios.excepciones.SocioNoRegistrado;
-import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
+import es.ujaen.dae.clubsocios.excepciones.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.springframework.stereotype.Repository;
@@ -65,18 +61,20 @@ public class ServicioClub {
             throw new SocioNoRegistrado();
         }
 
-        //TODO borrar solicitudes del socio, si son para actividades que no se han celebrado
+        //TODO sólo borrar el socio si no tiene solicitudes
     }
 
-    void anadirActividad(@NotBlank String titulo, String descripcion, @PositiveOrZero int precio, @PositiveOrZero int nPlazas, @FutureOrPresent LocalDate fechaCelebracion, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion) {
+    void crearActividad(@Valid Actividad a) {
 
         Temporada temporadaActual = temporadas.getLast();
 
-        if (temporadaActual.buscarActividadPorTitulo(titulo))
+        if (a.getFechaInicioInscripcion().isAfter(a.getFechaFinInscripcion()) || a.getFechaInicioInscripcion().isAfter(a.getFechaCelebracion()) || a.getFechaFinInscripcion().isAfter(a.getFechaCelebracion()))
+            throw new FechaNoValida();
+
+        if (temporadaActual.buscarActividadPorTitulo(a.getTitulo()))
             throw new ActividadYaExistente();
 
-        Actividad actividad = new Actividad(titulo, descripcion, precio, nPlazas, fechaCelebracion, fechaInicioInscripcion, fechaFinInscripcion);
-        temporadas.getLast().crearActividad(actividad);
+        temporadas.getLast().crearActividad(a);
     }
 
     void revisarSolicitudes() {
@@ -85,9 +83,9 @@ public class ServicioClub {
 
     void marcarCuotaPagada(@Valid Socio socio) {
 
-        if(!socios.get(socio).isCuotaPagada()) {
+        if (!socios.get(socio).isCuotaPagada()) {
             socios.get(socio).setCuotaPagada(true);
-        } else{
+        } else {
             throw new PagoYaRealizado();
         }
     }

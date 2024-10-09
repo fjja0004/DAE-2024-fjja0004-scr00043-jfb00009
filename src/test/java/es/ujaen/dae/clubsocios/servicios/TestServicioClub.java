@@ -27,11 +27,11 @@ public class TestServicioClub {
         // Crea una instancia de ServicioClub antes de cada test
         servicioClub = new ServicioClub();
         Socio socio = new Socio("Socio", "Prueba", "socio_prueba@club.com", "621302025", "password123");
-
-
-        servicioClub.anadirActividad("Actividad de prueba", "Actividad de prueba", 10,
+        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
                 10, LocalDate.now().plusDays(10), LocalDate.now().plusDays(2),
                 LocalDate.now().plusDays(7));
+
+        servicioClub.crearActividad(actividad);
 
         // Simular la inyección de dependencias
         servicioClub.anadirSocio(socio);  // Asumiendo que puedes modificar directamente por simplicidad
@@ -94,9 +94,7 @@ public class TestServicioClub {
         Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
                 10, LocalDate.now().plusDays(10), LocalDate.now().plusDays(2),
                 LocalDate.now().plusDays(7));
-        assertThatThrownBy(() -> servicioClub.anadirActividad("Actividad de prueba", "Actividad de prueba", 10,
-                10, LocalDate.now().plusDays(10), LocalDate.now().plusDays(2),
-                LocalDate.now().plusDays(7))).isInstanceOf(ActividadYaExistente.class);
+        assertThatThrownBy(() -> servicioClub.crearActividad(actividad)).isInstanceOf(ActividadYaExistente.class);
     }
 
 }
