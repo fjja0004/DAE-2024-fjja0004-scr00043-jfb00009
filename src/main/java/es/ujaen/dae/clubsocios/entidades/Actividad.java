@@ -79,6 +79,20 @@ public class Actividad {
     }
 
     /**
+     * @brief borrar la solicitud de la actividad
+     * @param solicitudEmail Solicitud para inscripción a una actividad
+     * @throws SolicitudNoValida en caso de que la solicitud no exista o se pase una solicitud invalida
+     */
+    public void borrarSolicitud( String solicitudEmail){
+        if (solicitudes.containsKey(solicitudEmail)) {
+            solicitudes.remove(solicitudEmail);
+        }else{
+            throw new SolicitudNoValida();
+        }
+    }
+
+
+    /**
      * @return true si es posible realizar una solicitud, false en caso contrario
      * @brief Comprueba si es posible realizar una solicitud
      */

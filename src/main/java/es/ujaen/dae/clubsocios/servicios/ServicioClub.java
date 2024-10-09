@@ -21,6 +21,9 @@ public class ServicioClub {
     // Socio especial que representa al administrador del club
     private static final Socio admin = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
 
+    /**
+     * @brief  constructor por defecto de la clase ServicioClub
+     */
     public ServicioClub() {
         socios = new HashMap<>();
         temporadas = new ArrayList<>();
@@ -71,7 +74,7 @@ public class ServicioClub {
         if (a.getFechaInicioInscripcion().isAfter(a.getFechaFinInscripcion()) || a.getFechaInicioInscripcion().isAfter(a.getFechaCelebracion()) || a.getFechaFinInscripcion().isAfter(a.getFechaCelebracion()))
             throw new FechaNoValida();
 
-        if (temporadaActual.buscarActividadPorTitulo(a.getTitulo()))
+        if (temporadaActual.buscarActividadPorTitulo(a.getTitulo())!=null)
             throw new ActividadYaExistente();
 
         temporadas.getLast().crearActividad(a);
@@ -81,6 +84,11 @@ public class ServicioClub {
 
     }
 
+    /**
+     *
+     * @brief marca la cuota del socio como pagada, en caso de que ya esté pagado lanza una excepción
+     * @param socio Socio que paga la cuota
+     */
     void marcarCuotaPagada(@Valid Socio socio) {
 
         if (!socios.get(socio).isCuotaPagada()) {
@@ -105,16 +113,16 @@ public class ServicioClub {
         return null;
     }
 
-    Boolean anadirAcompanante() {
-        return null;
+    void anadirAcompanante() {
+
     }
 
-    Boolean quitarAcompanante() {
-        return null;
+    void quitarAcompanante() {
+
     }
 
-    void borrarSolicitud(Actividad actividad) {
-
+    void borrarSolicitud(@Valid Actividad actividad,@Valid Socio socio) {
+        temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).borrarSolicitud(socio.getEmail());
     }
 
 

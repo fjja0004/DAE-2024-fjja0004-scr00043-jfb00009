@@ -1,6 +1,7 @@
 package es.ujaen.dae.clubsocios.entidades;
 
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 import java.time.Instant;
@@ -16,7 +17,7 @@ public class Solicitud {
     private LocalDate fecha;
     @PositiveOrZero
     private int insAceptadas;
-
+@Valid
     private Socio solicitante;
 
     /**
@@ -52,4 +53,13 @@ public class Solicitud {
     public LocalDate getFecha() {
         return fecha;
     }
+
+    /**
+     * @brief modifica el número de acompañantes que tendrá una solicitud
+     * @param nAcompanantes número entero de acompañantes
+     */
+    public void modificarAcompanantes(@PositiveOrZero int nAcompanantes){
+        this.nAcompanantes=nAcompanantes;
+    }
+
 }

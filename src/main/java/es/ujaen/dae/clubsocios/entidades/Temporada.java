@@ -34,13 +34,13 @@ public class Temporada {
      * @param titulo título de la actividad
      * @return true si la actividad existe, false en caso contrario
      */
-    public boolean buscarActividadPorTitulo(String titulo) {
+    public Actividad buscarActividadPorTitulo(String titulo) {
         for (Actividad actividad : actividades) {
             if (actividad.getTitulo().equals(titulo)) {
-                return true;
+                return actividad;
             }
         }
-        return false;
+        return null;
     }
 
     /**
