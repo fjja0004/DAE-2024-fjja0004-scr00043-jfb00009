@@ -1,7 +1,9 @@
 package es.ujaen.dae.clubsocios.servicios;
 
 import es.ujaen.dae.clubsocios.entidades.*;
+import es.ujaen.dae.clubsocios.excepciones.ActividadYaExistente;
 import es.ujaen.dae.clubsocios.excepciones.IntentoBorrarAdmin;
+import es.ujaen.dae.clubsocios.excepciones.PagoYaRealizado;
 import es.ujaen.dae.clubsocios.excepciones.SocioNoRegistrado;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 import jakarta.validation.Valid;
@@ -18,14 +20,15 @@ import java.util.*;
 @Validated
 public class ServicioClub {
     private final Map<String, Socio> socios;
-    private final ArrayList<Temporada> temporada;
+    private final ArrayList<Temporada> temporadas;
 
     // Socio especial que representa al administrador del club
     private static final Socio admin = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
 
     public ServicioClub() {
         socios = new HashMap<>();
-        temporada = new ArrayList<>();
+        temporadas = new ArrayList<>();
+        temporadas.add(new Temporada(LocalDate.now().getYear()));
     }
 
     public Optional<Socio> login(@Email String email, String clave) {
@@ -65,60 +68,43 @@ public class ServicioClub {
         //TODO borrar solicitudes del socio, si son para actividades que no se han celebrado
     }
 
-    /**Boolean anadirActividad(@NotBlank String titulo, String descripcion, @PositiveOrZero int precio,@PositiveOrZero int nPlazas, @FutureOrPresent LocalDate fechaCelebracion, LocalDate fechaInscripcion) {
+    void anadirActividad(@NotBlank String titulo, String descripcion, @PositiveOrZero int precio, @PositiveOrZero int nPlazas, @FutureOrPresent LocalDate fechaCelebracion, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion) {
 
-        if (temporada.get(temporada.size()).getActividades().containsKey(titulo)) {
+        Temporada temporadaActual = temporadas.getLast();
 
-            return false;
-        } else {
-            Actividad nuevaActividad = new Actividad(titulo, descripcion, precio, nPlazas, fechaCelebracion, fechaInscripcion, fechaCelebracion);
-            //¿ seria la ultima temporada , es decir , la actual?
-            temporada.get(temporada.size()).anadirNuevaActividad(nuevaActividad);
-            return true;
-        }
-    }*/
+        if (temporadaActual.buscarActividadPorTitulo(titulo))
+            throw new ActividadYaExistente();
 
-    /**Boolean borrarActividad(@NotBlank String titulo,@Positive int anio) {
-
-        for (Temporada t: temporada){
-            if(t.getAnio()==anio){ //si existe el año en las temporadas
-                t.getActividades().remove(titulo); //si existe actividad con ese titulo lo borra
-                return true;
-            }
-        }
-        return false;
-    }*/
+        Actividad actividad = new Actividad(titulo, descripcion, precio, nPlazas, fechaCelebracion, fechaInicioInscripcion, fechaFinInscripcion);
+        temporadas.getLast().crearActividad(actividad);
+    }
 
     void revisarSolicitudes() {
 
     }
 
-    void marcarCuotaPagada(Socio socio) {
+    void marcarCuotaPagada(@Valid Socio socio) {
 
+        if(!socios.get(socio).isCuotaPagada()) {
+            socios.get(socio).setCuotaPagada(true);
+        } else{
+            throw new PagoYaRealizado();
+        }
     }
 
-    /**Actividad buscarActividad(@NotBlank String titulo,@Positive int anio) {
-        for (Temporada elemento : temporada) {
-            if (elemento.getAnio()==anio) {
-                return elemento.getActividades().get(titulo);
-            }
-        }
-        return null;
-    }*/
-
     /**
-     * Realiza una solicitud de inscripción a una actividad, siempre que haya plazas disponibles,
-     * el socio no esté ya inscrito en la actividad y no se haya superado el plazo de inscripción.
-     *
-     * @param socio socio que realiza la solicitud de inscripción
-     * @param nAcompanantes número de acompañantes de la solicitud (sin incluir al solicitante)
-     * @param actividad actividad a la que se desea inscribir
-     * @return la solicitud creada, si se ha podido realizar
+     * Actividad buscarActividad(@NotBlank String titulo,@Positive @PositiveOrZero int anio) {
+     * for (Temporada elemento : temporada) {
+     * if (elemento.getAnio()==anio) {
+     * return elemento.getActividades().get(titulo);
+     * }
+     * }
+     * return null;
+     * }
      */
-    Solicitud realizarSolicitud(Socio socio, int nAcompanantes, Actividad actividad) {
-        var solicitud = new Solicitud(nAcompanantes, LocalDate.now(), socio);
-        actividad.realizarSolicitud(solicitud);
-        return solicitud;
+
+    Boolean realizarSolicitud(int nAcompanantes, Actividad actividad) {
+        return null;
     }
 
     Boolean anadirAcompanante() {
@@ -133,11 +119,8 @@ public class ServicioClub {
 
     }
 
-    void pagarCuota(Socio socio) {
 
-    }
-
-    void crearNuevaTemporada(Socio socio) {
+    void crearNuevaTemporada() {
 
     }
 }

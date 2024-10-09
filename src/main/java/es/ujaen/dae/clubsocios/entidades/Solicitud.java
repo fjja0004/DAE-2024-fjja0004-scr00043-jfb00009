@@ -3,19 +3,21 @@ package es.ujaen.dae.clubsocios.entidades;
 
 import jakarta.validation.constraints.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 
 public class Solicitud {
 
-    @Min(0) @Max(5)
+    @Min(0)
+    @Max(5)
     private int nAcompanantes;
 
     private LocalDate fecha;
     @PositiveOrZero
     private int insAceptadas;
 
-    Socio solicitante;
+    private Socio solicitante;
 
     /**
      * @brief Constructor por defecto de la clase solicitud
@@ -28,10 +30,10 @@ public class Solicitud {
     }
 
     /**
-     * @brief Constructor parametrizado
      * @param nAcompanantes numero de acompañantes
-     * @param fecha fecha en la que se realiza la solicitud
-     * @param solicitante Socio que realiza la solicitud
+     * @param fecha         fecha en la que se realiza la solicitud
+     * @param solicitante   Socio que realiza la solicitud
+     * @brief Constructor parametrizado
      */
     public Solicitud(int nAcompanantes, LocalDate fecha, Socio solicitante) {
         this.nAcompanantes = nAcompanantes;
@@ -39,36 +41,15 @@ public class Solicitud {
         this.solicitante = solicitante;
     }
 
-    // getters y setters de los diferentes atributos
-    public int getnAcompanantes() {
-        return nAcompanantes;
-    }
-
-    public void setnAcompanantes(int nAcompanantes) {
-        this.nAcompanantes = nAcompanantes;
-    }
-
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
     public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
-    }
-
-    public int getInsAceptadas() {
-        return insAceptadas;
-    }
-
-    public void setInsAceptadas(int insAceptadas) {
-        this.insAceptadas = insAceptadas;
     }
 
     public Socio getSolicitante() {
         return solicitante;
     }
 
-    public void setSolicitante(Socio solicitante) {
-        this.solicitante = solicitante;
+    public LocalDate getFecha() {
+        return fecha;
     }
 }

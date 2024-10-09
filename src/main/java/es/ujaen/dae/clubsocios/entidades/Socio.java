@@ -2,12 +2,12 @@ package es.ujaen.dae.clubsocios.entidades;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 
-enum Pagos {
-    noPagado, pendiente, pagado;
-}
 
 public class Socio {
+    @Positive
+    private int id;
     @NotBlank
     private String nombre;
     @NotBlank
@@ -18,7 +18,7 @@ public class Socio {
     private String telefono;
     @NotBlank
     private String clave;
-    private Pagos cuotaPagada;
+    private boolean cuotaPagada;
 
     /**
      * @param nombre
@@ -34,54 +34,30 @@ public class Socio {
         this.email = email;
         this.telefono = telefono;
         this.clave = clave;
-        this.cuotaPagada = Pagos.noPagado;
+        this.cuotaPagada = false;
     }
 
-    public String getNombre() {
-        return nombre;
+    public int getId() {
+        return id;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public String getApellidos() {
-        return apellidos;
-    }
-
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
     public String getClave() {
         return clave;
     }
 
-    public void setClave(String clave) {
-        this.clave = clave;
-    }
-
-    public Pagos getCuotaPagada() {
+    public boolean isCuotaPagada() {
         return cuotaPagada;
     }
 
-    public void setCuotaPagada(Pagos cuotaPagada) {
+    public void setCuotaPagada(boolean cuotaPagada) {
         this.cuotaPagada = cuotaPagada;
     }
 }

@@ -1,6 +1,8 @@
 package es.ujaen.dae.clubsocios.servicios;
 
+import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.entidades.Socio;
+import es.ujaen.dae.clubsocios.excepciones.ActividadYaExistente;
 import es.ujaen.dae.clubsocios.excepciones.IntentoBorrarAdmin;
 import es.ujaen.dae.clubsocios.excepciones.SocioNoRegistrado;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.annotation.DirtiesContext;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +26,12 @@ public class TestServicioClub {
     public void setUp() {
         // Crea una instancia de ServicioClub antes de cada test
         servicioClub = new ServicioClub();
-        Socio socio = new Socio("Socio", "Prueba", "socio_prueba@club.com", "123456789", "password123");
+        Socio socio = new Socio("Socio", "Prueba", "socio_prueba@club.com", "621302025", "password123");
+
+
+        servicioClub.anadirActividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now().plusDays(10), LocalDate.now().plusDays(2),
+                LocalDate.now().plusDays(7));
 
         // Simular la inyección de dependencias
         servicioClub.anadirSocio(socio);  // Asumiendo que puedes modificar directamente por simplicidad
@@ -78,6 +86,17 @@ public class TestServicioClub {
         //verificamos que se pueda borrar un socio registrado
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123").get();
         assertDoesNotThrow(() -> servicioClub.borrarSocio(socio));
+    }
+
+    @Test
+    @DirtiesContext
+    void testAnadirActividad() {
+        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now().plusDays(10), LocalDate.now().plusDays(2),
+                LocalDate.now().plusDays(7));
+        assertThatThrownBy(() -> servicioClub.anadirActividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now().plusDays(10), LocalDate.now().plusDays(2),
+                LocalDate.now().plusDays(7))).isInstanceOf(ActividadYaExistente.class);
     }
 
 }
