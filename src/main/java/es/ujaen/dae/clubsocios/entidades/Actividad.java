@@ -1,6 +1,5 @@
 package es.ujaen.dae.clubsocios.entidades;
 
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
@@ -16,11 +15,11 @@ public class Actividad {
     private int precio;
     @Positive
     private int plazas;
-
+    @NotBlank
     private LocalDate fechaCelebracion;
-
+    @NotBlank
     private LocalDate fechaInicioInscripcion;
-
+    @NotBlank
     private LocalDate fechaFinInscripcion;
 
     private HashMap<String, Solicitud> solicitudes;
