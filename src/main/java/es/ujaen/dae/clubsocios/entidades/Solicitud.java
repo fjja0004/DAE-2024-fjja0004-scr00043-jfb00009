@@ -3,6 +3,7 @@ package es.ujaen.dae.clubsocios.entidades;
 
 import jakarta.validation.constraints.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
 
 
@@ -43,4 +44,11 @@ public class Solicitud {
         this.fecha = fecha;
     }
 
+    public Socio getSolicitante() {
+        return solicitante;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
 }

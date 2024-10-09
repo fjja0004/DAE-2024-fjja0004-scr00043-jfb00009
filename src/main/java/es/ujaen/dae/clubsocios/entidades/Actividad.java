@@ -1,5 +1,9 @@
 package es.ujaen.dae.clubsocios.entidades;
 
+import es.ujaen.dae.clubsocios.excepciones.NoDisponibilidadPlazas;
+import es.ujaen.dae.clubsocios.excepciones.SolicitudNoValida;
+import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
@@ -56,6 +60,20 @@ public class Actividad {
         this.fechaCelebracion = fechaCelebracion;
         this.fechaInicioInscripcion = fechaInicioInscripcion;
         this.fechaFinInscripcion = fechaFinInscripcion;
+    }
+
+    public void realizarSolicitud(@Valid Solicitud solicitud) {
+
+        if (solicitudes.containsKey(solicitud.getSolicitante().getEmail()))
+            throw new SolicitudYaRealizada();
+
+        if (!(solicitud.getFecha().isAfter(fechaInicioInscripcion) && solicitud.getFecha().isBefore(fechaFinInscripcion)))
+            throw new SolicitudNoValida();
+
+        if (solicitudes.size() >= plazas)
+            throw new NoDisponibilidadPlazas();
+
+        solicitudes.put(solicitud.getSolicitante().getEmail(), solicitud);
     }
 
     public String getTitulo() {
