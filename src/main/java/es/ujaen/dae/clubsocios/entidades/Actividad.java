@@ -123,4 +123,8 @@ public class Actividad {
     public LocalDate getFechaFinInscripcion() {
         return fechaFinInscripcion;
     }
+
+    public HashMap<String, Solicitud> getSolicitudes() {
+        return solicitudes;
+    }
 }

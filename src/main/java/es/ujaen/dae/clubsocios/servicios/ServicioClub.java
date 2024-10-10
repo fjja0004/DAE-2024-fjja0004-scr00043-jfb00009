@@ -98,7 +98,7 @@ public class ServicioClub {
         }
     }
 
-    /**
+    /*
      * Actividad buscarActividad(@NotBlank String titulo,@Positive @PositiveOrZero int anio) {
      * for (Temporada elemento : temporada) {
      * if (elemento.getAnio()==anio) {
@@ -124,14 +124,31 @@ public class ServicioClub {
         }
     }
 
-    void anadirAcompanante() {
-
+    /**
+     * @brief modifica el número de acompañantes que tendrá un socio
+     * @param socio Socio
+     * @param actividad Actividad
+     * @param nAcompanantes número entero de acompañantes
+     */
+    void anadirAcompanante(@Valid Socio socio,@Valid Actividad actividad,@PositiveOrZero int nAcompanantes) {
+        temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).getSolicitudes().get(socio.getEmail()).modificarAcompanantes(nAcompanantes);
     }
 
-    void quitarAcompanante() {
-
+    /**
+     * @brief modifica el número de acompañantes que tendrá un socio
+     * @param socio Socio
+     * @param actividad Actividad
+     * @param nAcompanantes número entero de acompañantes
+     */
+    void quitarAcompanante(@Valid Socio socio,@Valid Actividad actividad,@PositiveOrZero int nAcompanantes) {
+        temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).getSolicitudes().get(socio.getEmail()).modificarAcompanantes(nAcompanantes);
     }
 
+    /**
+     * @brief borra las solicitudes que realiza un socio a una actividad
+     * @param actividad Actividad
+     * @param socio Socio solicitante
+     */
     void borrarSolicitud(@Valid Actividad actividad,@Valid Socio socio) {
         temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).borrarSolicitud(socio.getEmail());
     }
