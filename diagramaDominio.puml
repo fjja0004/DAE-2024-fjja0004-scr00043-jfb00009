@@ -11,8 +11,7 @@ class ServicioClub <<servicio>> <<repositorio>> {
     + marcarCuotaPagada(socio: Socio): void
     + buscarActividad(título: String, año: int): Actividad
     + realizarSolicitud(nAcompañantes: Integer, actividad: Actividad): void
-    + añadirAcompañante(): void
-    + quitarAcompañante(): void
+    + modificarAcompañantes(socio: Socio,actividad: Actividad,nAcompañantes:Integer): void
     + borrarSolicitud(actividad: Actividad,socio: Socio): void
     + crearNuevaTemporada(socio: Socio): void
 }

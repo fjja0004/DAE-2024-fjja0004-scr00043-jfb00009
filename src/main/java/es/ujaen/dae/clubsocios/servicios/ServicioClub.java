@@ -82,6 +82,7 @@ public class ServicioClub {
 
     void revisarSolicitudes() {
 
+
     }
 
     /**
@@ -133,19 +134,10 @@ public class ServicioClub {
      * @param actividad Actividad
      * @param nAcompanantes número entero de acompañantes
      */
-    void anadirAcompanante(@Valid Socio socio,@Valid Actividad actividad,@PositiveOrZero int nAcompanantes) {
+    void modificarAcompanantes(@Valid Socio socio,@Valid Actividad actividad,@PositiveOrZero int nAcompanantes) {
         temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).getSolicitudes().get(socio.getEmail()).modificarAcompanantes(nAcompanantes);
     }
 
-    /**
-     * @brief modifica el número de acompañantes que tendrá un socio
-     * @param socio Socio
-     * @param actividad Actividad
-     * @param nAcompanantes número entero de acompañantes
-     */
-    void quitarAcompanante(@Valid Socio socio,@Valid Actividad actividad,@PositiveOrZero int nAcompanantes) {
-        temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).getSolicitudes().get(socio.getEmail()).modificarAcompanantes(nAcompanantes);
-    }
 
     /**
      * @brief borra las solicitudes que realiza un socio a una actividad
