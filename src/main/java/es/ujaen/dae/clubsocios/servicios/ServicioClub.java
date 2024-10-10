@@ -98,16 +98,19 @@ public class ServicioClub {
         }
     }
 
-    /*
-     * Actividad buscarActividad(@NotBlank String titulo,@Positive @PositiveOrZero int anio) {
-     * for (Temporada elemento : temporada) {
-     * if (elemento.getAnio()==anio) {
-     * return elemento.getActividades().get(titulo);
-     * }
-     * }
-     * return null;
-     * }
+    /**
+     *
+     * @brief busca una actividad por título en el año actual
+     * @param titulo String título de la actividad
+     * @return Actividad encontrada con el título correspondiente en la temporada actual
+     * @throws NoHayActividades en caso de que no exista actividad con ese título correspondiente
      */
+      Actividad buscarActividad(@NotBlank String titulo) {
+          if(temporadas.getLast().buscarActividadPorTitulo(titulo)!=null)
+      return temporadas.getLast().buscarActividadPorTitulo(titulo);
+          else throw new NoHayActividades();
+      }
+
     /**
      * @brief realiza la solicitud de una actividad
      * @param nAcompanantes número entero de acompañantes
