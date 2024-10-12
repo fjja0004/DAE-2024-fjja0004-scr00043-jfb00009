@@ -32,7 +32,7 @@ public class Temporada {
     /**
      * @brief Buscar una actividad por su título
      * @param titulo título de la actividad
-     * @return true si la actividad existe, false en caso contrario
+     * @return la actividad con el título dado
      */
     public Actividad buscarActividadPorTitulo(String titulo) {
         for (Actividad actividad : actividades) {
@@ -40,7 +40,7 @@ public class Temporada {
                 return actividad;
             }
         }
-        return null;
+        throw new NoHayActividades();
     }
 
     /**
