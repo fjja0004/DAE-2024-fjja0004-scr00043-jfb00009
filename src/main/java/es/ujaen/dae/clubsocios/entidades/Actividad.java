@@ -92,7 +92,6 @@ public class Actividad {
         }
     }
 
-
     /**
      * @return true si es posible realizar una solicitud, false en caso contrario
      * @brief Comprueba si es posible realizar una solicitud
@@ -105,6 +104,11 @@ public class Actividad {
         return true;
     }
 
+    /**
+     * @param email         email del socio que realiza la solicitud
+     * @param nAcompanantes número de acompañantes
+     * @brief modifica el número de acompañantes que tendrá una solicitud
+     */
     public void modificarAcompanantes(String email, int nAcompanantes) {
         if (solicitudes.containsKey(email)) {
             solicitudes.get(email).modificarAcompanantes(nAcompanantes);
