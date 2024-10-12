@@ -3,7 +3,6 @@ package es.ujaen.dae.clubsocios.entidades;
 import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
-
 import java.util.LinkedList;
 import java.util.List;
 
