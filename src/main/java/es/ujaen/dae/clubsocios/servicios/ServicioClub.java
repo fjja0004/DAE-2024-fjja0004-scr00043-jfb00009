@@ -5,6 +5,7 @@ import es.ujaen.dae.clubsocios.excepciones.*;
 import es.ujaen.dae.clubsocios.objetosValor.Solicitud;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -146,8 +147,11 @@ public class ServicioClub {
         temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).borrarSolicitud(socio.getEmail());
     }
 
-
+    /**
+     * @brief crea una nueva temporada al inicio de cada año
+     */
+    @Scheduled(cron = "0 0 0 1 1 ? *")
     void crearNuevaTemporada() {
-
+        temporadas.add(new Temporada(LocalDate.now().getYear()));
     }
 }

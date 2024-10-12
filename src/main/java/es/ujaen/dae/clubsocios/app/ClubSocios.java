@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication(scanBasePackages="es.ujaen.dae.clubsocios.servicios")
+@SpringBootApplication(scanBasePackages="es.ujaen.dae.clubsocios")
 @EnableScheduling
 public class ClubSocios {
     public static void main(String[] args) {
