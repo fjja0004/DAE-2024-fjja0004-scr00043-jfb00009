@@ -18,6 +18,7 @@ public class Solicitud {
     private LocalDate fecha;
     @PositiveOrZero
     private int insAceptadas;
+    private boolean aceptada;
     @Valid
     private Socio solicitante;
 
@@ -29,6 +30,7 @@ public class Solicitud {
         this.fecha = LocalDate.now();
         this.insAceptadas = 0;
         this.solicitante = socio;
+        this.aceptada = false;
     }
 
     /**
@@ -41,6 +43,16 @@ public class Solicitud {
         this.nAcompanantes = nAcompanantes;
         this.fecha = fecha;
         this.solicitante = solicitante;
+        this.insAceptadas = 0;
+        this.aceptada = false;
+    }
+
+    /**
+     * @param nAcompanantes número entero de acompañantes
+     * @brief modifica el número de acompañantes que tendrá una solicitud
+     */
+    public void modificarAcompanantes(@PositiveOrZero int nAcompanantes) {
+        this.nAcompanantes = nAcompanantes;
     }
 
     public void setFecha(LocalDate fecha) {
@@ -55,12 +67,7 @@ public class Solicitud {
         return fecha;
     }
 
-    /**
-     * @param nAcompanantes número entero de acompañantes
-     * @brief modifica el número de acompañantes que tendrá una solicitud
-     */
-    public void modificarAcompanantes(@PositiveOrZero int nAcompanantes) {
-        this.nAcompanantes = nAcompanantes;
+    public void setAceptada(boolean aceptada) {
+        this.aceptada = aceptada;
     }
-
 }

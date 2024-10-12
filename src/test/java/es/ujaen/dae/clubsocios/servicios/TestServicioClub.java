@@ -74,22 +74,6 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
-    void testBorrarSocio() {
-        //verificamos que no se pueda borrar un socio no registrado.
-        Socio socioNoRegistrado = new Socio("Socio", "-", "socio_no_registrado@club.com", "+34 123456789", "password123");
-        assertThatThrownBy(() -> servicioClub.borrarSocio(socioNoRegistrado)).isInstanceOf(SocioNoRegistrado.class);
-
-        //verificamos que no se pueda borrar un socio igual al admin.
-        Socio admin = servicioClub.login("admin@club.es", "ElAdMiN").get();
-        assertThatThrownBy(() -> servicioClub.borrarSocio(admin)).isInstanceOf(IntentoBorrarAdmin.class);
-
-        //verificamos que se pueda borrar un socio registrado
-        Socio socio = servicioClub.login("socio_prueba@club.com", "password123").get();
-        assertDoesNotThrow(() -> servicioClub.borrarSocio(socio));
-    }
-
-    @Test
-    @DirtiesContext
     void testAnadirActividad() {
         Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
                 10, LocalDate.now().plusDays(10), LocalDate.now().plusDays(2),

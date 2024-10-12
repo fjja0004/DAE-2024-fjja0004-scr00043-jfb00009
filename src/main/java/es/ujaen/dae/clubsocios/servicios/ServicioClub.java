@@ -54,21 +54,6 @@ public class ServicioClub {
 
     }
 
-    public void borrarSocio(@Valid Socio socio) {
-        // Evitar que se borre el usuario con la cuenta de administrador
-        if (socio.getEmail().equals(admin.getEmail()))
-            throw new IntentoBorrarAdmin();
-
-        if (socios.containsKey(socio.getEmail()))
-            socios.remove(socio.getEmail());
-        else {
-            // Lanzar excepción si el socio no está registrado
-            throw new SocioNoRegistrado();
-        }
-
-        //TODO sólo borrar el socio si no tiene solicitudes
-    }
-
     void crearActividad(@Valid Actividad a) {
 
         Temporada temporadaActual = temporadas.getLast();
@@ -150,7 +135,7 @@ public class ServicioClub {
     /**
      * @brief crea una nueva temporada al inicio de cada año
      */
-    @Scheduled(cron = "0 0 0 1 1 ? *")
+    @Scheduled(cron = "0 0 0 1 1 ?")
     void crearNuevaTemporada() {
         temporadas.add(new Temporada(LocalDate.now().getYear()));
     }
