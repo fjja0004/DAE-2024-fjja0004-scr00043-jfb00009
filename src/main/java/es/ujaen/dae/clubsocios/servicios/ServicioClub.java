@@ -98,6 +98,14 @@ public class ServicioClub {
     }
 
     /**
+     * Busca todas las actividades a las que es posible inscribirse
+     * @return lista de actividades abiertas
+     */
+    List<Actividad> buscarActividadesAbiertas() {
+        return temporadas.getLast().buscaTodasActividadesAbiertas();
+    }
+
+    /**
      * @param nAcompanantes número entero de acompañantes
      * @param actividad     Actividad para la que se realiza la solicitud
      * @param socio         Socio que va a realizar la solicitud
