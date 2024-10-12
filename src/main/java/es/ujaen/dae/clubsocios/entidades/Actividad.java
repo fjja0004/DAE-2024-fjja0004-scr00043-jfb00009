@@ -3,6 +3,7 @@ package es.ujaen.dae.clubsocios.entidades;
 import es.ujaen.dae.clubsocios.excepciones.NoDisponibilidadPlazas;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudNoValida;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
+import es.ujaen.dae.clubsocios.objetosValor.Solicitud;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -79,6 +80,20 @@ public class Actividad {
     }
 
     /**
+     * @param solicitudEmail Solicitud para inscripción a una actividad
+     * @throws SolicitudNoValida en caso de que la solicitud no exista o se pase una solicitud invalida
+     * @brief borrar la solicitud de la actividad
+     */
+    public void borrarSolicitud(String solicitudEmail) {
+        if (solicitudes.containsKey(solicitudEmail)) {
+            solicitudes.remove(solicitudEmail);
+        } else {
+            throw new SolicitudNoValida();
+        }
+    }
+
+
+    /**
      * @return true si es posible realizar una solicitud, false en caso contrario
      * @brief Comprueba si es posible realizar una solicitud
      */
@@ -88,6 +103,14 @@ public class Actividad {
         if (LocalDate.now().isBefore(fechaInicioInscripcion) || LocalDate.now().isAfter(fechaFinInscripcion))
             return false;
         return true;
+    }
+
+    public void modificarAcompanantes(String email, int nAcompanantes) {
+        if (solicitudes.containsKey(email)) {
+            solicitudes.get(email).modificarAcompanantes(nAcompanantes);
+        } else {
+            throw new SolicitudNoValida();
+        }
     }
 
     public String getTitulo() {
@@ -109,4 +132,5 @@ public class Actividad {
     public LocalDate getFechaFinInscripcion() {
         return fechaFinInscripcion;
     }
+
 }

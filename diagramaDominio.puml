@@ -11,9 +11,8 @@ class ServicioClub <<servicio>> <<repositorio>> {
     + marcarCuotaPagada(socio: Socio): void
     + buscarActividad(título: String, año: int): Actividad
     + realizarSolicitud(nAcompañantes: Integer, actividad: Actividad): void
-    + añadirAcompañante(): void
-    + quitarAcompañante(): void
-    + borrarSolicitud(actividad: Actividad): void
+    + modificarAcompañantes(socio: Socio,actividad: Actividad,nAcompañantes:Integer): void
+    + borrarSolicitud(actividad: Actividad,socio: Socio): void
     + crearNuevaTemporada(socio: Socio): void
 }
 
@@ -35,18 +34,21 @@ class Actividad <<entidad>> {
 - fechaCelebración: Date
 - fechaInicioInscripción: Date
 - fechaFinInscripción: Date
++ realizarSolicitud(Solicitud:solicitud):void
++ borrarSolicitud(Solicitud:solicitud)):void
 }
 
 class Solicitud <<objeto-valor>> {
 - nAcompañantes: Integer
 - fecha: Date
 - insAceptadas: Integer
++ modificarAcompañantes(Integer:nAcompañantes):void
 }
 
 class Temporada <<entidad>> {
 - año: Integer
     + añadirActividad(actividad: Actividad)): void
-    + buscarActividad(String: titulo)): void
+    + buscarActividad(String: titulo)): Actividad
 
 }
 

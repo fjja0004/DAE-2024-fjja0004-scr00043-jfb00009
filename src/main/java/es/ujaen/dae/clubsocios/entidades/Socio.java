@@ -6,8 +6,6 @@ import jakarta.validation.constraints.Positive;
 
 
 public class Socio {
-    @Positive
-    private int id;
     @NotBlank
     private String nombre;
     @NotBlank
@@ -35,14 +33,6 @@ public class Socio {
         this.telefono = telefono;
         this.clave = clave;
         this.cuotaPagada = false;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getEmail() {
