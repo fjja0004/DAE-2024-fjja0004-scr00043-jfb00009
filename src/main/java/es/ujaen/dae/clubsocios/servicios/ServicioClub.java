@@ -135,7 +135,7 @@ public class ServicioClub {
     /**
      * @brief crea una nueva temporada al inicio de cada año
      */
-    @Scheduled(cron = "0 0 0 1 1 ? *")
+    @Scheduled(cron = "0 0 0 1 1 ?")
     void crearNuevaTemporada() {
         temporadas.add(new Temporada(LocalDate.now().getYear()));
     }
