@@ -11,6 +11,8 @@ import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Actividad {
     @NotBlank
@@ -27,8 +29,8 @@ public class Actividad {
     private LocalDate fechaInicioInscripcion;
     @NotNull
     private LocalDate fechaFinInscripcion;
-
-    private HashMap<String, Solicitud> solicitudes;
+    private List<Solicitud> solicitudesPendientes;
+    private HashMap<String, Solicitud> solicitudesAceptadas;
 
     /**
      * @brief Constructor por defecto de la clase Actividad
@@ -41,7 +43,8 @@ public class Actividad {
         this.fechaCelebracion = LocalDate.now();
         this.fechaInicioInscripcion = LocalDate.now();
         this.fechaFinInscripcion = LocalDate.now();
-        this.solicitudes = new HashMap<>();
+        this.solicitudesPendientes = new LinkedList<>();
+        this.solicitudesAceptadas = new HashMap<>();
     }
 
     /**
@@ -62,21 +65,34 @@ public class Actividad {
         this.fechaCelebracion = fechaCelebracion;
         this.fechaInicioInscripcion = fechaInicioInscripcion;
         this.fechaFinInscripcion = fechaFinInscripcion;
-        this.solicitudes = new HashMap<>();
+        this.solicitudesPendientes = new LinkedList<>();
+        this.solicitudesAceptadas = new HashMap<>();
     }
 
     public void realizarSolicitud(@Valid Solicitud solicitud) {
 
-        if (solicitudes.containsKey(solicitud.getSolicitante().getEmail()))
+        if (solicitudesAceptadas.containsKey(solicitud.getSolicitante().getEmail()))
             throw new SolicitudYaRealizada();
 
         if (!(solicitud.getFecha().isAfter(fechaInicioInscripcion) && solicitud.getFecha().isBefore(fechaFinInscripcion)))
             throw new SolicitudNoValida();
 
-        if (solicitudes.size() >= plazas)
+        if (solicitudesAceptadas.size() >= plazas)
             throw new NoDisponibilidadPlazas();
 
-        solicitudes.put(solicitud.getSolicitante().getEmail(), solicitud);
+        if (solicitud.getSolicitante().isCuotaPagada()) {
+            solicitud.setAceptada(true);
+            solicitudesAceptadas.put(solicitud.getSolicitante().getEmail(), solicitud);
+        }
+
+        solicitudesPendientes.add(solicitud);
+    }
+
+    /**
+     * @brief Revisa las solicitudes pendientes de la actividad
+     */
+    public void revisarSolicitudes(){
+        //TODO
     }
 
     /**
@@ -85,8 +101,8 @@ public class Actividad {
      * @brief borrar la solicitud de la actividad
      */
     public void borrarSolicitud(String solicitudEmail) {
-        if (solicitudes.containsKey(solicitudEmail)) {
-            solicitudes.remove(solicitudEmail);
+        if (solicitudesAceptadas.containsKey(solicitudEmail)) {
+            solicitudesAceptadas.remove(solicitudEmail);
         } else {
             throw new SolicitudNoValida();
         }
@@ -97,7 +113,7 @@ public class Actividad {
      * @brief Comprueba si es posible realizar una solicitud
      */
     public boolean isAbierta() {
-        if (solicitudes.size() >= plazas)
+        if (solicitudesAceptadas.size() >= plazas)
             return false;
         if (LocalDate.now().isBefore(fechaInicioInscripcion) || LocalDate.now().isAfter(fechaFinInscripcion))
             return false;
@@ -110,8 +126,8 @@ public class Actividad {
      * @brief modifica el número de acompañantes que tendrá una solicitud
      */
     public void modificarAcompanantes(String email, int nAcompanantes) {
-        if (solicitudes.containsKey(email)) {
-            solicitudes.get(email).modificarAcompanantes(nAcompanantes);
+        if (solicitudesAceptadas.containsKey(email)) {
+            solicitudesAceptadas.get(email).modificarAcompanantes(nAcompanantes);
         } else {
             throw new SolicitudNoValida();
         }
