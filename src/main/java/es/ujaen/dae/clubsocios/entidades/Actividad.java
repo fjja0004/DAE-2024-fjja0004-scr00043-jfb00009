@@ -1,5 +1,6 @@
 package es.ujaen.dae.clubsocios.entidades;
 
+import es.ujaen.dae.clubsocios.excepciones.FechaNoValida;
 import es.ujaen.dae.clubsocios.excepciones.NoDisponibilidadPlazas;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudNoValida;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
@@ -71,21 +72,22 @@ public class Actividad {
 
     public void realizarSolicitud(@Valid Solicitud solicitud) {
 
-        if (solicitudesAceptadas.containsKey(solicitud.getSolicitante().getEmail()))
-            throw new SolicitudYaRealizada();
+        if (!(solicitud.getFecha().isAfter(fechaInicioInscripcion) && solicitud.getFecha().isBefore(fechaFinInscripcion))){
+            if (solicitudesAceptadas.containsKey(solicitud.getSolicitante().getEmail())|| solicitudesPendientes.contains(solicitud))
+                throw new SolicitudYaRealizada();
 
-        if (!(solicitud.getFecha().isAfter(fechaInicioInscripcion) && solicitud.getFecha().isBefore(fechaFinInscripcion)))
+            if (solicitudesAceptadas.size()<plazas && solicitud.getSolicitante().isCuotaPagada()){
+            solicitudesAceptadas.put(solicitud.getSolicitante().getEmail(),solicitud);
+                }
+            if (solicitudesAceptadas.size() >= plazas)
+                solicitudesPendientes.add(solicitud);
+            if (!solicitud.getSolicitante().isCuotaPagada()){
+                solicitudesPendientes.add(solicitud);
+            }
+
+        } else{
             throw new SolicitudNoValida();
-
-        if (solicitudesAceptadas.size() >= plazas)
-            throw new NoDisponibilidadPlazas();
-
-        if (solicitud.getSolicitante().isCuotaPagada()) {
-            solicitud.setAceptada(true);
-            solicitudesAceptadas.put(solicitud.getSolicitante().getEmail(), solicitud);
         }
-
-        solicitudesPendientes.add(solicitud);
     }
 
     /**
