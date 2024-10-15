@@ -105,8 +105,12 @@ public class Actividad {
     public void borrarSolicitud(String solicitudEmail) {
         if (solicitudesAceptadas.containsKey(solicitudEmail)) {
             solicitudesAceptadas.remove(solicitudEmail);
-        } else {
-            throw new SolicitudNoValida();
+        }
+        for(Solicitud sol: solicitudesPendientes){
+            if(solicitudEmail == sol.getSolicitante().getEmail()){
+                solicitudesPendientes.remove(sol);
+                break;
+            }
         }
     }
 
