@@ -116,7 +116,7 @@ public class ServicioClub {
             throw new NoHayActividades();
         } else {
             LocalDate fechaActual = LocalDate.now();
-            Solicitud nuevaSolicitud = new Solicitud(nAcompanantes, fechaActual, socio);
+            Solicitud nuevaSolicitud = new Solicitud(nAcompanantes,  socio);
             temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).realizarSolicitud(nuevaSolicitud);
         }
     }

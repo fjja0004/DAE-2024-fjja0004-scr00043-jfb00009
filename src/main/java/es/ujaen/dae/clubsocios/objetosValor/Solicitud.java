@@ -35,13 +35,12 @@ public class Solicitud {
 
     /**
      * @param nAcompanantes numero de acompañantes
-     * @param fecha         fecha en la que se realiza la solicitud
      * @param solicitante   Socio que realiza la solicitud
      * @brief Constructor parametrizado
      */
-    public Solicitud(int nAcompanantes, LocalDate fecha, Socio solicitante) {
+    public Solicitud(int nAcompanantes,  Socio solicitante) {
         this.nAcompanantes = nAcompanantes;
-        this.fecha = fecha;
+        this.fecha = LocalDate.now();
         this.solicitante = solicitante;
         this.insAceptadas = 0;
         this.aceptada = false;

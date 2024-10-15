@@ -26,7 +26,7 @@ class TestActividad {
                 "password123");
 
         // Crea una instancia de una solicitud
-        Solicitud solicitud = new Solicitud(2, LocalDate.now(), socio);
+        Solicitud solicitud = new Solicitud(2, socio);
 
         // Realizar una solicitud con fecha de solicitud anterior a la fecha de inicio de inscripción
         assertThrows(SolicitudNoValida.class, () -> actividad.realizarSolicitud(solicitud));
@@ -44,7 +44,7 @@ class TestActividad {
         actividad.setPlazas(1);
         Socio socio2 = new Socio("Socio2", "Prueba", "socio_prueba2@club.com",
                 "621302025", "password123");
-        Solicitud solicitud2 = new Solicitud(0, LocalDate.now().plusDays(5), socio2);
+        Solicitud solicitud2 = new Solicitud(0,  socio2);
         assertThrows(NoDisponibilidadPlazas.class, () -> actividad.realizarSolicitud(solicitud2));
     }
 }
