@@ -48,9 +48,11 @@ public class ServicioClub {
      * @throws SocioYaRegistrado en caso de que ya esté registrado
      * @brief añade un nuevo socio
      */
-    public void anadirSocio(@Valid Socio socio) {
+    public void anadirSocio(Socio direccion, @Valid Socio socio) {
+        if (!direccion.getEmail().equals(admin))
+            throw new OperacionDeDireccion();
         // Evitar que se cree un usuario con la cuenta de administrador
-        if (socio.getEmail().equals(admin.getEmail()))
+        if (socio.getEmail().equals(direccion.getEmail()))
             throw new SocioYaRegistrado();
 
         if (socios.containsKey(socio.getEmail()))
@@ -64,7 +66,9 @@ public class ServicioClub {
      * @param a Actividad que se crea
      * @brief creación de una actividad
      */
-    void crearActividad(@Valid Actividad a) {
+    void crearActividad(Socio direccion, @Valid Actividad a) {
+        if (!direccion.getEmail().equals(admin))
+            throw new OperacionDeDireccion();
         Temporada temporadaActual = temporadas.getLast();
 
         if (a.getFechaInicioInscripcion().isAfter(a.getFechaFinInscripcion()) || a.getFechaInicioInscripcion().isAfter(a.getFechaCelebracion()) || a.getFechaFinInscripcion().isAfter(a.getFechaCelebracion()))
@@ -80,8 +84,9 @@ public class ServicioClub {
      * @param socio Socio que paga la cuota
      * @brief marca la cuota del socio como pagada, en caso de que ya esté pagado lanza una excepción
      */
-    public void marcarCuotaPagada(@Valid Socio socio) {
-
+    public void marcarCuotaPagada(Socio direccion, @Valid Socio socio) {
+        if (!direccion.getEmail().equals(admin))
+            throw new OperacionDeDireccion();
         if (!socios.get(socio).isCuotaPagada()) {
             socios.get(socio).setCuotaPagada(true);
         } else {
@@ -95,7 +100,9 @@ public class ServicioClub {
      * @param acompanantes número de acompañantes aceptados
      * @brief Marca como aceptada una solicitud a una actividad
      */
-    public void aceptarSolicitud(Socio socio, @Valid Actividad actividad, String solicitante, int acompanantes) {
+    public void aceptarSolicitud(Socio direccion, Socio socio, @Valid Actividad actividad, String solicitante, int acompanantes) {
+        if (!direccion.getEmail().equals(admin))
+            throw new OperacionDeDireccion();
         buscarActividad(actividad.getTitulo()).aceptarSolicitud(solicitante, acompanantes);
     }
 
