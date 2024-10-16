@@ -158,7 +158,6 @@ public class ServicioClub {
      * @brief borra las solicitudes que realiza un socio a una actividad
      */
     void borrarSolicitud(@Valid Actividad actividad, @Valid Socio socio) {
-
         temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).borrarSolicitud(socio.getEmail());
     }
 
