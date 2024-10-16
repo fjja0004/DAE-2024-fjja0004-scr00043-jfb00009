@@ -1,9 +1,6 @@
 package es.ujaen.dae.clubsocios.entidades;
 
-import es.ujaen.dae.clubsocios.excepciones.FechaNoValida;
-import es.ujaen.dae.clubsocios.excepciones.NoDisponibilidadPlazas;
-import es.ujaen.dae.clubsocios.excepciones.SolicitudNoValida;
-import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
+import es.ujaen.dae.clubsocios.excepciones.*;
 import es.ujaen.dae.clubsocios.objetosValor.Solicitud;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -91,10 +88,30 @@ public class Actividad {
     }
 
     /**
-     * @brief Revisa las solicitudes pendientes de la actividad
+     * @brief Devuelve una lista con las solicitudes pendientes
      */
-    public void revisarSolicitudes(){
-        //TODO
+    public List<Solicitud> listaPendientes(){
+        if (fechaFinInscripcion.isBefore(LocalDate.now())) {
+            return solicitudesPendientes;
+        }
+        throw new InscripcionAbierta();
+    }
+
+    /**
+     * @param solicitante socio que realiza la solicitud
+     * @param acompanantes número de acompañantes que se aceptan
+     * @brief Acepta una solicitud e indica el número de acompañantes
+     */
+    public void aceptarSolicitud(String solicitante, int acompanantes) {
+        buscarSolicitud(solicitante).aceptarSolicitud(acompanantes);
+    }
+
+    public Solicitud buscarSolicitud(String solicitante) {
+        for (Solicitud solicitud: solicitudesPendientes) {
+            if (solicitud.getSolicitante().getEmail() == solicitante)
+                return solicitud;
+        }
+        throw new SocioNoRegistrado();
     }
 
     /**
