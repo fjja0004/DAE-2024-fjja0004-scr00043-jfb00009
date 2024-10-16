@@ -1,7 +1,5 @@
 package es.ujaen.dae.clubsocios.entidades;
 
-import es.ujaen.dae.clubsocios.excepciones.FechaNoValida;
-import es.ujaen.dae.clubsocios.excepciones.NoDisponibilidadPlazas;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudNoValida;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
 import es.ujaen.dae.clubsocios.objetosValor.Solicitud;
@@ -49,13 +47,13 @@ public class Actividad {
     }
 
     /**
-     * @param titulo
-     * @param descripcion
-     * @param precio
-     * @param plazas
-     * @param fechaCelebracion
-     * @param fechaInicioInscripcion
-     * @param fechaFinInscripcion
+     * @param titulo String título de la actividad
+     * @param descripcion String con una breve descripción de la actividad
+     * @param precio Número entero de precio que cuesta la actividad
+     * @param plazas Número entero de plazas que tiene una actividad
+     * @param fechaCelebracion Fecha en la que se va a realizar la actividad
+     * @param fechaInicioInscripcion Fecha en la que inicio el periodo de inscripción
+     * @param fechaFinInscripcion Fecha en la que termina el periodo de inscripción
      * @brief Constructor parametrizado de la clase Actividad
      */
     public Actividad(String titulo, String descripcion, int precio, int plazas, LocalDate fechaCelebracion, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion) {
@@ -70,6 +68,11 @@ public class Actividad {
         this.solicitudesAceptadas = new HashMap<>();
     }
 
+
+    /**
+     * @brief realiza una solicitud a la actividad
+     * @param solicitud Solicitud
+     */
     public void realizarSolicitud(@Valid Solicitud solicitud) {
 
         if (!(solicitud.getFecha().isAfter(fechaInicioInscripcion) && solicitud.getFecha().isBefore(fechaFinInscripcion))){
@@ -139,6 +142,10 @@ public class Actividad {
         }
     }
 
+    /**
+     *
+     * @return título de la actividad
+     */
     public String getTitulo() {
         return titulo;
     }
