@@ -36,6 +36,7 @@ class Actividad <<entidad>> {
 - fechaFinInscripción: Date
 + realizarSolicitud(Solicitud:solicitud):void
 + borrarSolicitud(Solicitud:solicitud)):void
++ modificarAcompañantes(String: email,Integer:nAcompañantes):void
 }
 
 class Solicitud <<objeto-valor>> {
@@ -47,8 +48,9 @@ class Solicitud <<objeto-valor>> {
 
 class Temporada <<entidad>> {
 - año: Integer
-    + añadirActividad(actividad: Actividad)): void
-    + buscarActividad(String: titulo)): Actividad
+    + crearActividad(actividad: Actividad)): void
+    + buscarActividadPorTitulo(String: titulo)): Actividad
+    + buscaTodasActividadesAbiertas():Actividad[]
 
 }
 

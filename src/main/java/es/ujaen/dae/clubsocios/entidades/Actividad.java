@@ -1,11 +1,14 @@
 package es.ujaen.dae.clubsocios.entidades;
 
 import es.ujaen.dae.clubsocios.excepciones.*;
+import es.ujaen.dae.clubsocios.excepciones.SolicitudNoValida;
+import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
 import es.ujaen.dae.clubsocios.objetosValor.Solicitud;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -46,13 +49,13 @@ public class Actividad {
     }
 
     /**
-     * @param titulo
-     * @param descripcion
-     * @param precio
-     * @param plazas
-     * @param fechaCelebracion
-     * @param fechaInicioInscripcion
-     * @param fechaFinInscripcion
+     * @param titulo String título de la actividad
+     * @param descripcion String con una breve descripción de la actividad
+     * @param precio Número entero de precio que cuesta la actividad
+     * @param plazas Número entero de plazas que tiene una actividad
+     * @param fechaCelebracion Fecha en la que se va a realizar la actividad
+     * @param fechaInicioInscripcion Fecha en la que inicio el periodo de inscripción
+     * @param fechaFinInscripcion Fecha en la que termina el periodo de inscripción
      * @brief Constructor parametrizado de la clase Actividad
      */
     public Actividad(String titulo, String descripcion, int precio, int plazas, LocalDate fechaCelebracion, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion) {
@@ -67,6 +70,11 @@ public class Actividad {
         this.solicitudesAceptadas = new HashMap<>();
     }
 
+
+    /**
+     * @brief realiza una solicitud a la actividad
+     * @param solicitud Solicitud
+     */
     public void realizarSolicitud(@Valid Solicitud solicitud) {
 
         if (!(solicitud.getFecha().isAfter(fechaInicioInscripcion) && solicitud.getFecha().isBefore(fechaFinInscripcion))){
@@ -116,19 +124,21 @@ public class Actividad {
 
     /**
      * @param solicitudEmail Solicitud para inscripción a una actividad
-     * @throws SolicitudNoValida en caso de que la solicitud no exista o se pase una solicitud invalida
+     * @throws SolicitudNoValida en caso de que la solicitud no exista o se pase una solicitud inválida
      * @brief borrar la solicitud de la actividad
      */
     public void borrarSolicitud(String solicitudEmail) {
         if (solicitudesAceptadas.containsKey(solicitudEmail)) {
             solicitudesAceptadas.remove(solicitudEmail);
-        }
-        for(Solicitud sol: solicitudesPendientes){
-            if(solicitudEmail == sol.getSolicitante().getEmail()){
-                solicitudesPendientes.remove(sol);
-                break;
+        }else{
+            for(Solicitud sol: solicitudesPendientes){
+                if(solicitudEmail == sol.getSolicitante().getEmail()){
+                    solicitudesPendientes.remove(sol);
+                    break;
+                }
             }
         }
+        throw new SolicitudNoValida();
     }
 
     /**
@@ -148,7 +158,7 @@ public class Actividad {
      * @param nAcompanantes número de acompañantes
      * @brief modifica el número de acompañantes que tendrá una solicitud
      */
-    public void modificarAcompanantes(String email, int nAcompanantes) {
+    public void modificarAcompanantes(String email,int nAcompanantes) {
         if (solicitudesAceptadas.containsKey(email)) {
             solicitudesAceptadas.get(email).modificarAcompanantes(nAcompanantes);
         } else {
@@ -156,11 +166,15 @@ public class Actividad {
         }
     }
 
+    /**
+     *
+     * @return título de la actividad
+     */
     public String getTitulo() {
         return titulo;
     }
 
-    public void setPlazas(int plazas) {
+    public void setPlazas(int  plazas) {
         this.plazas = plazas;
     }
 
