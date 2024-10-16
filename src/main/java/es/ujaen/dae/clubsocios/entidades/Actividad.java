@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -102,19 +103,21 @@ public class Actividad {
 
     /**
      * @param solicitudEmail Solicitud para inscripción a una actividad
-     * @throws SolicitudNoValida en caso de que la solicitud no exista o se pase una solicitud invalida
+     * @throws SolicitudNoValida en caso de que la solicitud no exista o se pase una solicitud inválida
      * @brief borrar la solicitud de la actividad
      */
     public void borrarSolicitud(String solicitudEmail) {
         if (solicitudesAceptadas.containsKey(solicitudEmail)) {
             solicitudesAceptadas.remove(solicitudEmail);
-        }
-        for(Solicitud sol: solicitudesPendientes){
-            if(solicitudEmail == sol.getSolicitante().getEmail()){
-                solicitudesPendientes.remove(sol);
-                break;
+        }else{
+            for(Solicitud sol: solicitudesPendientes){
+                if(solicitudEmail == sol.getSolicitante().getEmail()){
+                    solicitudesPendientes.remove(sol);
+                    break;
+                }
             }
         }
+        throw new SolicitudNoValida();
     }
 
     /**
@@ -134,7 +137,7 @@ public class Actividad {
      * @param nAcompanantes número de acompañantes
      * @brief modifica el número de acompañantes que tendrá una solicitud
      */
-    public void modificarAcompanantes(String email, int nAcompanantes) {
+    public void modificarAcompanantes(String email,int nAcompanantes) {
         if (solicitudesAceptadas.containsKey(email)) {
             solicitudesAceptadas.get(email).modificarAcompanantes(nAcompanantes);
         } else {
@@ -150,7 +153,7 @@ public class Actividad {
         return titulo;
     }
 
-    public void setPlazas(int plazas) {
+    public void setPlazas(int  plazas) {
         this.plazas = plazas;
     }
 
