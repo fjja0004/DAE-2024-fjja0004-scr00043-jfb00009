@@ -42,9 +42,17 @@ public class ServicioClub {
 
     }
 
-    public void anadirSocio(@Valid Socio socio) {
+    /**
+     * @param socio Socio
+     * @throws SocioYaRegistrado en caso de que sea el mismo que el administrador
+     * @throws SocioYaRegistrado en caso de que ya esté registrado
+     * @brief añade un nuevo socio
+     */
+    public void anadirSocio(Socio direccion, @Valid Socio socio) {
+        if (!direccion.getEmail().equals(admin))
+            throw new OperacionDeDireccion();
         // Evitar que se cree un usuario con la cuenta de administrador
-        if (socio.getEmail().equals(admin.getEmail()))
+        if (socio.getEmail().equals(direccion.getEmail()))
             throw new SocioYaRegistrado();
 
         if (socios.containsKey(socio.getEmail()))
@@ -54,8 +62,13 @@ public class ServicioClub {
 
     }
 
-    void crearActividad(@Valid Actividad a) {
-
+    /**
+     * @param a Actividad que se crea
+     * @brief creación de una actividad
+     */
+    void crearActividad(Socio direccion, @Valid Actividad a) {
+        if (!direccion.getEmail().equals(admin))
+            throw new OperacionDeDireccion();
         Temporada temporadaActual = temporadas.getLast();
 
         if (a.getFechaInicioInscripcion().isAfter(a.getFechaFinInscripcion()) || a.getFechaInicioInscripcion().isAfter(a.getFechaCelebracion()) || a.getFechaFinInscripcion().isAfter(a.getFechaCelebracion()))
@@ -67,22 +80,30 @@ public class ServicioClub {
         temporadas.getLast().crearActividad(a);
     }
 
-    void revisarSolicitudes() {
-
-
-    }
-
     /**
      * @param socio Socio que paga la cuota
      * @brief marca la cuota del socio como pagada, en caso de que ya esté pagado lanza una excepción
      */
-    void marcarCuotaPagada(@Valid Socio socio) {
-
+    public void marcarCuotaPagada(Socio direccion, @Valid Socio socio) {
+        if (!direccion.getEmail().equals(admin))
+            throw new OperacionDeDireccion();
         if (!socios.get(socio).isCuotaPagada()) {
             socios.get(socio).setCuotaPagada(true);
         } else {
             throw new PagoYaRealizado();
         }
+    }
+
+    /**
+     * @param actividad    actividad a la que se ha solicitado la inscripción
+     * @param solicitante  socio que ha realizado la solicitud
+     * @param acompanantes número de acompañantes aceptados
+     * @brief Marca como aceptada una solicitud a una actividad
+     */
+    public void aceptarSolicitud(Socio direccion, Socio socio, @Valid Actividad actividad, String solicitante, int acompanantes) {
+        if (!direccion.getEmail().equals(admin))
+            throw new OperacionDeDireccion();
+        buscarActividad(actividad.getTitulo()).aceptarSolicitud(solicitante, acompanantes);
     }
 
     /**
@@ -99,6 +120,7 @@ public class ServicioClub {
 
     /**
      * Busca todas las actividades a las que es posible inscribirse
+     *
      * @return lista de actividades abiertas
      */
     List<Actividad> buscarActividadesAbiertas() {
@@ -115,8 +137,7 @@ public class ServicioClub {
         if (temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()) == null) {
             throw new NoHayActividades();
         } else {
-            LocalDate fechaActual = LocalDate.now();
-            Solicitud nuevaSolicitud = new Solicitud(nAcompanantes, fechaActual, socio);
+            Solicitud nuevaSolicitud = new Solicitud(nAcompanantes, socio);
             temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).realizarSolicitud(nuevaSolicitud);
         }
     }

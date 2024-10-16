@@ -2,10 +2,10 @@ package es.ujaen.dae.clubsocios.objetosValor;
 
 
 import es.ujaen.dae.clubsocios.entidades.Socio;
+import es.ujaen.dae.clubsocios.excepciones.DemasiadosAcompanantes;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
-import java.time.Instant;
 import java.time.LocalDate;
 
 
@@ -17,7 +17,7 @@ public class Solicitud {
 
     private LocalDate fecha;
     @PositiveOrZero
-    private int insAceptadas;
+    private int acompanantesAceptados;
     private boolean aceptada;
     @Valid
     private Socio solicitante;
@@ -28,22 +28,21 @@ public class Solicitud {
     public Solicitud(Socio socio) {
         this.nAcompanantes = 0;
         this.fecha = LocalDate.now();
-        this.insAceptadas = 0;
+        this.acompanantesAceptados = 0;
         this.solicitante = socio;
         this.aceptada = false;
     }
 
     /**
      * @param nAcompanantes numero de acompañantes
-     * @param fecha         fecha en la que se realiza la solicitud
      * @param solicitante   Socio que realiza la solicitud
      * @brief Constructor parametrizado
      */
-    public Solicitud(int nAcompanantes, LocalDate fecha, Socio solicitante) {
+    public Solicitud(int nAcompanantes, Socio solicitante) {
         this.nAcompanantes = nAcompanantes;
-        this.fecha = fecha;
+        this.fecha = LocalDate.now();
         this.solicitante = solicitante;
-        this.insAceptadas = 0;
+        this.acompanantesAceptados = 0;
         this.aceptada = false;
     }
 
@@ -67,7 +66,12 @@ public class Solicitud {
         return fecha;
     }
 
-    public void setAceptada(boolean aceptada) {
-        this.aceptada = aceptada;
+    public void aceptarSolicitud(int acompanantesAceptados) {
+        this.aceptada = true;
+        if (acompanantesAceptados <= this.acompanantesAceptados)
+            this.acompanantesAceptados = acompanantesAceptados;
+        else {
+            throw new DemasiadosAcompanantes();
+        }
     }
 }
