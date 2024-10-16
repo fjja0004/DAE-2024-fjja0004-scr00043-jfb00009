@@ -3,8 +3,6 @@ package es.ujaen.dae.clubsocios.servicios;
 import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.excepciones.ActividadYaExistente;
-import es.ujaen.dae.clubsocios.excepciones.IntentoBorrarAdmin;
-import es.ujaen.dae.clubsocios.excepciones.SocioNoRegistrado;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

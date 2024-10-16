@@ -42,6 +42,12 @@ public class ServicioClub {
 
     }
 
+    /**
+     * @brief añade un nuevo socio
+     * @throws SocioYaRegistrado en caso de que sea el mismo que el administrador
+     * @throws SocioYaRegistrado en caso de que ya esté registrado
+     * @param socio Socio
+     */
     public void anadirSocio(@Valid Socio socio) {
         // Evitar que se cree un usuario con la cuenta de administrador
         if (socio.getEmail().equals(admin.getEmail()))
@@ -54,6 +60,10 @@ public class ServicioClub {
 
     }
 
+    /**
+     * @brief creación de una actividad
+     * @param a Actividad que se crea
+     */
     void crearActividad(@Valid Actividad a) {
 
         Temporada temporadaActual = temporadas.getLast();
@@ -115,7 +125,6 @@ public class ServicioClub {
         if (temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()) == null) {
             throw new NoHayActividades();
         } else {
-            LocalDate fechaActual = LocalDate.now();
             Solicitud nuevaSolicitud = new Solicitud(nAcompanantes,  socio);
             temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).realizarSolicitud(nuevaSolicitud);
         }
@@ -137,6 +146,7 @@ public class ServicioClub {
      * @brief borra las solicitudes que realiza un socio a una actividad
      */
     void borrarSolicitud(@Valid Actividad actividad, @Valid Socio socio) {
+
         temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).borrarSolicitud(socio.getEmail());
     }
 
