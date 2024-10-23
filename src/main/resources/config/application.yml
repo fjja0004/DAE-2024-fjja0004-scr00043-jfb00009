@@ -1,0 +1,5 @@
+spring.datasource.url: jdbc:mysql://localhost:3306/clubsocios
+spring.datasource.username: club_usr
+spring.datasource.password: secret
+
+spring.jpa.properties.jakarta.persistence.schema-generation.database.action: none
