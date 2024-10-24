@@ -11,7 +11,7 @@ import java.util.Map;
 @Repository
 public class RepositorioSocios {
 
-    private Map<Integer, Socio> socios = null;
+    private Map<Integer, Socio> socios;
     private int contadorIds = 1;
 
     private int generarId() {
@@ -24,6 +24,7 @@ public class RepositorioSocios {
     public RepositorioSocios() {
         socios = new HashMap<>();
 
+        //Datos de prueba que se eliminanarán más adelante
         Socio socio1 = new Socio("Socio1", "-", "socio1@gmail.com", "123456789", "clave");
         Socio socio2 = new Socio("Socio2", "-", "socio1@gmail.com", "123456789", "clave");
         Socio socio3 = new Socio("Socio3", "-", "socio1@gmail.com", "123456789", "clave");

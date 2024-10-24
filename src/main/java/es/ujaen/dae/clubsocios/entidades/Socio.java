@@ -55,19 +55,6 @@ public class Socio {
         this.cuotaPagada = false;
     }
 
-    /**
-     * @brief Constructor copia de la clase Socio
-     */
-    public Socio(Socio socio) {
-        this.id = socio.id;
-        this.nombre = socio.nombre;
-        this.apellidos = socio.apellidos;
-        this.email = socio.email;
-        this.telefono = socio.telefono;
-        this.clave = socio.clave;
-        this.cuotaPagada = socio.cuotaPagada;
-    }
-
     public int getId() {
         return id;
     }
