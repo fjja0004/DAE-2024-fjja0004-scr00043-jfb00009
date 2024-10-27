@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -22,6 +21,7 @@ public class Actividad {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private int idTemporada;
     @NotBlank
     private String titulo;
     @NotBlank
@@ -31,11 +31,11 @@ public class Actividad {
     @Positive
     private int plazas;
     @NotNull
-    private LocalDate fechaCelebracion;
-    @NotNull
     private LocalDate fechaInicioInscripcion;
     @NotNull
     private LocalDate fechaFinInscripcion;
+    @NotNull
+    private LocalDate fechaCelebracion;
     private List<Solicitud> solicitudesPendientes;
     private HashMap<String, Solicitud> solicitudesAceptadas;
 
@@ -44,13 +44,14 @@ public class Actividad {
      */
     public Actividad() {
         this.id = 0;
+        this.idTemporada = LocalDate.now().getYear();
         this.titulo = "";
         this.descripcion = "";
         this.precio = 0;
         this.plazas = 0;
-        this.fechaCelebracion = LocalDate.now();
         this.fechaInicioInscripcion = LocalDate.now();
         this.fechaFinInscripcion = LocalDate.now();
+        this.fechaCelebracion = LocalDate.now();
         this.solicitudesPendientes = new LinkedList<>();
         this.solicitudesAceptadas = new HashMap<>();
     }
@@ -60,20 +61,21 @@ public class Actividad {
      * @param descripcion            String con una breve descripción de la actividad
      * @param precio                 Número entero de precio que cuesta la actividad
      * @param plazas                 Número entero de plazas que tiene una actividad
-     * @param fechaCelebracion       Fecha en la que se va a realizar la actividad
      * @param fechaInicioInscripcion Fecha en la que inicio el periodo de inscripción
      * @param fechaFinInscripcion    Fecha en la que termina el periodo de inscripción
+     * @param fechaCelebracion       Fecha en la que se va a realizar la actividad
      * @brief Constructor parametrizado de la clase Actividad
      */
-    public Actividad(String titulo, String descripcion, int precio, int plazas, LocalDate fechaCelebracion, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion) {
+    public Actividad(String titulo, String descripcion, int precio, int plazas, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion, LocalDate fechaCelebracion) {
         this.id = 0;
+        this.idTemporada = LocalDate.now().getYear();
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.precio = precio;
         this.plazas = plazas;
-        this.fechaCelebracion = fechaCelebracion;
         this.fechaInicioInscripcion = fechaInicioInscripcion;
         this.fechaFinInscripcion = fechaFinInscripcion;
+        this.fechaCelebracion = fechaCelebracion;
         this.solicitudesPendientes = new LinkedList<>();
         this.solicitudesAceptadas = new HashMap<>();
     }
@@ -154,8 +156,6 @@ public class Actividad {
      * @brief Comprueba si es posible realizar una solicitud
      */
     public boolean isAbierta() {
-        if (solicitudesAceptadas.size() >= plazas)
-            return false;
         if (LocalDate.now().isBefore(fechaInicioInscripcion) || LocalDate.now().isAfter(fechaFinInscripcion))
             return false;
         return true;
@@ -164,8 +164,8 @@ public class Actividad {
     /**
      * @param email         email del socio que realiza la solicitud
      * @param nAcompanantes número de acompañantes
-     * @brief modifica el número de acompañantes que tendrá una solicitud
      * @throws SolicitudNoValida en caso de que la solicitud no sea válida
+     * @brief modifica el número de acompañantes que tendrá una solicitud
      */
     public void modificarAcompanantes(String email, int nAcompanantes) {
         if (solicitudesAceptadas.containsKey(email)) {
@@ -176,8 +176,8 @@ public class Actividad {
     }
 
     /**
-     * @brief Comprueba si las fechas de la actividad son válidas
      * @throws FechaNoValida en caso de que las fechas no sean válidas
+     * @brief Comprueba si las fechas de la actividad son válidas
      */
     public void fechasValidas() {
         if (fechaCelebracion.isBefore(fechaInicioInscripcion) || fechaCelebracion.isBefore(fechaFinInscripcion)
@@ -207,5 +207,13 @@ public class Actividad {
 
     public void setId(int i) {
         this.id = i;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getIdTemporada() {
+        return idTemporada;
     }
 }
