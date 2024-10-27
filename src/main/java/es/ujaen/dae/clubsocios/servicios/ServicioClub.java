@@ -169,7 +169,10 @@ public class ServicioClub {
         Temporada nuevaTemporada= new Temporada(LocalDate.now().getYear());
         if (!temporadas.contains(nuevaTemporada)){
             temporadas.add(new Temporada(LocalDate.now().getYear()));
-            //falta poner socio con cuotas a false
+            //poner todos los socio con la cuota no pagada - false
+            for (Socio socio :socios.values()){
+                socio.setCuotaPagada(false);
+            }
         }else{
             throw new TemporadaYaExistente();
         }
