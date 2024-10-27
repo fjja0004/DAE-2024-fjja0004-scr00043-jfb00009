@@ -2,11 +2,13 @@ package es.ujaen.dae.clubsocios.servicios;
 
 import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.entidades.Socio;
+import es.ujaen.dae.clubsocios.entidades.Temporada;
 import es.ujaen.dae.clubsocios.excepciones.ActividadYaExistente;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import es.ujaen.dae.clubsocios.excepciones.TemporadaYaExistente;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.annotation.DirtiesContext;
@@ -79,5 +81,23 @@ public class TestServicioClub {
                 LocalDate.now().plusDays(7));
         //assertThatThrownBy(() -> servicioClub.crearActividad(actividad)).isInstanceOf(ActividadYaExistente.class);
     }
+
+    @Test
+    @DirtiesContext
+    void testCrearNuevaTemporada() {
+
+        //compruebo que no hay temporada creada ya existente
+        try{
+            servicioClub.crearNuevaTemporada();
+
+        }catch (TemporadaYaExistente e){
+            fail("Se esperaba que no se lanzara TemporadaYaExistente, pero se lanzo");
+        }
+        //assertThrows(TemporadaYaExistente.class,() -> {servicioClub.crearNuevaTemporada();});
+    }
+
+
+
+
 
 }
