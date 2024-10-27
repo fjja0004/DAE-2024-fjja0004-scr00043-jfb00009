@@ -166,6 +166,12 @@ public class ServicioClub {
      */
     @Scheduled(cron = "0 0 0 1 1 ?")
     void crearNuevaTemporada() {
-        temporadas.add(new Temporada(LocalDate.now().getYear()));
+        Temporada nuevaTemporada= new Temporada(LocalDate.now().getYear());
+        if (!temporadas.contains(nuevaTemporada)){
+            temporadas.add(new Temporada(LocalDate.now().getYear()));
+            //falta poner socio con cuotas a false
+        }else{
+            throw new TemporadaYaExistente();
+        }
     }
 }
