@@ -4,6 +4,7 @@ import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.entidades.Temporada;
 import es.ujaen.dae.clubsocios.excepciones.ActividadYaExistente;
+import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -96,6 +97,16 @@ public class TestServicioClub {
         //assertThrows(TemporadaYaExistente.class,() -> {servicioClub.crearNuevaTemporada();});
     }
 
+    @Test
+    @DirtiesContext
+    void testRealizarSolicitud() {
+
+        //compruebo que no hay actividad creada ya existente
+        Actividad act=new Actividad();
+        Socio soc=new Socio();
+        assertThrows(NoHayActividades.class,() -> {servicioClub.realizarSolicitud(0,act,soc);});
+
+    }
 
 
 
