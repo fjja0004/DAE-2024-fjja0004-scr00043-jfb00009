@@ -143,22 +143,32 @@ public class ServicioClub {
     }
 
     /**
+     * @throws NoHayActividades excepcion que se lanza en caso de que la actividad no exista
      * @param socio         Socio que va a realizar la modificación
      * @param actividad     Actividad a la que se va a modificar el número de acompañantes
      * @param nAcompanantes número entero de acompañantes
      * @brief modifica el número de acompañantes que tendrá un socio
      */
     void modificarAcompanantes(Socio socio, Actividad actividad, int nAcompanantes) {
-        temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).modificarAcompanantes(socio.getEmail(), nAcompanantes);
+        if (temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()) == null) {
+            throw new NoHayActividades();
+        } else {
+            temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).modificarAcompanantes(socio.getEmail(), nAcompanantes);
+        }
     }
 
     /**
+     * @throws NoHayActividades excepcion que se lanza si no esta la actividad registrada
      * @param actividad Actividad
      * @param socio     Socio solicitante
      * @brief borra las solicitudes que realiza un socio a una actividad
      */
     void borrarSolicitud(@Valid Actividad actividad, @Valid Socio socio) {
-        temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).borrarSolicitud(socio.getEmail());
+        if (temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()) == null) {
+            throw new NoHayActividades();
+        } else {
+            temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).borrarSolicitud(socio.getEmail());
+        }
     }
 
     /**
