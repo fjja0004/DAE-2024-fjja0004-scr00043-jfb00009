@@ -6,7 +6,9 @@ import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 public class RepositorioSocios {
@@ -23,19 +25,6 @@ public class RepositorioSocios {
      */
     public RepositorioSocios() {
         socios = new HashMap<>();
-
-        //Datos de prueba que se eliminanarán más adelante
-        Socio socio1 = new Socio("Socio1", "-", "socio1@gmail.com", "123456789", "clave");
-        Socio socio2 = new Socio("Socio2", "-", "socio1@gmail.com", "123456789", "clave");
-        Socio socio3 = new Socio("Socio3", "-", "socio1@gmail.com", "123456789", "clave");
-
-        socio1.setId(generarId());
-        socio2.setId(generarId());
-        socio3.setId(generarId());
-
-        socios.put(socio1.getId(), socio1);
-        socios.put(socio2.getId(), socio2);
-        socios.put(socio3.getId(), socio3);
     }
 
     /**
@@ -48,6 +37,14 @@ public class RepositorioSocios {
 
         socio.setId(generarId());
         socios.put(socio.getId(), socio);
+    }
+
+    /**
+     * @brief Devuelve una lista de todos los socios
+     * @return
+     */
+    public List<Socio> buscaTodos() {
+        return socios.values().stream().collect(Collectors.toList());
     }
 
     /**

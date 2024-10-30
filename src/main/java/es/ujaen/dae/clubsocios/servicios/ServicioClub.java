@@ -3,8 +3,11 @@ package es.ujaen.dae.clubsocios.servicios;
 import es.ujaen.dae.clubsocios.entidades.*;
 import es.ujaen.dae.clubsocios.excepciones.*;
 import es.ujaen.dae.clubsocios.objetosValor.Solicitud;
+import es.ujaen.dae.clubsocios.repositorios.RepositorioSocios;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -17,7 +20,8 @@ import java.util.*;
 @Repository
 @Validated
 public class ServicioClub {
-    private final Map<String, Socio> socios;
+    @Autowired
+    RepositorioSocios repositorioSocios;
     private final ArrayList<Temporada> temporadas;
 
     // Socio especial que representa al administrador del club
@@ -33,19 +37,15 @@ public class ServicioClub {
         temporadas.add(new Temporada(LocalDate.now().getYear()));
     }
 
-    @PostConstruct
-    public void crearAdministrador() {
-        Socio direccion = new Socio("direccion", "-", "admin@club.es", "111111111", "ElAdMiN");
-        anadirSocio(direccion);
-    }
+    public Socio login(@Email String email, String clave) {
 
-    public Optional<Socio> login(@Email String email, String clave) {
-
-        if (admin.getEmail().equals(email) && admin.getClave().equals(clave))
+        if (admin.getEmail().equals(email) && admin.comprobarCredenciales(clave)){
             return admin;
+        }
 
-        return repositorioSocios.buscarPorEmail(email);
-
+        Socio socio = repositorioSocios.buscarPorEmail(email);
+        socio.comprobarCredenciales(clave);
+        return socio;
     }
 
     /**

@@ -1,5 +1,6 @@
 package es.ujaen.dae.clubsocios.entidades;
 
+import es.ujaen.dae.clubsocios.excepciones.ContrasenaNoValida;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
@@ -71,6 +72,13 @@ public class Socio {
 
     public void setCuotaPagada(boolean cuotaPagada) {
         this.cuotaPagada = cuotaPagada;
+    }
+
+    public boolean comprobarCredenciales(String clave) {
+        if (this.clave.equals(clave)) {
+            return true;
+        }
+        throw new ContrasenaNoValida();
     }
 
 

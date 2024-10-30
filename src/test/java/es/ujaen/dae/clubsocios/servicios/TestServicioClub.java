@@ -9,7 +9,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -19,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(classes = es.ujaen.dae.clubsocios.app.ClubSocios.class)
 @ActiveProfiles("test")
 public class TestServicioClub {
-
+    @Autowired
     private ServicioClub servicioClub;
 
     @BeforeEach
@@ -41,22 +44,23 @@ public class TestServicioClub {
 
     @Test
     public void testLogin() {
-        // Verifica el login con el administrador
-        assertEquals("admin@club.es", servicioClub.login("admin@club.es", "ElAdMiN").get().getEmail());
+        // Verifica el login con el administrador.
+        assertEquals("admin@club.es", servicioClub.login("admin@club.es", "ElAdMiN").getEmail());
+
+        // Verifica el login con el administrador pero con la contraseña erronea.
+        assertThatThrownBy(() -> servicioClub.login("admin@club.es", "wrongpassword")).isInstanceOf(ContrasenaNoValida.class);
 
         // Verifica el login con un socio válido
         assertEquals("socio_prueba@club.com", servicioClub.login("socio_prueba@club.com", "password123").getEmail());
 
-        // Comprobamos valores nulos.
+        // Comprobamos valores nulos para email.
         assertThatThrownBy(() -> servicioClub.login("", "password123")).isInstanceOf(SocioNoRegistrado.class);
-        assertThatThrownBy(() -> servicioClub.login("socio_prueba@club.com", "")).isInstanceOf(SocioNoRegistrado.class);
-        assertThatThrownBy(() -> servicioClub.login("", "")).isInstanceOf(SocioNoRegistrado.class);
 
-        // Verifica el login con credenciales incorrectas
-        assertEquals(Optional.empty(), servicioClub.login("socio@club.com", "wrongpassword"));
+        // Verifica el login con credenciales incorrectas.
+        assertThatThrownBy(() -> servicioClub.login("socio_prueba@club.com", "wrongpassword")).isInstanceOf(ContrasenaNoValida.class);
 
-        // Verifica el login con un email no registrado
-        assertEquals(Optional.empty(), servicioClub.login("noexiste@club.com", "password123"));
+        // Verifica el login con un email no registrado.
+        assertThatThrownBy(() -> servicioClub.login("noexiste@club.com", "password123")).isInstanceOf(SocioNoRegistrado.class);
     }
 
     @Test

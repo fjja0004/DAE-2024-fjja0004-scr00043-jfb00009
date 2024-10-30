@@ -12,6 +12,13 @@ public class Temporada {
     private List<Actividad> actividades;
 
     /**
+     * @Constructor por defecto de la clase Temporada
+     */
+    public Temporada() {
+        actividades = new LinkedList<>();
+    }
+
+    /**
      * @brief Constructor parametrizado de la clase Temporada
      * @param anio año de la temporada
      */
