@@ -55,6 +55,9 @@ public class ServicioClub {
      */
     //@todo cambiar los throws a subfunciones
     public void anadirSocio(@Valid Socio socio) {
+        if (socio.getEmail().equals(admin.getEmail())) {
+            throw new SocioYaRegistrado();
+        }
         repositorioSocios.crear(socio);
     }
 

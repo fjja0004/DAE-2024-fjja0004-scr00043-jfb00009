@@ -40,14 +40,6 @@ public class RepositorioSocios {
     }
 
     /**
-     * @brief Devuelve una lista de todos los socios
-     * @return
-     */
-    public List<Socio> buscaTodos() {
-        return socios.values().stream().collect(Collectors.toList());
-    }
-
-    /**
      * @param id id del socio
      * @return socio con el id dado
      * @brief Busca un socio por su id
