@@ -18,7 +18,6 @@ public class Solicitud {
     private LocalDate fecha;
     @PositiveOrZero
     private int acompanantesAceptados;
-    private boolean aceptada;
     @Valid
     private Socio solicitante;
 
@@ -30,7 +29,6 @@ public class Solicitud {
         this.fecha = LocalDate.now();
         this.acompanantesAceptados = 0;
         this.solicitante = socio;
-        this.aceptada = false;
     }
 
     /**
@@ -43,7 +41,6 @@ public class Solicitud {
         this.fecha = LocalDate.now();
         this.solicitante = solicitante;
         this.acompanantesAceptados = 0;
-        this.aceptada = false;
     }
 
     /**
@@ -67,7 +64,6 @@ public class Solicitud {
     }
 
     public void aceptarSolicitud(int acompanantesAceptados) {
-        this.aceptada = true;
         if (acompanantesAceptados <= this.acompanantesAceptados)
             this.acompanantesAceptados = acompanantesAceptados;
         else {

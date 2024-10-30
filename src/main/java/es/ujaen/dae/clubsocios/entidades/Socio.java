@@ -17,6 +17,7 @@ public class Socio {
     private String clave;
     private boolean cuotaPagada;
 
+
     /**
      * @brief Constructor por defecto de la clase Socio
      */

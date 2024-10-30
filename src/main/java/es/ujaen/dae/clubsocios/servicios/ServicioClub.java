@@ -23,22 +23,28 @@ public class ServicioClub {
     // Socio especial que representa al administrador del club
     private static final Socio admin = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
 
+
     /**
      * @brief constructor por defecto de la clase ServicioClub
      */
     public ServicioClub() {
-        socios = new HashMap<>();
+        repositorioSocios = new RepositorioSocios();
         temporadas = new ArrayList<>();
         temporadas.add(new Temporada(LocalDate.now().getYear()));
+    }
+
+    @PostConstruct
+    public void crearAdministrador() {
+        Socio direccion = new Socio("direccion", "-", "admin@club.es", "111111111", "ElAdMiN");
+        anadirSocio(direccion);
     }
 
     public Optional<Socio> login(@Email String email, String clave) {
 
         if (admin.getEmail().equals(email) && admin.getClave().equals(clave))
-            return Optional.of(admin);
+            return admin;
 
-        Socio socio = socios.get(email);
-        return (socio != null && socio.getClave().equals(clave)) ? Optional.of(socio) : Optional.empty();
+        return repositorioSocios.buscarPorEmail(email);
 
     }
 
@@ -48,18 +54,9 @@ public class ServicioClub {
      * @throws SocioYaRegistrado en caso de que ya esté registrado
      * @brief añade un nuevo socio
      */
-    public void anadirSocio(Socio direccion, @Valid Socio socio) {
-        if (!direccion.getEmail().equals(admin))
-            throw new OperacionDeDireccion();
-        // Evitar que se cree un usuario con la cuenta de administrador
-        if (socio.getEmail().equals(direccion.getEmail()))
-            throw new SocioYaRegistrado();
-
-        if (socios.containsKey(socio.getEmail()))
-            throw new SocioYaRegistrado();
-
-        socios.put(socio.getEmail(), socio);
-
+    //@todo cambiar los throws a subfunciones
+    public void anadirSocio(@Valid Socio socio) {
+        repositorioSocios.crear(socio);
     }
 
     /**
@@ -87,8 +84,8 @@ public class ServicioClub {
     public void marcarCuotaPagada(Socio direccion, @Valid Socio socio) {
         if (!direccion.getEmail().equals(admin))
             throw new OperacionDeDireccion();
-        if (!socios.get(socio).isCuotaPagada()) {
-            socios.get(socio).setCuotaPagada(true);
+        if (!repositorioSocios.buscarPorId(socio.getId()).isCuotaPagada()) {
+            repositorioSocios.buscarPorId(socio.getId()).setCuotaPagada(true);
         } else {
             throw new PagoYaRealizado();
         }
@@ -100,8 +97,9 @@ public class ServicioClub {
      * @param acompanantes número de acompañantes aceptados
      * @brief Marca como aceptada una solicitud a una actividad
      */
+    //@todo completar est y submetodos si es necesario
     public void aceptarSolicitud(Socio direccion, Socio socio, @Valid Actividad actividad, String solicitante, int acompanantes) {
-        if (!direccion.getEmail().equals(admin))
+        if (!direccion.getEmail().equals(admin.getEmail()))
             throw new OperacionDeDireccion();
         buscarActividad(actividad.getTitulo()).aceptarSolicitud(solicitante, acompanantes);
     }
@@ -179,8 +177,8 @@ public class ServicioClub {
         Temporada nuevaTemporada= new Temporada(LocalDate.now().getYear());
         if (!temporadas.contains(nuevaTemporada)){
             temporadas.add(new Temporada(LocalDate.now().getYear()));
-            //poner todos los socio con la cuota no pagada - false
-            for (Socio socio :socios.values()){
+            //poner todos los socios con la cuota no pagada - false
+            for (Socio socio :repositorioSocios.buscaTodos()){
                 socio.setCuotaPagada(false);
             }
         }else{
