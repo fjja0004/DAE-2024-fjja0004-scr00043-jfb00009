@@ -3,8 +3,11 @@ package es.ujaen.dae.clubsocios.servicios;
 import es.ujaen.dae.clubsocios.entidades.*;
 import es.ujaen.dae.clubsocios.excepciones.*;
 import es.ujaen.dae.clubsocios.objetosValor.Solicitud;
+import es.ujaen.dae.clubsocios.repositorios.RepositorioSocios;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -17,12 +20,12 @@ import java.util.*;
 @Repository
 @Validated
 public class ServicioClub {
-    private final Map<String, Socio> socios;
+    @Autowired
+    RepositorioSocios repositorioSocios;
     private final ArrayList<Temporada> temporadas;
 
     // Socio especial que representa al administrador del club
-    private static final Socio admin = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
-
+    private static final Socio admin = new Socio("administrador", "-", "admin@club.es", "666666666", "ElAdMiN");
 
     /**
      * @brief constructor por defecto de la clase ServicioClub
@@ -35,11 +38,11 @@ public class ServicioClub {
 
     @PostConstruct
     public void crearAdministrador() {
-        Socio direccion = new Socio("direccion", "-", "admin@club.es", "111111111", "ElAdMiN");
-        anadirSocio(direccion);
+        //Socio direccion = new Socio("direccion", "-", "admin@club.es", "111111111", "ElAdMiN");
+        anadirSocio(admin);
     }
 
-    public Optional<Socio> login(@Email String email, String clave) {
+    public Socio login(@Email String email, String clave) {
 
         if (admin.getEmail().equals(email) && admin.getClave().equals(clave))
             return admin;
@@ -84,8 +87,8 @@ public class ServicioClub {
     public void marcarCuotaPagada(Socio direccion, @Valid Socio socio) {
         if (!direccion.getEmail().equals(admin))
             throw new OperacionDeDireccion();
-        if (!repositorioSocios.buscarPorId(socio.getId()).isCuotaPagada()) {
-            repositorioSocios.buscarPorId(socio.getId()).setCuotaPagada(true);
+        if (!repositorioSocios.buscarPorEmail(socio.getEmail()).isCuotaPagada()) {
+            repositorioSocios.buscarPorEmail(socio.getEmail()).setCuotaPagada(true);
         } else {
             throw new PagoYaRealizado();
         }
