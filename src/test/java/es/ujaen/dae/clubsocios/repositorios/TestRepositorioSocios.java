@@ -24,14 +24,12 @@ public class TestRepositorioSocios {
         repositorioSocios.crear(socio);
 
         //Se comprueba que el socio se ha añadido y que las operaciones de búsqueda funcionan correctamente
-        assertThat(repositorioSocios.buscarPorId(socio.getId())).isEqualTo(socio);
         assertThat(repositorioSocios.buscarPorEmail(socio.getEmail())).isEqualTo(socio);
 
         //Se comprueba que no se puede añadir el mismo socio más de una vez
         assertThatThrownBy(() -> repositorioSocios.crear(socio)).isInstanceOf(SocioYaRegistrado.class);
 
         //Se comprueba que no se puede buscar un socio que no está registrado
-        assertThatThrownBy(() -> repositorioSocios.buscarPorId(socioSinRegistrar.getId())).isInstanceOf(SocioNoRegistrado.class);
         assertThatThrownBy(() -> repositorioSocios.buscarPorEmail(socioSinRegistrar.getEmail())).isInstanceOf(SocioNoRegistrado.class);
 
     }

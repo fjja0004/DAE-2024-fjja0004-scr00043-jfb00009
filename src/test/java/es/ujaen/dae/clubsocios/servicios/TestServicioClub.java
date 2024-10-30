@@ -66,15 +66,15 @@ public class TestServicioClub {
     @Test
     void testAniadirSocio() {
         //verificamos que no se pueda añadir un socio igual al admin.
-        Socio admin = servicioClub.login("admin@club.es", "ElAdMiN");
-        assertThrows(SocioYaRegistrado.class, () -> servicioClub.anadirSocio(admin));
+        Socio admin = new Socio("administrador", "-", "admin@club.es", "666666666", "ElAdMiN");
+        assertThatThrownBy(() -> servicioClub.anadirSocio(admin)).isInstanceOf(SocioYaRegistrado.class);
 
         //verificamos que no se pueda añadir un socio igual al otro usuario ya registrado.
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
         assertThrows(SocioYaRegistrado.class, () -> servicioClub.anadirSocio(socio));
 
         //verificamos que se pueda añadir un socio no registrado.
-        Socio socioNoRegistrado = new Socio("Socio", "-", "socio_no_registrado@club.com", "+34 123456789", "password123");
+        Socio socioNoRegistrado = new Socio("Socio", "-", "socio_no_registrado@club.com", "623456789", "password123");
         assertDoesNotThrow(() -> servicioClub.anadirSocio(socioNoRegistrado));
     }
 

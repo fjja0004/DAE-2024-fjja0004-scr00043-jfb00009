@@ -3,6 +3,7 @@ package es.ujaen.dae.clubsocios.entidades;
 import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,13 +13,14 @@ public class Temporada {
     private List<Actividad> actividades;
 
     /**
-     * @Constructor por defecto de la clase Temporada
+     * @brief Constructor por defecto de la clase Temporada
      */
     public Temporada() {
         actividades = new LinkedList<>();
     }
 
     /**
+     * @param anio año de la temporada
      * @brief Constructor parametrizado de la clase Temporada
      * @param anio año de la temporada
      */
@@ -30,8 +32,10 @@ public class Temporada {
     /**
      * @brief Crear una actividad, si es válida
      * @param actividad actividad a crear
+     * @brief Crear una actividad, si es válida
      */
     public void crearActividad(@Valid Actividad actividad) {
+
         actividades.add(actividad);
     }
 

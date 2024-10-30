@@ -25,8 +25,7 @@ public class ServicioClub {
     private final ArrayList<Temporada> temporadas;
 
     // Socio especial que representa al administrador del club
-    private static final Socio admin = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
-
+    private static final Socio admin = new Socio("administrador", "-", "admin@club.es", "666666666", "ElAdMiN");
 
     /**
      * @brief constructor por defecto de la clase ServicioClub
@@ -84,8 +83,8 @@ public class ServicioClub {
     public void marcarCuotaPagada(Socio direccion, @Valid Socio socio) {
         if (!direccion.getEmail().equals(admin))
             throw new OperacionDeDireccion();
-        if (!repositorioSocios.buscarPorId(socio.getId()).isCuotaPagada()) {
-            repositorioSocios.buscarPorId(socio.getId()).setCuotaPagada(true);
+        if (!repositorioSocios.buscarPorEmail(socio.getEmail()).isCuotaPagada()) {
+            repositorioSocios.buscarPorEmail(socio.getEmail()).setCuotaPagada(true);
         } else {
             throw new PagoYaRealizado();
         }
