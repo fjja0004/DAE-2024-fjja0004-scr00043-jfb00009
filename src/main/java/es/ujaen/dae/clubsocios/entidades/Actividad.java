@@ -4,9 +4,6 @@ import es.ujaen.dae.clubsocios.excepciones.*;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudNoValida;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
 import es.ujaen.dae.clubsocios.objetosValor.Solicitud;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,8 +15,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Actividad {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private int idTemporada;
     @NotBlank

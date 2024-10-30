@@ -1,16 +1,9 @@
 package es.ujaen.dae.clubsocios.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
-@Entity
 public class Socio {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @NotBlank
     private String nombre;
@@ -28,7 +21,7 @@ public class Socio {
      * @brief Constructor por defecto de la clase Socio
      */
     public Socio() {
-        id = 0;
+        id = -1;
         nombre = "nombre";
         apellidos = "apellidos";
         email = "email@email.com";
@@ -46,7 +39,7 @@ public class Socio {
      * @brief Contructor parametrizado de la clase Socio
      */
     public Socio(String nombre, String apellidos, String email, String telefono, String clave) {
-        this.id = 0;
+        this.id = -1;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.email = email;
