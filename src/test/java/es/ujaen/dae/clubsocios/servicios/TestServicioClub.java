@@ -28,8 +28,7 @@ public class TestServicioClub {
         // Crea una instancia de ServicioClub antes de cada test
         servicioClub = new ServicioClub();
         //servicioClub.crearAdministrador();
-        Socio socioTest = new Socio("Socio", "Prueba", "socio_prueba@club.com", "621302025", "password123");
-        servicioClub.anadirSocio(socioTest);
+        servicioClub.anadirSocio(new Socio("Socio", "Prueba", "socio_prueba@club.com", "621302025", "password123"));
         Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
                 10, LocalDate.now().plusDays(10), LocalDate.now().plusDays(2),
                 LocalDate.now().plusDays(7));
@@ -103,12 +102,12 @@ public class TestServicioClub {
                 LocalDate.now().plusDays(10));
 
         Socio direccion = servicioClub.login("admin@club.es", "ElAdMiN"),
-                noDireccion = servicioClub.login("socio_prueba@club.com", "password123");
+              noDireccion = servicioClub.login("socio_prueba@club.com", "password123");
 
         //Comprobaciones para actividades no válidas.
         assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividadMalHecha)).isInstanceOf(FechaNoValida.class);
         actividadMalHecha.setFechaInicioInscripcion(LocalDate.now().plusDays(1))
-                .setFechaCelebracion(LocalDate.now()).setFechaFinInscripcion(LocalDate.now().plusDays(10));
+                        .setFechaCelebracion(LocalDate.now()).setFechaFinInscripcion(LocalDate.now().plusDays(10));
         assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividadMalHecha)).isInstanceOf(FechaNoValida.class);
         actividadMalHecha.setFechaCelebracion(LocalDate.now().plusDays(7));
         assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividadMalHecha)).isInstanceOf(FechaNoValida.class);
@@ -130,6 +129,21 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testMarcarCuotaPagada() {
+        Socio direccion = servicioClub.login("admin@club.es", "ElAdMiN");
+        Socio socioTest = servicioClub.login("socio_prueba@club.com", "password123");
+
+        //Compruebo que se hace como administrador.
+        assertThatThrownBy(() -> servicioClub.marcarCuotaPagada(socioTest, direccion)).isInstanceOf(OperacionDeDireccion.class);
+
+        //compruebo que funcione con los datos correctos.
+        assertDoesNotThrow(() -> servicioClub.marcarCuotaPagada(direccion, socioTest));
+
+        //Compruebo que el socio no tuviera ya pagada la cuota.
+        assertThatThrownBy(() -> servicioClub.marcarCuotaPagada(direccion, socioTest)).isInstanceOf(PagoYaRealizado.class);
+
+        //Compruebo que el socio exista en el sistema (en nuestro caso el administrador no está en memoria con el resto de socios).
+        assertThatThrownBy(() -> servicioClub.marcarCuotaPagada(direccion, direccion)).isInstanceOf(SocioNoRegistrado.class);
+
     }
 
     @Test
@@ -158,6 +172,8 @@ public class TestServicioClub {
         });
 
     }
+
+
 
 
 }
