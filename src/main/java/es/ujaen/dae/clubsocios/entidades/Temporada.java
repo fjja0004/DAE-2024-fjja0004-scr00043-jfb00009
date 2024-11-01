@@ -31,14 +31,17 @@ public class Temporada {
     }
 
     /**
-     * @brief Crear una actividad, si es válida
-     * @param actividad actividad a crear
-     * @brief Crear una actividad, si es válida
+     * @brief Crear una actividad, si es válida.
+     * @param actividad actividad a crear.
+     * @exception ActividadYaExistente Lanza una excepción si ya existe la actividad.
      */
     public void crearActividad(@Valid Actividad actividad) {
 
-        if (buscarActividadPorTitulo(actividad.getTitulo()) != null)
-            throw new ActividadYaExistente();
+        try {
+            if (buscarActividadPorTitulo(actividad.getTitulo()) != null){
+                throw new ActividadYaExistente();
+            }
+        } catch (NoHayActividades ignored) {}
 
         actividades.add(actividad);
     }
@@ -47,14 +50,18 @@ public class Temporada {
      * @brief Buscar una actividad por su título
      * @param titulo título de la actividad
      * @return la actividad con el título dado
+     * @exception NoHayActividades lanza una excepción si no existe ninguna actividad.
      */
     public Actividad buscarActividadPorTitulo(String titulo) {
+        if (actividades.isEmpty()){
+            throw new NoHayActividades();
+        }
         for (Actividad actividad : actividades) {
             if (actividad.getTitulo().equals(titulo)) {
                 return actividad;
             }
         }
-        throw new NoHayActividades();
+        return null;
     }
 
     /**

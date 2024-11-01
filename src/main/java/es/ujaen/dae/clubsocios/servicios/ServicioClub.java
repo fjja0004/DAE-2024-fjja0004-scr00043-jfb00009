@@ -79,7 +79,7 @@ public class ServicioClub {
     void crearActividad(Socio direccion, @Valid Actividad a) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
-        if (a.getFechaInicioInscripcion().isAfter(a.getFechaFinInscripcion()) || a.getFechaInicioInscripcion().isAfter(a.getFechaCelebracion()) || a.getFechaFinInscripcion().isAfter(a.getFechaCelebracion()))
+        if (a.getFechaInicioInscripcion().isAfter(a.getFechaFinInscripcion()) || a.getFechaFinInscripcion().isAfter(a.getFechaCelebracion()))
             throw new FechaNoValida();
 
         temporadas.getLast().crearActividad(a);

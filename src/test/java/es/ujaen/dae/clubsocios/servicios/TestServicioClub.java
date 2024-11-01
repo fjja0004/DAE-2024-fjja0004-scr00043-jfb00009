@@ -77,6 +77,7 @@ public class TestServicioClub {
     }
 
     @Test
+    @DirtiesContext
     void testAniadirSocio() {
         //verificamos que no se pueda añadir un socio igual al admin.
         Socio admin = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
@@ -93,13 +94,26 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
-    void testAnadirActividad() {
+    void testCrearActividad() {
+        //actividad bien creada.
         Actividad actividad2 = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                10, LocalDate.now().plusDays(10), LocalDate.now().plusDays(2),
-                LocalDate.now().plusDays(7));
+                10, LocalDate.now().plusDays(2), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        Actividad actividadMalHecha = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now().plusDays(7), LocalDate.now().plusDays(2),
+                LocalDate.now().plusDays(10));
 
         Socio direccion = servicioClub.login("admin@club.es", "ElAdMiN"),
               noDireccion = servicioClub.login("socio_prueba@club.com", "password123");
+
+        //comprobación actividades mal creadas.
+        assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividadMalHecha)).isInstanceOf(FechaNoValida.class);
+        actividadMalHecha.setFechaInicioInscripcion(LocalDate.now().plusDays(1))
+                        .setFechaCelebracion(LocalDate.now()).setFechaFinInscripcion(LocalDate.now().plusDays(10));
+        assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividadMalHecha)).isInstanceOf(FechaNoValida.class);
+        actividadMalHecha.setFechaCelebracion(LocalDate.now().plusDays(7));
+        assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividadMalHecha)).isInstanceOf(FechaNoValida.class);
 
         /*Comprobaciones de que el usuario que quiera añadir una actividad tenga permisos de administrador para una
          actividad a añadir válida.*/
@@ -110,11 +124,16 @@ public class TestServicioClub {
 
         /*Comprobaciones de que el usuario que quiera añadir una actividad tenga permisos de administrador para una
          actividad a añadir no válida.*/
-        assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividad2)).isInstanceOf(OperacionDeDireccion.class);
+        assertThatThrownBy(() -> servicioClub.crearActividad(noDireccion, actividad2)).isInstanceOf(OperacionDeDireccion.class);
 
         //No acepta actividades repetidas.
         assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividad2)).isInstanceOf(ActividadYaExistente.class);
     }
+
+    //@todo completar el test.
+    @Test
+    @DirtiesContext
+    void testMarcarCuotaPagada() {}
 
     @Test
     @DirtiesContext

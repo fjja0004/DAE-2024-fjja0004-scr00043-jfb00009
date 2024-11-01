@@ -200,6 +200,21 @@ public class Actividad {
         return fechaFinInscripcion;
     }
 
+    public Actividad setFechaInicioInscripcion(@NotNull LocalDate fechaInicioInscripcion) {
+        this.fechaInicioInscripcion = fechaInicioInscripcion;
+        return this;
+    }
+
+    public Actividad setFechaFinInscripcion(@NotNull LocalDate fechaFinInscripcion) {
+        this.fechaFinInscripcion = fechaFinInscripcion;
+        return this;
+    }
+
+    public Actividad setFechaCelebracion(@NotNull LocalDate fechaCelebracion) {
+        this.fechaCelebracion = fechaCelebracion;
+        return this;
+    }
+
     public void setId(int i) {
         this.id = i;
     }
