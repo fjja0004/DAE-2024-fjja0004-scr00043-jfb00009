@@ -2,7 +2,6 @@ package es.ujaen.dae.clubsocios.servicios;
 
 import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.entidades.Socio;
-import es.ujaen.dae.clubsocios.entidades.Temporada;
 import es.ujaen.dae.clubsocios.excepciones.*;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -15,7 +14,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -78,7 +76,7 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
-    void testAniadirSocio() {
+    void testAnadirSocio() {
         //verificamos que no se pueda añadir un socio igual al admin.
         Socio admin = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
         assertThatThrownBy(() -> servicioClub.anadirSocio(admin)).isInstanceOf(SocioYaRegistrado.class);
@@ -105,12 +103,12 @@ public class TestServicioClub {
                 LocalDate.now().plusDays(10));
 
         Socio direccion = servicioClub.login("admin@club.es", "ElAdMiN"),
-              noDireccion = servicioClub.login("socio_prueba@club.com", "password123");
+                noDireccion = servicioClub.login("socio_prueba@club.com", "password123");
 
         //comprobación actividades mal creadas.
         assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividadMalHecha)).isInstanceOf(FechaNoValida.class);
         actividadMalHecha.setFechaInicioInscripcion(LocalDate.now().plusDays(1))
-                        .setFechaCelebracion(LocalDate.now()).setFechaFinInscripcion(LocalDate.now().plusDays(10));
+                .setFechaCelebracion(LocalDate.now()).setFechaFinInscripcion(LocalDate.now().plusDays(10));
         assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividadMalHecha)).isInstanceOf(FechaNoValida.class);
         actividadMalHecha.setFechaCelebracion(LocalDate.now().plusDays(7));
         assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividadMalHecha)).isInstanceOf(FechaNoValida.class);
@@ -133,17 +131,18 @@ public class TestServicioClub {
     //@todo completar el test.
     @Test
     @DirtiesContext
-    void testMarcarCuotaPagada() {}
+    void testMarcarCuotaPagada() {
+    }
 
     @Test
     @DirtiesContext
     void testCrearNuevaTemporada() {
 
         //compruebo que no hay temporada creada ya existente
-        try{
+        try {
             servicioClub.crearNuevaTemporada();
 
-        }catch (TemporadaYaExistente e){
+        } catch (TemporadaYaExistente e) {
             fail("Se esperaba que no se lanzara TemporadaYaExistente, pero se lanzo");
         }
         //assertThrows(TemporadaYaExistente.class,() -> {servicioClub.crearNuevaTemporada();});
@@ -154,13 +153,13 @@ public class TestServicioClub {
     void testRealizarSolicitud() {
 
         //compruebo que no hay actividad creada ya existente
-        Actividad act=new Actividad();
-        Socio soc=new Socio();
-        assertThrows(NoHayActividades.class,() -> {servicioClub.realizarSolicitud(0,act,soc);});
+        Actividad act = new Actividad();
+        Socio soc = new Socio();
+        assertThrows(NoHayActividades.class, () -> {
+            servicioClub.realizarSolicitud(0, act, soc);
+        });
 
     }
-
-
 
 
 }

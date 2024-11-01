@@ -56,7 +56,7 @@ public class RepositorioSocios {
      * @brief Busca un socio por su email
      */
     public Socio buscarPorEmail(String email) {
-        if(!socios.containsKey(email))
+        if (!socios.containsKey(email))
             throw new SocioNoRegistrado();
         return socios.get(email);
     }
