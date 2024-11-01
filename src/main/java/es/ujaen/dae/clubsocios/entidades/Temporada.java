@@ -1,8 +1,7 @@
 package es.ujaen.dae.clubsocios.entidades;
 
-import es.ujaen.dae.clubsocios.excepciones.ActividadYaExistente;
 import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
-import jakarta.validation.Valid;
+import es.ujaen.dae.clubsocios.objetosValor.Actividad;
 import jakarta.validation.constraints.Positive;
 
 import java.util.LinkedList;
@@ -30,21 +29,21 @@ public class Temporada {
         actividades = new LinkedList<>();
     }
 
-    /**
-     * @brief Crear una actividad, si es válida.
-     * @param actividad actividad a crear.
-     * @exception ActividadYaExistente Lanza una excepción si ya existe la actividad.
-     */
-    public void crearActividad(@Valid Actividad actividad) {
-
-        try {
-            if (buscarActividadPorTitulo(actividad.getTitulo()) != null){
-                throw new ActividadYaExistente();
-            }
-        } catch (NoHayActividades ignored) {}
-
-        actividades.add(actividad);
-    }
+//    /**
+//     * @brief Crear una actividad, si es válida.
+//     * @param actividad actividad a crear.
+//     * @exception ActividadYaExistente Lanza una excepción si ya existe la actividad.
+//     */
+//    public void crearActividad(@Valid Actividad actividad) {
+//
+//        try {
+//            if (buscarActividadPorTitulo(actividad.getTitulo()) != null){
+//                throw new ActividadYaExistente();
+//            }
+//        } catch (NoHayActividades ignored) {}
+//
+//        actividades.add(actividad);
+//    }
 
     /**
      * @brief Buscar una actividad por su título

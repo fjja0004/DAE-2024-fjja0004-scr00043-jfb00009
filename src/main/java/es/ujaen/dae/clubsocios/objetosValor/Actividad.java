@@ -1,9 +1,8 @@
-package es.ujaen.dae.clubsocios.entidades;
+package es.ujaen.dae.clubsocios.objetosValor;
 
 import es.ujaen.dae.clubsocios.excepciones.*;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudNoValida;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
-import es.ujaen.dae.clubsocios.objetosValor.Solicitud;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

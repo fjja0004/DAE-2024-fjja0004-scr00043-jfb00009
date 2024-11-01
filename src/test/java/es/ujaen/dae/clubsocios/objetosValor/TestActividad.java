@@ -1,9 +1,9 @@
-package es.ujaen.dae.clubsocios.entidades;
+package es.ujaen.dae.clubsocios.objetosValor;
 
+import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.excepciones.NoDisponibilidadPlazas;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudNoValida;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
-import es.ujaen.dae.clubsocios.objetosValor.Solicitud;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.annotation.DirtiesContext;
 

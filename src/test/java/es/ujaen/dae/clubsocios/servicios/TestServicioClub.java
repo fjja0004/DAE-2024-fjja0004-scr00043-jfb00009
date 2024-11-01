@@ -1,6 +1,6 @@
 package es.ujaen.dae.clubsocios.servicios;
 
-import es.ujaen.dae.clubsocios.entidades.Actividad;
+import es.ujaen.dae.clubsocios.objetosValor.Actividad;
 import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.excepciones.*;
 
@@ -93,7 +93,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testCrearActividad() {
-        //actividad bien creada.
+        //Actividad válida.
         Actividad actividad2 = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
                 10, LocalDate.now().plusDays(2), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
@@ -105,7 +105,7 @@ public class TestServicioClub {
         Socio direccion = servicioClub.login("admin@club.es", "ElAdMiN"),
                 noDireccion = servicioClub.login("socio_prueba@club.com", "password123");
 
-        //comprobación actividades mal creadas.
+        //Comprobaciones para actividades no válidas.
         assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividadMalHecha)).isInstanceOf(FechaNoValida.class);
         actividadMalHecha.setFechaInicioInscripcion(LocalDate.now().plusDays(1))
                 .setFechaCelebracion(LocalDate.now()).setFechaFinInscripcion(LocalDate.now().plusDays(10));
@@ -113,15 +113,13 @@ public class TestServicioClub {
         actividadMalHecha.setFechaCelebracion(LocalDate.now().plusDays(7));
         assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividadMalHecha)).isInstanceOf(FechaNoValida.class);
 
-        /*Comprobaciones de que el usuario que quiera añadir una actividad tenga permisos de administrador para una
-         actividad a añadir válida.*/
+        /*Comprobamos que el usuario que quiera añadir una actividad válida tenga permisos de administrador.*/
         assertThatThrownBy(() -> servicioClub.crearActividad(noDireccion, actividad2)).isInstanceOf(OperacionDeDireccion.class);
 
         //Se añade correctamente la actividad.
         assertDoesNotThrow(() -> servicioClub.crearActividad(direccion, actividad2));
 
-        /*Comprobaciones de que el usuario que quiera añadir una actividad tenga permisos de administrador para una
-         actividad a añadir no válida.*/
+        /*Comprobamos que el usuario que quiera añadir una actividad no válida tenga permisos de administrador.*/
         assertThatThrownBy(() -> servicioClub.crearActividad(noDireccion, actividad2)).isInstanceOf(OperacionDeDireccion.class);
 
         //No acepta actividades repetidas.

@@ -2,9 +2,10 @@ package es.ujaen.dae.clubsocios.servicios;
 
 import es.ujaen.dae.clubsocios.entidades.*;
 import es.ujaen.dae.clubsocios.excepciones.*;
+import es.ujaen.dae.clubsocios.objetosValor.Actividad;
 import es.ujaen.dae.clubsocios.objetosValor.Solicitud;
+import es.ujaen.dae.clubsocios.repositorios.RepositorioActividades;
 import es.ujaen.dae.clubsocios.repositorios.RepositorioSocios;
-import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ import java.util.*;
 public class ServicioClub {
     @Autowired
     RepositorioSocios repositorioSocios;
+    @Autowired
+    RepositorioActividades repositorioActividades;
+
     private final ArrayList<Temporada> temporadas;
 
     // Socio especial que representa al administrador del club
@@ -32,6 +36,7 @@ public class ServicioClub {
      */
     public ServicioClub() {
         repositorioSocios = new RepositorioSocios();
+        repositorioActividades = new RepositorioActividades();
         temporadas = new ArrayList<>();
         temporadas.add(new Temporada(LocalDate.now().getYear()));
     }
@@ -79,8 +84,7 @@ public class ServicioClub {
     void crearActividad(Socio direccion, @Valid Actividad a) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
-        a.fechasValidas();
-        temporadas.getLast().crearActividad(a);
+        repositorioActividades.crear(a);
     }
 
     /**

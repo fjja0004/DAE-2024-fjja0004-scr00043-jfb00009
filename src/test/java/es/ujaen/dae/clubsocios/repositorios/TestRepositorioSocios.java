@@ -9,6 +9,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @ActiveProfiles("test")
 public class TestRepositorioSocios {
@@ -21,7 +22,7 @@ public class TestRepositorioSocios {
         var socioSinRegistrar = new Socio("nombre", "apellidos", "email2@gmail.com", "123456789", "clave");
 
         //Se añade un socio al repositorio
-        repositorioSocios.crear(socio);
+        assertDoesNotThrow(() -> repositorioSocios.crear(socio));
 
         //Se comprueba que el socio se ha añadido y que las operaciones de búsqueda funcionan correctamente
         assertThat(repositorioSocios.buscarPorEmail(socio.getEmail())).isEqualTo(socio);
