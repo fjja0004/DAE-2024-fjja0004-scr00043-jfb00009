@@ -29,6 +29,7 @@ class TestActividad {
         Solicitud solicitud = new Solicitud(2, socio);
 
         // Realizar una solicitud con fecha de solicitud anterior a la fecha de inicio de inscripción
+        //TODO
         assertThrows(SolicitudNoValida.class, () -> actividad.realizarSolicitud(solicitud));
 
         // Realizar una solicitud con fecha de solicitud posterior a la fecha de fin de inscripción

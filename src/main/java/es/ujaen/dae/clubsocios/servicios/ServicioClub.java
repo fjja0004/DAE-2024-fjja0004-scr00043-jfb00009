@@ -37,12 +37,12 @@ public class ServicioClub {
     }
 
     /**
-     * @brief Función que comprueba si un usuario es administrador.
      * @param socio socio a comprobar.
      * @return true si es admin, false si no es admin.
+     * @brief Función que comprueba si un usuario es administrador.
      */
-    boolean esAdmin(Socio socio){
-        if (socio.getEmail().equals(admin.getEmail()) && socio.getClave().equals(admin.getClave())){
+    boolean esAdmin(Socio socio) {
+        if (socio.getEmail().equals(admin.getEmail()) && socio.getClave().equals(admin.getClave())) {
             return true;
         }
         return false;
@@ -50,7 +50,7 @@ public class ServicioClub {
 
     public Socio login(@Email String email, String clave) {
 
-        if (admin.getEmail().equals(email) && admin.comprobarCredenciales(clave)){
+        if (admin.getEmail().equals(email) && admin.comprobarCredenciales(clave)) {
             return admin;
         }
 
@@ -79,9 +79,7 @@ public class ServicioClub {
     void crearActividad(Socio direccion, @Valid Actividad a) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
-        if (a.getFechaInicioInscripcion().isAfter(a.getFechaFinInscripcion()) || a.getFechaFinInscripcion().isAfter(a.getFechaCelebracion()))
-            throw new FechaNoValida();
-
+        a.fechasValidas();
         temporadas.getLast().crearActividad(a);
     }
 
@@ -149,10 +147,10 @@ public class ServicioClub {
     }
 
     /**
-     * @throws NoHayActividades excepcion que se lanza en caso de que la actividad no exista
      * @param socio         Socio que va a realizar la modificación
      * @param actividad     Actividad a la que se va a modificar el número de acompañantes
      * @param nAcompanantes número entero de acompañantes
+     * @throws NoHayActividades excepcion que se lanza en caso de que la actividad no exista
      * @brief modifica el número de acompañantes que tendrá un socio
      */
     void modificarAcompanantes(Socio socio, Actividad actividad, int nAcompanantes) {
@@ -164,9 +162,9 @@ public class ServicioClub {
     }
 
     /**
-     * @throws NoHayActividades excepcion que se lanza si no esta la actividad registrada
      * @param actividad Actividad
      * @param socio     Socio solicitante
+     * @throws NoHayActividades excepcion que se lanza si no esta la actividad registrada
      * @brief borra las solicitudes que realiza un socio a una actividad
      */
     void borrarSolicitud(@Valid Actividad actividad, @Valid Socio socio) {
@@ -182,14 +180,14 @@ public class ServicioClub {
      */
     @Scheduled(cron = "0 0 0 1 1 ?")
     void crearNuevaTemporada() {
-        Temporada nuevaTemporada= new Temporada(LocalDate.now().getYear());
-        if (!temporadas.contains(nuevaTemporada)){
+        Temporada nuevaTemporada = new Temporada(LocalDate.now().getYear());
+        if (!temporadas.contains(nuevaTemporada)) {
             temporadas.add(new Temporada(LocalDate.now().getYear()));
             //poner todos los socios con la cuota no pagada - false
-            for (Socio socio :repositorioSocios.buscaTodos()){
+            for (Socio socio : repositorioSocios.buscaTodos()) {
                 socio.setCuotaPagada(false);
             }
-        }else{
+        } else {
             throw new TemporadaYaExistente();
         }
     }
