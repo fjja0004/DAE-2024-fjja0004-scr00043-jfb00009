@@ -64,9 +64,22 @@ public class TestServicioClub {
     }
 
     @Test
+    public void testEsAdmin() {
+        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
+        Socio noDireccion = new Socio("noadministrador", "-", "noadmin@club.es", "000000000", "NoElAdMiN");
+        //combinaciones correctas.
+        assertTrue(servicioClub.esAdmin(direccion));
+
+        //combinaciones incorrectas.
+        assertFalse(servicioClub.esAdmin(noDireccion));
+        assertFalse(servicioClub.esAdmin(noDireccion));
+        assertFalse(servicioClub.esAdmin(noDireccion));
+    }
+
+    @Test
     void testAniadirSocio() {
         //verificamos que no se pueda añadir un socio igual al admin.
-        Socio admin = new Socio("administrador", "-", "admin@club.es", "666666666", "ElAdMiN");
+        Socio admin = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
         assertThatThrownBy(() -> servicioClub.anadirSocio(admin)).isInstanceOf(SocioYaRegistrado.class);
 
         //verificamos que no se pueda añadir un socio igual al otro usuario ya registrado.
@@ -81,10 +94,26 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testAnadirActividad() {
-        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+        Actividad actividad2 = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
                 10, LocalDate.now().plusDays(10), LocalDate.now().plusDays(2),
                 LocalDate.now().plusDays(7));
-        //assertThatThrownBy(() -> servicioClub.crearActividad(actividad)).isInstanceOf(ActividadYaExistente.class);
+
+        Socio direccion = servicioClub.login("admin@club.es", "ElAdMiN"),
+              noDireccion = servicioClub.login("socio_prueba@club.com", "password123");
+
+        /*Comprobaciones de que el usuario que quiera añadir una actividad tenga permisos de administrador para una
+         actividad a añadir válida.*/
+        assertThatThrownBy(() -> servicioClub.crearActividad(noDireccion, actividad2)).isInstanceOf(OperacionDeDireccion.class);
+
+        //Se añade correctamente la actividad.
+        assertDoesNotThrow(() -> servicioClub.crearActividad(direccion, actividad2));
+
+        /*Comprobaciones de que el usuario que quiera añadir una actividad tenga permisos de administrador para una
+         actividad a añadir no válida.*/
+        assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividad2)).isInstanceOf(OperacionDeDireccion.class);
+
+        //No acepta actividades repetidas.
+        assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividad2)).isInstanceOf(ActividadYaExistente.class);
     }
 
     @Test

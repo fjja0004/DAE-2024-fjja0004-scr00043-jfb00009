@@ -36,6 +36,18 @@ public class ServicioClub {
         temporadas.add(new Temporada(LocalDate.now().getYear()));
     }
 
+    /**
+     * @brief Función que comprueba si un usuario es administrador.
+     * @param socio socio a comprobar.
+     * @return true si es admin, false si no es admin.
+     */
+    boolean esAdmin(Socio socio){
+        if (socio.getEmail().equals(admin.getEmail()) && socio.getClave().equals(admin.getClave())){
+            return true;
+        }
+        return false;
+    }
+
     public Socio login(@Email String email, String clave) {
 
         if (admin.getEmail().equals(email) && admin.comprobarCredenciales(clave)){
@@ -53,9 +65,8 @@ public class ServicioClub {
      * @throws SocioYaRegistrado en caso de que ya esté registrado
      * @brief añade un nuevo socio
      */
-    //@todo cambiar los throws a subfunciones
     public void anadirSocio(@Valid Socio socio) {
-        if (socio.getEmail().equals(admin.getEmail())) {
+        if (esAdmin(socio)) {
             throw new SocioYaRegistrado();
         }
         repositorioSocios.crear(socio);
@@ -66,15 +77,10 @@ public class ServicioClub {
      * @brief creación de una actividad
      */
     void crearActividad(Socio direccion, @Valid Actividad a) {
-        if (!direccion.getEmail().equals(admin))
+        if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
-        Temporada temporadaActual = temporadas.getLast();
-
         if (a.getFechaInicioInscripcion().isAfter(a.getFechaFinInscripcion()) || a.getFechaInicioInscripcion().isAfter(a.getFechaCelebracion()) || a.getFechaFinInscripcion().isAfter(a.getFechaCelebracion()))
             throw new FechaNoValida();
-
-        if (temporadaActual.buscarActividadPorTitulo(a.getTitulo()) != null)
-            throw new ActividadYaExistente();
 
         temporadas.getLast().crearActividad(a);
     }
@@ -84,7 +90,7 @@ public class ServicioClub {
      * @brief marca la cuota del socio como pagada, en caso de que ya esté pagado lanza una excepción
      */
     public void marcarCuotaPagada(Socio direccion, @Valid Socio socio) {
-        if (!direccion.getEmail().equals(admin))
+        if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
         if (!repositorioSocios.buscarPorEmail(socio.getEmail()).isCuotaPagada()) {
             repositorioSocios.buscarPorEmail(socio.getEmail()).setCuotaPagada(true);
@@ -101,7 +107,7 @@ public class ServicioClub {
      */
     //@todo completar est y submetodos si es necesario
     public void aceptarSolicitud(Socio direccion, Socio socio, @Valid Actividad actividad, String solicitante, int acompanantes) {
-        if (!direccion.getEmail().equals(admin.getEmail()))
+        if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
         buscarActividad(actividad.getTitulo()).aceptarSolicitud(solicitante, acompanantes);
     }

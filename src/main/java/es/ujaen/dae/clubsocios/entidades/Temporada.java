@@ -1,5 +1,6 @@
 package es.ujaen.dae.clubsocios.entidades;
 
+import es.ujaen.dae.clubsocios.excepciones.ActividadYaExistente;
 import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -35,6 +36,9 @@ public class Temporada {
      * @brief Crear una actividad, si es válida
      */
     public void crearActividad(@Valid Actividad actividad) {
+
+        if (buscarActividadPorTitulo(actividad.getTitulo()) != null)
+            throw new ActividadYaExistente();
 
         actividades.add(actividad);
     }
