@@ -54,6 +54,6 @@ public class RepositorioTemporadas {
      * @brief Busca todas las temporadas
      */
     public List<Temporada> buscaTodos() {
-        return temporadas.values().stream().collect(Collectors.toList())
+        return temporadas.values().stream().collect(Collectors.toList());
     }
 }
