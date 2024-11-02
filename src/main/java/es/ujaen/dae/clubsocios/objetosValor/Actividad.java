@@ -191,14 +191,6 @@ public class Actividad {
         return fechaCelebracion;
     }
 
-    public LocalDate getFechaInicioInscripcion() {
-        return fechaInicioInscripcion;
-    }
-
-    public LocalDate getFechaFinInscripcion() {
-        return fechaFinInscripcion;
-    }
-
     public Actividad setFechaInicioInscripcion(@NotNull LocalDate fechaInicioInscripcion) {
         this.fechaInicioInscripcion = fechaInicioInscripcion;
         return this;

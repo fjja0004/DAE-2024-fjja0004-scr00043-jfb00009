@@ -171,8 +171,29 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
-    void buscarTodasActividadesPorTemporada() {
+    void buscarTodasActividadesTemporadaActual() {
+        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
 
+        //Actividad a la que es posible inscribirse.
+        Actividad actividadAbierta = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now().minusDays(2), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        //Actividad a la que no es posible inscribirse.
+        Actividad actividadCerrada = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now().minusDays(2), LocalDate.now().minusDays(1),
+                LocalDate.now().plusDays(10));
+
+        //Comprobamos que se lance la excepción NoHayActividades si no hay actividades.
+        assertThatThrownBy(() -> servicioClub.buscarTodasActividadesTemporadaActual()).isInstanceOf(NoHayActividades.class);
+
+        //Comprobamos que se devuelvan las actividades de la temporada actual.
+        servicioClub.crearActividad(direccion, actividadAbierta);
+        servicioClub.crearActividad(direccion, actividadCerrada);
+        assertTrue(servicioClub.buscarTodasActividadesTemporadaActual().contains(actividadAbierta));
+        assertTrue(servicioClub.buscarTodasActividadesTemporadaActual().contains(actividadCerrada));
+
+        //TODO: Comprobar que no se devuelven actividades de temporadas anteriores.
     }
 
     @Test

@@ -132,8 +132,16 @@ public class ServicioClub {
      * @return lista de actividades abiertas
      * @brief Busca todas las actividades a las que es posible inscribirse.
      */
-    List<Actividad> buscarActividadesAbiertas() {
+    public List<Actividad> buscarActividadesAbiertas() {
         return repositorioActividades.buscaTodasActividadesAbiertas();
+    }
+
+    /**
+     * @return lista de todas las actividades de la temporada actual
+     * @brief Devuelve una lista con todas las actividades de la temporada actual
+     */
+    public List<Actividad> buscarTodasActividadesTemporadaActual() {
+        return repositorioActividades.buscarTodasTemporadaActual();
     }
 
     /**
