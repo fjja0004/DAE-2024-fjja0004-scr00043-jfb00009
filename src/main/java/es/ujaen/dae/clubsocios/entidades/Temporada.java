@@ -63,22 +63,4 @@ public class Temporada {
         return null;
     }
 
-    /**
-     * @brief Devuelve una lista con todas las actividades a las que es posible inscribirse
-     * @return lista de todas las actividades abiertas
-     * @throws NoHayActividades si no hay actividades abiertas
-     */
-    public List<Actividad> buscaTodasActividadesAbiertas() {
-        List<Actividad> actividadesAbiertas = new LinkedList<>();
-        for (Actividad actividad : actividades) {
-            if (actividad.isAbierta()) {
-                actividadesAbiertas.add(actividad);
-            }
-        }
-        if (actividadesAbiertas.isEmpty()) {
-            throw new NoHayActividades();
-        }
-        return actividadesAbiertas;
-    }
-
 }

@@ -114,6 +114,8 @@ public class ServicioClub {
         buscarActividad(actividad.getTitulo()).aceptarSolicitud(solicitante, acompanantes);
     }
 
+    //TODO: completar buscarTodasActividadesPorTemporada y buscarActividadesAbiertas, borrar buscarActividad
+
     /**
      * @param titulo String título de la actividad
      * @return Actividad encontrada con el título correspondiente en la temporada actual
@@ -127,12 +129,11 @@ public class ServicioClub {
     }
 
     /**
-     * Busca todas las actividades a las que es posible inscribirse
-     *
      * @return lista de actividades abiertas
+     * @brief Busca todas las actividades a las que es posible inscribirse.
      */
     List<Actividad> buscarActividadesAbiertas() {
-        return temporadas.getLast().buscaTodasActividadesAbiertas();
+        return repositorioActividades.buscaTodasActividadesAbiertas();
     }
 
     /**

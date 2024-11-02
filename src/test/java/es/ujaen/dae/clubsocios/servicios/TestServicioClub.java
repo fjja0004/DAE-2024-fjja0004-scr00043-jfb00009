@@ -14,6 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,16 +28,7 @@ public class TestServicioClub {
     public void setUp() {
         // Crea una instancia de ServicioClub antes de cada test
         servicioClub = new ServicioClub();
-        //servicioClub.crearAdministrador();
         servicioClub.anadirSocio(new Socio("Socio", "Prueba", "socio_prueba@club.com", "621302025", "password123"));
-        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                10, LocalDate.now().plusDays(10), LocalDate.now().plusDays(2),
-                LocalDate.now().plusDays(7));
-
-        //servicioClub.crearActividad(actividad);
-
-        // Simular la inyección de dependencias
-        //servicioClub.anadirSocio(socio);  // Asumiendo que puedes modificar directamente por simplicidad
     }
 
     @Test
@@ -102,12 +94,12 @@ public class TestServicioClub {
                 LocalDate.now().plusDays(10));
 
         Socio direccion = servicioClub.login("admin@club.es", "ElAdMiN"),
-              noDireccion = servicioClub.login("socio_prueba@club.com", "password123");
+                noDireccion = servicioClub.login("socio_prueba@club.com", "password123");
 
         //Comprobaciones para actividades no válidas.
         assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividadMalHecha)).isInstanceOf(FechaNoValida.class);
         actividadMalHecha.setFechaInicioInscripcion(LocalDate.now().plusDays(1))
-                        .setFechaCelebracion(LocalDate.now()).setFechaFinInscripcion(LocalDate.now().plusDays(10));
+                .setFechaCelebracion(LocalDate.now()).setFechaFinInscripcion(LocalDate.now().plusDays(10));
         assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividadMalHecha)).isInstanceOf(FechaNoValida.class);
         actividadMalHecha.setFechaCelebracion(LocalDate.now().plusDays(7));
         assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividadMalHecha)).isInstanceOf(FechaNoValida.class);
@@ -148,6 +140,43 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
+    void buscarActividadesAbiertas() {
+        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
+
+        //Actividad a la que es posible inscribirse.
+        Actividad actividadAbierta = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now().minusDays(2), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        //Actividad a la que no es posible inscribirse.
+        Actividad actividadCerrada = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now().minusDays(2), LocalDate.now().minusDays(1),
+                LocalDate.now().plusDays(10));
+
+        //Comprobamos que se lance la excepción NoHayActividades si no hay actividades abiertas.
+
+        //Si no hay ninguna.
+        assertThatThrownBy(() -> servicioClub.buscarActividadesAbiertas()).isInstanceOf(NoHayActividades.class);
+
+        //Si hay alguna, pero todas están cerradas.
+        servicioClub.crearActividad(direccion, actividadCerrada);
+        assertThatThrownBy(() -> servicioClub.buscarActividadesAbiertas()).isInstanceOf(NoHayActividades.class);
+
+        //Si hay tanto abiertas como cerradas, solo se devuelven las abiertas.
+        servicioClub.crearActividad(direccion, actividadAbierta);
+        assertEquals(1, servicioClub.buscarActividadesAbiertas().size());
+        assertTrue(servicioClub.buscarActividadesAbiertas().contains(actividadAbierta));
+
+    }
+
+    @Test
+    @DirtiesContext
+    void buscarTodasActividadesPorTemporada() {
+
+    }
+
+    @Test
+    @DirtiesContext
     void testCrearNuevaTemporada() {
 
         //compruebo que no hay temporada creada ya existente
@@ -172,8 +201,6 @@ public class TestServicioClub {
         });
 
     }
-
-
 
 
 }
