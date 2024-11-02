@@ -63,4 +63,7 @@ public class Temporada {
         return null;
     }
 
+    public int getAnio() {
+        return anio;
+    }
 }
