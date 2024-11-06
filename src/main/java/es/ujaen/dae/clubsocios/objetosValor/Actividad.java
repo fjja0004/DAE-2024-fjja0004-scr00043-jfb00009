@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 public class Actividad {
     private int id;
@@ -69,6 +70,19 @@ public class Actividad {
         this.solicitudes = new LinkedList<>();
     }
 
+    /**
+     * @param email email del solicitante
+     * @return solicitud de inscripción a la actividad
+     * @brief Comprueba si existe una solicitud de inscripción a la actividad
+     */
+    public Optional<Solicitud> buscarSolicitudPorEmail(String email) {
+        for (Solicitud solicitud : solicitudes) {
+            if (solicitud.getSolicitante().getEmail().equals(email)) {
+                return Optional.of(solicitud);
+            }
+        }
+        return Optional.empty();
+    }
 
     /**
      * @param solicitud Solicitud para inscripción a una actividad
@@ -76,7 +90,7 @@ public class Actividad {
      */
     public void realizarSolicitud(@Valid Solicitud solicitud) {
 
-        if (buscarSolicitudPorEmail(solicitud.getSolicitante().getEmail())) {
+        if (buscarSolicitudPorEmail(solicitud.getSolicitante().getEmail()).isPresent()) {
             throw new SolicitudYaRealizada();
         }
 
@@ -88,60 +102,15 @@ public class Actividad {
 
     }
 
-    public boolean buscarSolicitudPorEmail(String email) {
-        for (Solicitud solicitud : solicitudes) {
-            if (solicitud.getSolicitante().getEmail().equals(email)) {
-                return true;
-            }
-        }
-        return false;
+    /**
+     * @param email email del solicitante
+     * @brief Cancela una solicitud de inscripción a una actividad
+     */
+    public void cancelarSolicitud(String email) {
+        buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> solicitudes.remove(solicitud), () -> {
+            throw new SolicitudNoExistente();
+        });
     }
-
-    /**
-     * @brief Devuelve una lista con las solicitudes pendientes
-     */
-//    public List<Solicitud> listaPendientes() {
-//        if (fechaFinInscripcion.isBefore(LocalDate.now())) {
-//            return solicitudesPendientes;
-//        }
-//        throw new InscripcionAbierta();
-//    }
-
-    /**
-     * @param solicitante  socio que realiza la solicitud
-     * @param acompanantes número de acompañantes que se aceptan
-     * @brief Acepta una solicitud e indica el número de acompañantes
-     */
-    public void aceptarSolicitud(String solicitante, int acompanantes) {
-        //buscarSolicitud(solicitante).aceptarSolicitud(acompanantes);
-    }
-
-//    public Solicitud buscarSolicitud(String solicitante) {
-//        for (Solicitud solicitud : solicitudesPendientes) {
-//            if (solicitud.getSolicitante().getEmail() == solicitante)
-//                return solicitud;
-//        }
-//        throw new SocioNoValido();
-//    }
-
-    /**
-     * @param solicitudEmail Solicitud para inscripción a una actividad
-     * @throws SolicitudNoValida en caso de que la solicitud no exista o se pase una solicitud inválida
-     * @brief borrar la solicitud de la actividad
-     */
-//    public void borrarSolicitud(String solicitudEmail) {
-//        if (solicitudesAceptadas.containsKey(solicitudEmail)) {
-//            solicitudesAceptadas.remove(solicitudEmail);
-//        } else {
-//            for (Solicitud sol : solicitudesAceptadas) {
-//                if (solicitudEmail == sol.getSolicitante().getEmail()) {
-//                    solicitudesAceptadas.remove(sol);
-//                    break;
-//                }
-//            }
-//        }
-//        throw new SolicitudNoValida();
-//    }
 
     /**
      * @return true si es posible realizar una solicitud, false en caso contrario
@@ -160,15 +129,9 @@ public class Actividad {
      * @brief modifica el número de acompañantes que tendrá una solicitud
      */
     public void modificarAcompanantes(String email, int nAcompanantes) {
-        if (!buscarSolicitudPorEmail(email)) {
+        buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> solicitud.modificarAcompanantes(nAcompanantes), () -> {
             throw new SolicitudNoValida();
-        }
-        for (Solicitud solicitud : solicitudes) {
-            if (solicitud.getSolicitante().getEmail().equals(email)) {
-                solicitud.modificarAcompanantes(nAcompanantes);
-                return;
-            }
-        }
+        });
     }
 
     /**
@@ -183,10 +146,6 @@ public class Actividad {
 
     public String getTitulo() {
         return titulo;
-    }
-
-    public void setPlazas(int plazas) {
-        this.plazas = plazas;
     }
 
     public LocalDate getFechaCelebracion() {
@@ -223,4 +182,5 @@ public class Actividad {
     public List<Solicitud> getSolicitudes() {
         return solicitudes;
     }
+
 }

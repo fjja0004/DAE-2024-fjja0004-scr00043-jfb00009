@@ -273,6 +273,9 @@ public class TestServicioClub {
         servicioClub.realizarSolicitud(socio, actividadAbierta, 3);
         assertDoesNotThrow(() -> servicioClub.modificarAcompanantes(socio, actividadAbierta, 5));
 
+        //Comprobamos que se haya modificado el número de acompañantes.
+        assertEquals(5, actividadAbierta.buscarSolicitudPorEmail(socio.getEmail()).get().getnAcompanantes());
+
     }
 
     @Test
@@ -281,7 +284,6 @@ public class TestServicioClub {
         Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
         Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
 
-        //Actividad a la que es posible inscribirse.
         Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
                 10, LocalDate.now().minusDays(2), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
@@ -295,6 +297,44 @@ public class TestServicioClub {
         servicioClub.crearActividad(direccion, actividad);
         assertDoesNotThrow(() -> servicioClub.buscarSolicitudesDeActividad(direccion, actividad));
 
+        //Comprobamos que devuelva una lista vacía si no hay solicitudes.
+        assertEquals(0, servicioClub.buscarSolicitudesDeActividad(direccion, actividad).size());
+
+        //Comprobamos que devuelva una lista con las solicitudes realizadas.
+        servicioClub.anadirSocio(socio);
+        servicioClub.realizarSolicitud(socio, actividad, 3);
+        assertEquals(1, servicioClub.buscarSolicitudesDeActividad(direccion, actividad).size());
+
+    }
+
+    @Test
+    @DirtiesContext
+    void cancelarSolicitud() {
+        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
+        Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
+
+        //Actividad a la que es posible inscribirse.
+        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now().minusDays(2), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        //Comprobamos que se lance una excepción si el socio no está registrado.
+        assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(SocioNoValido.class);
+
+        servicioClub.anadirSocio(socio);
+
+        //Comprobamos que se lance una excepción si la actividad no existe.
+        assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(NoHayActividades.class);
+
+        servicioClub.crearActividad(direccion, actividad);
+
+        //Comprobamos que se lance una excepción si la solicitud no existe.
+        assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(SolicitudNoExistente.class);
+        servicioClub.realizarSolicitud(socio, actividad, 3);
+
+        //Comprobamos que se haya cancelado la solicitud.
+        assertDoesNotThrow(() -> servicioClub.cancelarSolicitud(socio, actividad));
+        assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(SolicitudNoExistente.class);
     }
 
     @Test

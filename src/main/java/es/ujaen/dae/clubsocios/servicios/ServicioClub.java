@@ -84,13 +84,13 @@ public class ServicioClub {
     }
 
     /**
-     * @param a Actividad que se crea
+     * @param actividad Actividad que se crea
      * @brief creación de una actividad
      */
-    void crearActividad(Socio direccion, @Valid Actividad a) {
+    void crearActividad(Socio direccion, @Valid Actividad actividad) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
-        repositorioActividades.crear(a);
+        repositorioActividades.crear(actividad);
     }
 
     /**
@@ -161,6 +161,17 @@ public class ServicioClub {
 
         Actividad act = repositorioActividades.buscarPorId(actividad.getId());
         return act.getSolicitudes();
+    }
+
+    /**
+     * @param socio     Socio que ha realizado la solicitud
+     * @param actividad Actividad a la que se ha solicitado la inscripción
+     * @brief Elimina la solicitud de inscripción de un socio a una actividad
+     */
+    public void cancelarSolicitud(Socio socio, Actividad actividad) {
+        Socio socioCancel = login(socio.getEmail(), socio.getClave());
+        Actividad actCancel = repositorioActividades.buscarPorId(actividad.getId());
+        actCancel.cancelarSolicitud(socioCancel.getEmail());
     }
 
     //TODO: COMPLETAR

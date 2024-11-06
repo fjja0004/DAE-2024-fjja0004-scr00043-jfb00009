@@ -51,27 +51,13 @@ public class Solicitud {
         this.nAcompanantes = nAcompanantes;
     }
 
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
-    }
-
     public Socio getSolicitante() {
         return solicitante;
     }
 
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
-    public void setAcompanantesAceptados(@PositiveOrZero int acompanantesAceptados) {
-        this.acompanantesAceptados = acompanantesAceptados;
-    }
-
-    public void aceptarSolicitud(int acompanantesAceptados) {
-        if (acompanantesAceptados <= this.acompanantesAceptados)
-            this.acompanantesAceptados = acompanantesAceptados;
-        else {
-            throw new DemasiadosAcompanantes();
-        }
+    @Min(0)
+    @Max(5)
+    public int getnAcompanantes() {
+        return nAcompanantes;
     }
 }
