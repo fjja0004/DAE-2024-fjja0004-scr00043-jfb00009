@@ -1,6 +1,6 @@
 package es.ujaen.dae.clubsocios.entidades;
 
-import es.ujaen.dae.clubsocios.excepciones.ContrasenaNoValida;
+import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
@@ -78,7 +78,7 @@ public class Socio {
         if (this.clave.equals(clave)) {
             return true;
         }
-        throw new ContrasenaNoValida();
+        throw new SocioNoValido();
     }
 
 
