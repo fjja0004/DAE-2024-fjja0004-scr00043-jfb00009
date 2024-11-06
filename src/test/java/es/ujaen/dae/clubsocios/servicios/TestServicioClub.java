@@ -237,6 +237,46 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
+    void testModificarAcompanantes() {
+        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
+        Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
+
+        //Actividad a la que es posible inscribirse.
+        Actividad actividadAbierta = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now().minusDays(2), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        //Actividad a la que no es posible inscribirse.
+        Actividad actividadCerrada = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now().minusDays(2), LocalDate.now().minusDays(1),
+                LocalDate.now().plusDays(10));
+
+        servicioClub.crearActividad(direccion, actividadCerrada);
+
+        //Comprobamos que se lance una excepción si el socio no está registrado.
+        assertThatThrownBy(() -> servicioClub.modificarAcompanantes(socio, actividadCerrada, 3)).isInstanceOf(SocioNoValido.class);
+
+        servicioClub.anadirSocio(socio);
+
+        //Comprobamos que se lance una excepción si la actividad no existe.
+        assertThatThrownBy(() -> servicioClub.modificarAcompanantes(socio, actividadAbierta, 3)).isInstanceOf(NoHayActividades.class);
+
+        //Comprobamos que se lance una excepción si la actividad no está abierta.
+        assertThatThrownBy(() -> servicioClub.modificarAcompanantes(socio, actividadCerrada, 3)).isInstanceOf(SolicitudNoValida.class);
+
+        servicioClub.crearActividad(direccion, actividadAbierta);
+
+        //Comprobamos que se lance una excepción si la solicitud no existe.
+        assertThatThrownBy(() -> servicioClub.modificarAcompanantes(socio, actividadAbierta, 3)).isInstanceOf(SolicitudNoValida.class);
+
+        //Comprobamos que no se lance una excepción si la modificación es correcta.
+        servicioClub.realizarSolicitud(socio, actividadAbierta, 3);
+        assertDoesNotThrow(() -> servicioClub.modificarAcompanantes(socio, actividadAbierta, 5));
+
+    }
+
+    @Test
+    @DirtiesContext
     void testCrearNuevaTemporada() {
 
         //compruebo que no hay temporada creada ya existente

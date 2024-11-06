@@ -160,10 +160,14 @@ public class Actividad {
      * @brief modifica el número de acompañantes que tendrá una solicitud
      */
     public void modificarAcompanantes(String email, int nAcompanantes) {
-        if (solicitudes.contains(email)) {
-            //solicitudesAceptadas.get(email).modificarAcompanantes(nAcompanantes);
-        } else {
+        if (!buscarSolicitudPorEmail(email)) {
             throw new SolicitudNoValida();
+        }
+        for (Solicitud solicitud : solicitudes) {
+            if (solicitud.getSolicitante().getEmail().equals(email)) {
+                solicitud.modificarAcompanantes(nAcompanantes);
+                return;
+            }
         }
     }
 

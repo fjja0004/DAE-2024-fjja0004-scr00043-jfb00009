@@ -123,8 +123,6 @@ public class ServicioClub {
         return repositorioActividades.buscarTodasTemporadaActual();
     }
 
-    //TODO: COMPLETAR
-
     /**
      * @param solicitante   Socio que va a realizar la solicitud
      * @param actividad     Actividad para la que se realiza la solicitud
@@ -136,7 +134,21 @@ public class ServicioClub {
         Actividad actSolicitada = repositorioActividades.buscarPorId(actividad.getId());
         Solicitud solicitud = new Solicitud(socio, nAcompanantes);
         actSolicitada.realizarSolicitud(solicitud);
+    }
 
+    //TODO: COMPLETAR
+
+    /**
+     * @param socio         Socio que va a realizar la modificación
+     * @param actividad     Actividad a la que se va a modificar el número de acompañantes
+     * @param nAcompanantes número entero de acompañantes
+     * @throws NoHayActividades excepcion que se lanza en caso de que la actividad no exista
+     * @brief modifica el número de acompañantes que tendrá un socio
+     */
+    void modificarAcompanantes(Socio socio, Actividad actividad, int nAcompanantes) {
+        Socio socioMod = login(socio.getEmail(), socio.getClave());
+        Actividad actMod = repositorioActividades.buscarPorId(actividad.getId());
+        actMod.modificarAcompanantes(socioMod.getEmail(), nAcompanantes);
     }
 
     //TODO: COMPLETAR
@@ -150,23 +162,6 @@ public class ServicioClub {
     //@todo completar est y submetodos si es necesario
     public void aceptarSolicitud(Socio direccion, Socio socio, @Valid Actividad actividad, String solicitante, int acompanantes) {
 
-    }
-
-    //TODO: COMPLETAR
-
-    /**
-     * @param socio         Socio que va a realizar la modificación
-     * @param actividad     Actividad a la que se va a modificar el número de acompañantes
-     * @param nAcompanantes número entero de acompañantes
-     * @throws NoHayActividades excepcion que se lanza en caso de que la actividad no exista
-     * @brief modifica el número de acompañantes que tendrá un socio
-     */
-    void modificarAcompanantes(Socio socio, Actividad actividad, int nAcompanantes) {
-        if (temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()) == null) {
-            throw new NoHayActividades();
-        } else {
-            temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).modificarAcompanantes(socio.getEmail(), nAcompanantes);
-        }
     }
 
     //TODO: COMPLETAR
