@@ -36,7 +36,7 @@ public class Solicitud {
      * @param solicitante   Socio que realiza la solicitud
      * @brief Constructor parametrizado
      */
-    public Solicitud(int nAcompanantes, Socio solicitante) {
+    public Solicitud(Socio solicitante, int nAcompanantes) {
         this.nAcompanantes = nAcompanantes;
         this.fecha = LocalDate.now();
         this.solicitante = solicitante;
@@ -61,6 +61,10 @@ public class Solicitud {
 
     public LocalDate getFecha() {
         return fecha;
+    }
+
+    public void setAcompanantesAceptados(@PositiveOrZero int acompanantesAceptados) {
+        this.acompanantesAceptados = acompanantesAceptados;
     }
 
     public void aceptarSolicitud(int acompanantesAceptados) {

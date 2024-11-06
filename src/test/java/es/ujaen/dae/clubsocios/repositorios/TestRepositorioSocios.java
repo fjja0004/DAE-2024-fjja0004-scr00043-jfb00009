@@ -1,7 +1,7 @@
 package es.ujaen.dae.clubsocios.repositorios;
 
 import es.ujaen.dae.clubsocios.entidades.Socio;
-import es.ujaen.dae.clubsocios.excepciones.SocioNoRegistrado;
+import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.annotation.DirtiesContext;
@@ -31,7 +31,7 @@ public class TestRepositorioSocios {
         assertThatThrownBy(() -> repositorioSocios.crear(socio)).isInstanceOf(SocioYaRegistrado.class);
 
         //Se comprueba que no se puede buscar un socio que no está registrado
-        assertThatThrownBy(() -> repositorioSocios.buscarPorEmail(socioSinRegistrar.getEmail())).isInstanceOf(SocioNoRegistrado.class);
+        assertThatThrownBy(() -> repositorioSocios.buscarPorEmail(socioSinRegistrar.getEmail())).isInstanceOf(SocioNoValido.class);
 
     }
 }

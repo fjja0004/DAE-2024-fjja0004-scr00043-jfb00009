@@ -53,6 +53,12 @@ public class ServicioClub {
         return false;
     }
 
+    /**
+     * @param email email del socio
+     * @param clave clave del socio
+     * @return Socio que ha iniciado sesión
+     * @brief Función que permite a un usuario iniciar sesión en el sistema.
+     */
     public Socio login(@Email String email, String clave) {
 
         if (admin.getEmail().equals(email) && admin.comprobarCredenciales(clave)) {
@@ -102,33 +108,6 @@ public class ServicioClub {
     }
 
     /**
-     * @param actividad    actividad a la que se ha solicitado la inscripción
-     * @param solicitante  socio que ha realizado la solicitud
-     * @param acompanantes número de acompañantes aceptados
-     * @brief Marca como aceptada una solicitud a una actividad
-     */
-    //@todo completar est y submetodos si es necesario
-    public void aceptarSolicitud(Socio direccion, Socio socio, @Valid Actividad actividad, String solicitante, int acompanantes) {
-        if (!esAdmin(direccion))
-            throw new OperacionDeDireccion();
-        buscarActividad(actividad.getTitulo()).aceptarSolicitud(solicitante, acompanantes);
-    }
-
-    //TODO: completar buscarTodasActividadesPorTemporada y buscarActividadesAbiertas, borrar buscarActividad
-
-    /**
-     * @param titulo String título de la actividad
-     * @return Actividad encontrada con el título correspondiente en la temporada actual
-     * @throws NoHayActividades en caso de que no exista actividad con ese título correspondiente
-     * @brief busca una actividad por título en el año actual
-     */
-    Actividad buscarActividad(@NotBlank String titulo) {
-        if (temporadas.getLast().buscarActividadPorTitulo(titulo) != null)
-            return temporadas.getLast().buscarActividadPorTitulo(titulo);
-        else throw new NoHayActividades();
-    }
-
-    /**
      * @return lista de actividades abiertas
      * @brief Busca todas las actividades a las que es posible inscribirse.
      */
@@ -144,20 +123,36 @@ public class ServicioClub {
         return repositorioActividades.buscarTodasTemporadaActual();
     }
 
+    //TODO: COMPLETAR
+
     /**
-     * @param nAcompanantes número entero de acompañantes
+     * @param solicitante   Socio que va a realizar la solicitud
      * @param actividad     Actividad para la que se realiza la solicitud
-     * @param socio         Socio que va a realizar la solicitud
+     * @param nAcompanantes número entero de acompañantes
      * @brief realiza la solicitud de una actividad
      */
-    void realizarSolicitud(int nAcompanantes, Actividad actividad, Socio socio) {
-        if (temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()) == null) {
-            throw new NoHayActividades();
-        } else {
-            Solicitud nuevaSolicitud = new Solicitud(nAcompanantes, socio);
-            temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).realizarSolicitud(nuevaSolicitud);
-        }
+    public void realizarSolicitud(Socio solicitante, Actividad actividad, int nAcompanantes) {
+        Socio socio = login(solicitante.getEmail(), solicitante.getClave());
+        Actividad actSolicitada = repositorioActividades.buscarPorId(actividad.getId());
+        Solicitud solicitud = new Solicitud(socio, nAcompanantes);
+        actSolicitada.realizarSolicitud(solicitud);
+
     }
+
+    //TODO: COMPLETAR
+
+    /**
+     * @param actividad    actividad a la que se ha solicitado la inscripción
+     * @param solicitante  socio que ha realizado la solicitud
+     * @param acompanantes número de acompañantes aceptados
+     * @brief Marca como aceptada una solicitud a una actividad
+     */
+    //@todo completar est y submetodos si es necesario
+    public void aceptarSolicitud(Socio direccion, Socio socio, @Valid Actividad actividad, String solicitante, int acompanantes) {
+
+    }
+
+    //TODO: COMPLETAR
 
     /**
      * @param socio         Socio que va a realizar la modificación
@@ -174,19 +169,23 @@ public class ServicioClub {
         }
     }
 
+    //TODO: COMPLETAR
+
     /**
      * @param actividad Actividad
      * @param socio     Socio solicitante
      * @throws NoHayActividades excepcion que se lanza si no esta la actividad registrada
      * @brief borra las solicitudes que realiza un socio a una actividad
      */
-    void borrarSolicitud(@Valid Actividad actividad, @Valid Socio socio) {
-        if (temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()) == null) {
-            throw new NoHayActividades();
-        } else {
-            temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).borrarSolicitud(socio.getEmail());
-        }
-    }
+//    void borrarSolicitud(@Valid Actividad actividad, @Valid Socio socio) {
+//        if (temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()) == null) {
+//            throw new NoHayActividades();
+//        } else {
+//            temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).borrarSolicitud(socio.getEmail());
+//        }
+//    }
+
+    //TODO: COMPLETAR
 
     /**
      * @brief crea una nueva temporada al inicio de cada año

@@ -1,7 +1,7 @@
 package es.ujaen.dae.clubsocios.repositorios;
 
 import es.ujaen.dae.clubsocios.entidades.Socio;
-import es.ujaen.dae.clubsocios.excepciones.SocioNoRegistrado;
+import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 import org.springframework.stereotype.Repository;
 
@@ -46,7 +46,7 @@ public class RepositorioSocios {
      */
 //    public Socio buscarPorId(int id) {
 //        if (!socios.containsKey(id))
-//            throw new SocioNoRegistrado();
+//            throw new SocioNoValido();
 //        return socios.get(id);
 //    }
 
@@ -57,7 +57,7 @@ public class RepositorioSocios {
      */
     public Socio buscarPorEmail(String email) {
         if (!socios.containsKey(email))
-            throw new SocioNoRegistrado();
+            throw new SocioNoValido();
         return socios.get(email);
     }
 

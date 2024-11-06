@@ -2,14 +2,12 @@ package es.ujaen.dae.clubsocios.objetosValor;
 
 import es.ujaen.dae.clubsocios.excepciones.*;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudNoValida;
-import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -30,8 +28,7 @@ public class Actividad {
     private LocalDate fechaFinInscripcion;
     @NotNull
     private LocalDate fechaCelebracion;
-    private List<Solicitud> solicitudesPendientes;
-    private HashMap<String, Solicitud> solicitudesAceptadas;
+    private List<Solicitud> solicitudes;
 
     /**
      * @brief Constructor por defecto de la clase Actividad
@@ -46,8 +43,7 @@ public class Actividad {
         this.fechaInicioInscripcion = LocalDate.now();
         this.fechaFinInscripcion = LocalDate.now();
         this.fechaCelebracion = LocalDate.now();
-        this.solicitudesPendientes = new LinkedList<>();
-        this.solicitudesAceptadas = new HashMap<>();
+        this.solicitudes = new LinkedList<>();
     }
 
     /**
@@ -70,44 +66,46 @@ public class Actividad {
         this.fechaInicioInscripcion = fechaInicioInscripcion;
         this.fechaFinInscripcion = fechaFinInscripcion;
         this.fechaCelebracion = fechaCelebracion;
-        this.solicitudesPendientes = new LinkedList<>();
-        this.solicitudesAceptadas = new HashMap<>();
+        this.solicitudes = new LinkedList<>();
     }
 
 
     /**
-     * @param solicitud Solicitud
+     * @param solicitud Solicitud para inscripción a una actividad
      * @brief realiza una solicitud a la actividad
      */
     public void realizarSolicitud(@Valid Solicitud solicitud) {
 
-        if (!(solicitud.getFecha().isAfter(fechaInicioInscripcion) && solicitud.getFecha().isBefore(fechaFinInscripcion))) {
-            if (solicitudesAceptadas.containsKey(solicitud.getSolicitante().getEmail()) || solicitudesPendientes.contains(solicitud))
-                throw new SolicitudYaRealizada();
+        if (buscarSolicitudPorEmail(solicitud.getSolicitante().getEmail())) {
+            throw new SolicitudYaRealizada();
+        }
 
-            if (solicitudesAceptadas.size() < plazas && solicitud.getSolicitante().isCuotaPagada()) {
-                solicitudesAceptadas.put(solicitud.getSolicitante().getEmail(), solicitud);
-            }
-            if (solicitudesAceptadas.size() >= plazas)
-                solicitudesPendientes.add(solicitud);
-            if (!solicitud.getSolicitante().isCuotaPagada()) {
-                solicitudesPendientes.add(solicitud);
-            }
-
+        if (this.isAbierta()) {
+            solicitudes.add(solicitud);
         } else {
             throw new SolicitudNoValida();
         }
+
+    }
+
+    public boolean buscarSolicitudPorEmail(String email) {
+        for (Solicitud solicitud : solicitudes) {
+            if (solicitud.getSolicitante().getEmail().equals(email)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * @brief Devuelve una lista con las solicitudes pendientes
      */
-    public List<Solicitud> listaPendientes() {
-        if (fechaFinInscripcion.isBefore(LocalDate.now())) {
-            return solicitudesPendientes;
-        }
-        throw new InscripcionAbierta();
-    }
+//    public List<Solicitud> listaPendientes() {
+//        if (fechaFinInscripcion.isBefore(LocalDate.now())) {
+//            return solicitudesPendientes;
+//        }
+//        throw new InscripcionAbierta();
+//    }
 
     /**
      * @param solicitante  socio que realiza la solicitud
@@ -115,35 +113,35 @@ public class Actividad {
      * @brief Acepta una solicitud e indica el número de acompañantes
      */
     public void aceptarSolicitud(String solicitante, int acompanantes) {
-        buscarSolicitud(solicitante).aceptarSolicitud(acompanantes);
+        //buscarSolicitud(solicitante).aceptarSolicitud(acompanantes);
     }
 
-    public Solicitud buscarSolicitud(String solicitante) {
-        for (Solicitud solicitud : solicitudesPendientes) {
-            if (solicitud.getSolicitante().getEmail() == solicitante)
-                return solicitud;
-        }
-        throw new SocioNoRegistrado();
-    }
+//    public Solicitud buscarSolicitud(String solicitante) {
+//        for (Solicitud solicitud : solicitudesPendientes) {
+//            if (solicitud.getSolicitante().getEmail() == solicitante)
+//                return solicitud;
+//        }
+//        throw new SocioNoValido();
+//    }
 
     /**
      * @param solicitudEmail Solicitud para inscripción a una actividad
      * @throws SolicitudNoValida en caso de que la solicitud no exista o se pase una solicitud inválida
      * @brief borrar la solicitud de la actividad
      */
-    public void borrarSolicitud(String solicitudEmail) {
-        if (solicitudesAceptadas.containsKey(solicitudEmail)) {
-            solicitudesAceptadas.remove(solicitudEmail);
-        } else {
-            for (Solicitud sol : solicitudesPendientes) {
-                if (solicitudEmail == sol.getSolicitante().getEmail()) {
-                    solicitudesPendientes.remove(sol);
-                    break;
-                }
-            }
-        }
-        throw new SolicitudNoValida();
-    }
+//    public void borrarSolicitud(String solicitudEmail) {
+//        if (solicitudesAceptadas.containsKey(solicitudEmail)) {
+//            solicitudesAceptadas.remove(solicitudEmail);
+//        } else {
+//            for (Solicitud sol : solicitudesAceptadas) {
+//                if (solicitudEmail == sol.getSolicitante().getEmail()) {
+//                    solicitudesAceptadas.remove(sol);
+//                    break;
+//                }
+//            }
+//        }
+//        throw new SolicitudNoValida();
+//    }
 
     /**
      * @return true si es posible realizar una solicitud, false en caso contrario
@@ -162,8 +160,8 @@ public class Actividad {
      * @brief modifica el número de acompañantes que tendrá una solicitud
      */
     public void modificarAcompanantes(String email, int nAcompanantes) {
-        if (solicitudesAceptadas.containsKey(email)) {
-            solicitudesAceptadas.get(email).modificarAcompanantes(nAcompanantes);
+        if (solicitudes.contains(email)) {
+            //solicitudesAceptadas.get(email).modificarAcompanantes(nAcompanantes);
         } else {
             throw new SolicitudNoValida();
         }

@@ -14,7 +14,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,19 +36,19 @@ public class TestServicioClub {
         assertEquals("admin@club.es", servicioClub.login("admin@club.es", "ElAdMiN").getEmail());
 
         // Verifica el login con el administrador pero con la contraseña erronea.
-        assertThatThrownBy(() -> servicioClub.login("admin@club.es", "wrongpassword")).isInstanceOf(ContrasenaNoValida.class);
+        assertThatThrownBy(() -> servicioClub.login("admin@club.es", "wrongpassword")).isInstanceOf(SocioNoValido.class);
 
         // Verifica el login con un socio válido
         assertEquals("socio_prueba@club.com", servicioClub.login("socio_prueba@club.com", "password123").getEmail());
 
         // Comprobamos valores nulos para email.
-        assertThatThrownBy(() -> servicioClub.login("", "password123")).isInstanceOf(SocioNoRegistrado.class);
+        assertThatThrownBy(() -> servicioClub.login("", "password123")).isInstanceOf(SocioNoValido.class);
 
         // Verifica el login con credenciales incorrectas.
-        assertThatThrownBy(() -> servicioClub.login("socio_prueba@club.com", "wrongpassword")).isInstanceOf(ContrasenaNoValida.class);
+        assertThatThrownBy(() -> servicioClub.login("socio_prueba@club.com", "wrongpassword")).isInstanceOf(SocioNoValido.class);
 
         // Verifica el login con un email no registrado.
-        assertThatThrownBy(() -> servicioClub.login("noexiste@club.com", "password123")).isInstanceOf(SocioNoRegistrado.class);
+        assertThatThrownBy(() -> servicioClub.login("noexiste@club.com", "password123")).isInstanceOf(SocioNoValido.class);
     }
 
     @Test
@@ -134,7 +133,7 @@ public class TestServicioClub {
         assertThatThrownBy(() -> servicioClub.marcarCuotaPagada(direccion, socioTest)).isInstanceOf(PagoYaRealizado.class);
 
         //Compruebo que el socio exista en el sistema (en nuestro caso el administrador no está en memoria con el resto de socios).
-        assertThatThrownBy(() -> servicioClub.marcarCuotaPagada(direccion, direccion)).isInstanceOf(SocioNoRegistrado.class);
+        assertThatThrownBy(() -> servicioClub.marcarCuotaPagada(direccion, direccion)).isInstanceOf(SocioNoValido.class);
 
     }
 
@@ -198,6 +197,46 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
+    void testRealizarSolicitud() {
+
+        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
+        Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
+
+        //Actividad a la que es posible inscribirse.
+        Actividad actividadAbierta = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now().minusDays(2), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        //Actividad a la que no es posible inscribirse.
+        Actividad actividadCerrada = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now().minusDays(2), LocalDate.now().minusDays(1),
+                LocalDate.now().plusDays(10));
+
+        servicioClub.crearActividad(direccion, actividadCerrada);
+
+        //Comprobamos que se lance una excepción si el socio no está registrado.
+        assertThatThrownBy(() -> servicioClub.realizarSolicitud(socio, actividadCerrada, 3)).isInstanceOf(SocioNoValido.class);
+
+        servicioClub.anadirSocio(socio);
+
+        //Comprobamos que se lance una excepción si la actividad no existe.
+        assertThatThrownBy(() -> servicioClub.realizarSolicitud(socio, actividadAbierta, 3)).isInstanceOf(NoHayActividades.class);
+
+        //Comprobamos que se lance una excepción si la actividad no está abierta.
+        assertThatThrownBy(() -> servicioClub.realizarSolicitud(socio, actividadCerrada, 3)).isInstanceOf(SolicitudNoValida.class);
+
+        servicioClub.crearActividad(direccion, actividadAbierta);
+
+        //Comprobamos que no se lance una excepción si la solicitud es correcta.
+        assertDoesNotThrow(() -> servicioClub.realizarSolicitud(socio, actividadAbierta, 3));
+
+        //Comprobamos que se lance una excepción si la solicitud ya se ha realizado.
+        assertThatThrownBy(() -> servicioClub.realizarSolicitud(socio, actividadAbierta, 3)).isInstanceOf(SolicitudYaRealizada.class);
+
+    }
+
+    @Test
+    @DirtiesContext
     void testCrearNuevaTemporada() {
 
         //compruebo que no hay temporada creada ya existente
@@ -208,19 +247,6 @@ public class TestServicioClub {
             fail("Se esperaba que no se lanzara TemporadaYaExistente, pero se lanzo");
         }
         //assertThrows(TemporadaYaExistente.class,() -> {servicioClub.crearNuevaTemporada();});
-    }
-
-    @Test
-    @DirtiesContext
-    void testRealizarSolicitud() {
-
-        //compruebo que no hay actividad creada ya existente
-        Actividad act = new Actividad();
-        Socio soc = new Socio();
-        assertThrows(NoHayActividades.class, () -> {
-            servicioClub.realizarSolicitud(0, act, soc);
-        });
-
     }
 
 
