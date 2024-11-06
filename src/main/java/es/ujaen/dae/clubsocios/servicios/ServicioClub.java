@@ -174,37 +174,8 @@ public class ServicioClub {
         actCancel.cancelarSolicitud(socioCancel.getEmail());
     }
 
-    //TODO: COMPLETAR
-
-    /**
-     * @param actividad    actividad a la que se ha solicitado la inscripción
-     * @param solicitante  socio que ha realizado la solicitud
-     * @param acompanantes número de acompañantes aceptados
-     * @brief Marca como aceptada una solicitud a una actividad
-     */
-    //@todo completar est y submetodos si es necesario
-    public void aceptarSolicitud(Socio direccion, Socio socio, @Valid Actividad actividad, String solicitante, int acompanantes) {
-
-    }
 
     //TODO: COMPLETAR
-
-    /**
-     * @param actividad Actividad
-     * @param socio     Socio solicitante
-     * @throws NoHayActividades excepcion que se lanza si no esta la actividad registrada
-     * @brief borra las solicitudes que realiza un socio a una actividad
-     */
-//    void borrarSolicitud(@Valid Actividad actividad, @Valid Socio socio) {
-//        if (temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()) == null) {
-//            throw new NoHayActividades();
-//        } else {
-//            temporadas.getLast().buscarActividadPorTitulo(actividad.getTitulo()).borrarSolicitud(socio.getEmail());
-//        }
-//    }
-
-    //TODO: COMPLETAR
-
     /**
      * @brief crea una nueva temporada al inicio de cada año
      */
