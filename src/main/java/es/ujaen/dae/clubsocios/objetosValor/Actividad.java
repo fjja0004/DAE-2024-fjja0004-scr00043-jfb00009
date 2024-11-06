@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
@@ -23,6 +24,8 @@ public class Actividad {
     private int precio;
     @Positive
     private int plazas;
+    @PositiveOrZero
+    private int plazasOcupadas;
     @NotNull
     private LocalDate fechaInicioInscripcion;
     @NotNull
@@ -95,6 +98,10 @@ public class Actividad {
         }
 
         if (this.isAbierta()) {
+            if (plazasOcupadas < plazas && solicitud.getSolicitante().isCuotaPagada()) {
+                solicitud.setPlazasAceptadas(1);
+                plazasOcupadas++;
+            }
             solicitudes.add(solicitud);
         } else {
             throw new SolicitudNoValida();
@@ -107,7 +114,12 @@ public class Actividad {
      * @brief Cancela una solicitud de inscripción a una actividad
      */
     public void cancelarSolicitud(String email) {
-        buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> solicitudes.remove(solicitud), () -> {
+        buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> {
+            if (solicitud.getPlazasAceptadas() == 1) {
+                plazasOcupadas--;
+            }
+            solicitudes.remove(solicitud);
+        }, () -> {
             throw new SolicitudNoExistente();
         });
     }

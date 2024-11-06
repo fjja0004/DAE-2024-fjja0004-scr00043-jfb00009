@@ -2,7 +2,6 @@ package es.ujaen.dae.clubsocios.objetosValor;
 
 
 import es.ujaen.dae.clubsocios.entidades.Socio;
-import es.ujaen.dae.clubsocios.excepciones.DemasiadosAcompanantes;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
@@ -17,7 +16,7 @@ public class Solicitud {
 
     private LocalDate fecha;
     @PositiveOrZero
-    private int acompanantesAceptados;
+    private int plazasAceptadas;
     @Valid
     private Socio solicitante;
 
@@ -27,7 +26,7 @@ public class Solicitud {
     public Solicitud(Socio socio) {
         this.nAcompanantes = 0;
         this.fecha = LocalDate.now();
-        this.acompanantesAceptados = 0;
+        this.plazasAceptadas = 0;
         this.solicitante = socio;
     }
 
@@ -40,7 +39,7 @@ public class Solicitud {
         this.nAcompanantes = nAcompanantes;
         this.fecha = LocalDate.now();
         this.solicitante = solicitante;
-        this.acompanantesAceptados = 0;
+        this.plazasAceptadas = 0;
     }
 
     /**
@@ -59,5 +58,14 @@ public class Solicitud {
     @Max(5)
     public int getnAcompanantes() {
         return nAcompanantes;
+    }
+
+    public void setPlazasAceptadas(@PositiveOrZero int plazasAceptadas) {
+        this.plazasAceptadas = plazasAceptadas;
+    }
+
+    @PositiveOrZero
+    public int getPlazasAceptadas() {
+        return plazasAceptadas;
     }
 }
