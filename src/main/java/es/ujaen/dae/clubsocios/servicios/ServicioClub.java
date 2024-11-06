@@ -136,8 +136,6 @@ public class ServicioClub {
         actSolicitada.realizarSolicitud(solicitud);
     }
 
-    //TODO: COMPLETAR
-
     /**
      * @param socio         Socio que va a realizar la modificación
      * @param actividad     Actividad a la que se va a modificar el número de acompañantes
@@ -145,10 +143,24 @@ public class ServicioClub {
      * @throws NoHayActividades excepcion que se lanza en caso de que la actividad no exista
      * @brief modifica el número de acompañantes que tendrá un socio
      */
-    void modificarAcompanantes(Socio socio, Actividad actividad, int nAcompanantes) {
+    public void modificarAcompanantes(Socio socio, Actividad actividad, int nAcompanantes) {
         Socio socioMod = login(socio.getEmail(), socio.getClave());
         Actividad actMod = repositorioActividades.buscarPorId(actividad.getId());
         actMod.modificarAcompanantes(socioMod.getEmail(), nAcompanantes);
+    }
+
+    /**
+     * @param actividad actividad de la que se buscan las solicitudes
+     * @param direccion Socio que realiza la operación
+     * @return lista de solicitudes de la actividad
+     * @brief Devuelve una lista con las solicitudes de una actividad
+     */
+    public List<Solicitud> buscarSolicitudesDeActividad(Socio direccion, Actividad actividad) {
+        if (!esAdmin(direccion))
+            throw new OperacionDeDireccion();
+
+        Actividad act = repositorioActividades.buscarPorId(actividad.getId());
+        return act.getSolicitudes();
     }
 
     //TODO: COMPLETAR

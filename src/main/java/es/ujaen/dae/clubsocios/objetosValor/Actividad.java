@@ -219,4 +219,8 @@ public class Actividad {
     public int getIdTemporada() {
         return idTemporada;
     }
+
+    public List<Solicitud> getSolicitudes() {
+        return solicitudes;
+    }
 }

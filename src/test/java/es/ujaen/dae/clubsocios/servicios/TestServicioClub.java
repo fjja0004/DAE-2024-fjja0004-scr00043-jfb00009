@@ -277,6 +277,28 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
+    void buscarSolicitudesDeActividad() {
+        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
+        Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
+
+        //Actividad a la que es posible inscribirse.
+        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now().minusDays(2), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        //Comprobamos que se lance una excepción si el socio no es el administrador.
+        assertThatThrownBy(() -> servicioClub.buscarSolicitudesDeActividad(socio, actividad)).isInstanceOf(OperacionDeDireccion.class);
+
+        //Comprobamos que se lance una excepción si la actividad no existe.
+        assertThatThrownBy(() -> servicioClub.buscarSolicitudesDeActividad(direccion, actividad)).isInstanceOf(NoHayActividades.class);
+
+        servicioClub.crearActividad(direccion, actividad);
+        assertDoesNotThrow(() -> servicioClub.buscarSolicitudesDeActividad(direccion, actividad));
+
+    }
+
+    @Test
+    @DirtiesContext
     void testCrearNuevaTemporada() {
 
         //compruebo que no hay temporada creada ya existente
