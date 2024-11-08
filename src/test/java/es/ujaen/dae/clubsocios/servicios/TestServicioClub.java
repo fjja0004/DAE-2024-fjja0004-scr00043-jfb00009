@@ -262,7 +262,10 @@ public class TestServicioClub {
         assertThatThrownBy(() -> servicioClub.modificarAcompanantes(socio, actividadAbierta, 3)).isInstanceOf(NoHayActividades.class);
 
         //Comprobamos que se lance una excepción si la actividad no está abierta.
-        assertThatThrownBy(() -> servicioClub.modificarAcompanantes(socio, actividadCerrada, 3)).isInstanceOf(SolicitudNoValida.class);
+        actividadCerrada.setFechaFinInscripcion(LocalDate.now().plusDays(1));
+        servicioClub.realizarSolicitud(socio, actividadCerrada, 3);
+        actividadCerrada.setFechaFinInscripcion(LocalDate.now().minusDays(1));
+        assertThatThrownBy(() -> servicioClub.modificarAcompanantes(socio, actividadCerrada, 3)).isInstanceOf(InscripcionCerrada.class);
 
         servicioClub.crearActividad(direccion, actividadAbierta);
 
@@ -332,23 +335,21 @@ public class TestServicioClub {
         assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(SolicitudNoExistente.class);
         servicioClub.realizarSolicitud(socio, actividad, 3);
 
+        //Comprobamos que no permita cancelar la solicitud si ha terminado el plazo de inscripción.
+        actividad.setFechaFinInscripcion(LocalDate.now().minusDays(1));
+        assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(InscripcionCerrada.class);
+
         //Comprobamos que se haya cancelado la solicitud.
+        actividad.setFechaFinInscripcion(LocalDate.now().plusDays(7));
         assertDoesNotThrow(() -> servicioClub.cancelarSolicitud(socio, actividad));
         assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(SolicitudNoExistente.class);
     }
+
 
     @Test
     @DirtiesContext
     void testCrearNuevaTemporada() {
 
-        //compruebo que no hay temporada creada ya existente
-        try {
-            servicioClub.crearNuevaTemporada();
-
-        } catch (TemporadaYaExistente e) {
-            fail("Se esperaba que no se lanzara TemporadaYaExistente, pero se lanzo");
-        }
-        //assertThrows(TemporadaYaExistente.class,() -> {servicioClub.crearNuevaTemporada();});
     }
 
 

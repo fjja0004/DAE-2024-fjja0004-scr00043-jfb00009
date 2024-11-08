@@ -114,6 +114,9 @@ public class Actividad {
      * @brief Cancela una solicitud de inscripción a una actividad
      */
     public void cancelarSolicitud(String email) {
+        if (!isAbierta())
+            throw new InscripcionCerrada();
+
         buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> {
             if (solicitud.getPlazasAceptadas() == 1) {
                 plazasOcupadas--;
@@ -141,6 +144,8 @@ public class Actividad {
      * @brief modifica el número de acompañantes que tendrá una solicitud
      */
     public void modificarAcompanantes(String email, int nAcompanantes) {
+        if (!isAbierta())
+            throw new InscripcionCerrada();
         buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> solicitud.modificarAcompanantes(nAcompanantes), () -> {
             throw new SolicitudNoValida();
         });
