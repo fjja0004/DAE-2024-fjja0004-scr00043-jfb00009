@@ -174,6 +174,18 @@ public class ServicioClub {
         actCancel.cancelarSolicitud(socioCancel.getEmail());
     }
 
+    /**
+     * @brief acepta 1 acompañante más, se realiza 1 a 1
+     * @param socio Socio del que se quiere añadir acompante
+     * @param actividad Actividad de la que se va a añadir acompañante
+     */
+    public void aceptarAcompanante(Socio socio,Actividad actividad){
+        Optional<Solicitud> solicitudOptional=repositorioActividades.buscarPorId(actividad.getId()).buscarSolicitudPorEmail(socio.getEmail());
+        if (solicitudOptional.isPresent()){
+            solicitudOptional.get().setPlazasAceptadas(solicitudOptional.get().getPlazasAceptadas()+1);
+        }
+
+    }
 
     //TODO: COMPLETAR
     /**
