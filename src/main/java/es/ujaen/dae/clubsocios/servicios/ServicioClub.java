@@ -173,8 +173,6 @@ public class ServicioClub {
         actCancel.cancelarSolicitud(socioCancel.getEmail());
     }
 
-    //TODO: método de aceptar solicitudes (o acompañantes)
-
     /**
      * @param direccion Miembro de la dirección que realiza la operación
      * @param socio     Socio que realiza la solicitud de inscripción
@@ -187,6 +185,22 @@ public class ServicioClub {
         Socio solicitante = login(socio.getEmail(), socio.getClave());
         Actividad actividadSolicitada = repositorioActividades.buscarPorId(actividad.getId());
         actividadSolicitada.aceptarPlaza(solicitante.getEmail());
+    }
+
+    //TODO: método de quitar plazas de solicitudes (o acompañantes)
+
+    /**
+     * @param direccion Miembro de la dirección que realiza la operación
+     * @param socio     Socio que realiza la solicitud de inscripción
+     * @param actividad Actividad a la que se solicita la inscripción
+     * @brief Quita una de las plazas aceptadas a una solicitud
+     */
+    public void quitarPlaza(Socio direccion, Socio socio, Actividad actividad) {
+        if (!esAdmin(direccion))
+            throw new OperacionDeDireccion();
+        Socio solicitante = login(socio.getEmail(), socio.getClave());
+        Actividad actividadSolicitada = repositorioActividades.buscarPorId(actividad.getId());
+        actividadSolicitada.quitarPlaza(solicitante.getEmail());
     }
 
     //TODO: COMPLETAR

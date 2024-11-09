@@ -406,6 +406,50 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
+    void testQuitarPlaza() {
+        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
+        Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
+
+        //Actividad a la que es posible inscribirse.
+        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                2, LocalDate.now().minusDays(2), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        //Comprobamos que se lance una excepción si el socio que realiza la operación no es el administrador.
+        assertThatThrownBy(() -> servicioClub.quitarPlaza(socio, socio, actividad)).isInstanceOf(OperacionDeDireccion.class);
+
+        //Comprobamos que se lance una excepción si el socio no está registrado.
+        assertThatThrownBy(() -> servicioClub.quitarPlaza(direccion, socio, actividad)).isInstanceOf(SocioNoValido.class);
+
+        servicioClub.anadirSocio(socio);
+
+        //Comprobamos que se lance una excepción si la actividad no existe.
+        assertThatThrownBy(() -> servicioClub.quitarPlaza(direccion, socio, actividad)).isInstanceOf(NoHayActividades.class);
+
+        servicioClub.crearActividad(direccion, actividad);
+
+        //Comprobamos que solo se asignen plazas si el periodo de inscripción ha finalizado.
+        assertThatThrownBy(() -> servicioClub.quitarPlaza(direccion, socio, actividad)).isInstanceOf(InscripcionAbierta.class);
+
+        actividad.setFechaFinInscripcion(LocalDate.now().minusDays(1));
+
+        //Comprobamos que se lance una excepción si la solicitud no existe.
+        assertThatThrownBy(() -> servicioClub.quitarPlaza(direccion, socio, actividad)).isInstanceOf(SolicitudNoExistente.class);
+
+        actividad.setFechaFinInscripcion(LocalDate.now().plusDays(7));
+        servicioClub.realizarSolicitud(socio, actividad, 2);
+        actividad.setFechaFinInscripcion(LocalDate.now().minusDays(1));
+
+        //Comprobamos que se haya quitado la plaza.
+        servicioClub.asignarPlaza(direccion, socio, actividad);
+        servicioClub.quitarPlaza(direccion, socio, actividad);
+        int plazasAceptadas = actividad.buscarSolicitudPorEmail(socio.getEmail()).get().getPlazasAceptadas();
+        assertEquals(0, plazasAceptadas);
+        assertEquals(0, actividad.getPlazasOcupadas());
+    }
+
+    @Test
+    @DirtiesContext
     void testCrearNuevaTemporada() {
 
     }

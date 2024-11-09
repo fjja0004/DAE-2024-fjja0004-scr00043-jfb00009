@@ -154,7 +154,7 @@ public class Actividad {
 
     /**
      * @param email email del solicitante
-     * @brief Acepta una plaza de una solicitud de inscripción a una actividad
+     * @brief Acepta una plaza de una solicitud de inscripción a la actividad
      */
     public void aceptarPlaza(String email) {
         if (isAbierta())
@@ -167,6 +167,23 @@ public class Actividad {
                 throw new SolicitudNoExistente();
             });
         }
+    }
+
+    /**
+     * @param email email del solicitante
+     * @brief Retira una plaza de una solicitud de inscripción a la actividad
+     */
+    public void quitarPlaza(String email) {
+        if (isAbierta())
+            throw new InscripcionAbierta();
+
+        buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> {
+            solicitud.quitarPlaza();
+            plazasOcupadas--;
+        }, () -> {
+            throw new SolicitudNoExistente();
+        });
+
     }
 
     /**

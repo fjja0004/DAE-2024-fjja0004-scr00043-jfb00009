@@ -90,4 +90,10 @@ public class Solicitud {
             this.plazasAceptadas++;
         }
     }
+
+    public void quitarPlaza() {
+        if (this.plazasAceptadas > 0) {
+            this.plazasAceptadas--;
+        }
+    }
 }
