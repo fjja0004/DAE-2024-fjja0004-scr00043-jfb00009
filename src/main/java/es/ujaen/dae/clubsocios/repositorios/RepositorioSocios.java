@@ -14,11 +14,6 @@ import java.util.stream.Collectors;
 public class RepositorioSocios {
 
     private Map<String, Socio> socios;
-    //private int contadorIds = 1;
-
-//    private int generarId() {
-//        return contadorIds++;
-//    }
 
     /**
      * @brief Constructor por defecto de la clase RepositorioSocios
@@ -35,20 +30,8 @@ public class RepositorioSocios {
         if (socios.containsKey(socio.getEmail()))
             throw new SocioYaRegistrado();
 
-        //socio.setId(generarId());
         socios.put(socio.getEmail(), socio);
     }
-
-    /**
-     * @param id id del socio
-     * @return socio con el id dado
-     * @brief Busca un socio por su id
-     */
-//    public Socio buscarPorId(int id) {
-//        if (!socios.containsKey(id))
-//            throw new SocioNoValido();
-//        return socios.get(id);
-//    }
 
     /**
      * @param email email del socio
@@ -67,5 +50,12 @@ public class RepositorioSocios {
      */
     public List<Socio> buscaTodos() {
         return socios.values().stream().collect(Collectors.toList());
+    }
+
+    /**
+     * @brief Marca todas las cuotas como no pagadas
+     */
+    public void marcarTodasCuotasNoPagadas() {
+        socios.values().forEach(socio -> socio.setCuotaPagada(false));
     }
 }
