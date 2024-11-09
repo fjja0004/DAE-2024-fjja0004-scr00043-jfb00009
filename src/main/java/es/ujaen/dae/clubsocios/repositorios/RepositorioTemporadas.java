@@ -5,25 +5,21 @@ import es.ujaen.dae.clubsocios.excepciones.TemporadaNoExistente;
 import es.ujaen.dae.clubsocios.excepciones.TemporadaYaExistente;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 @Repository
 public class RepositorioTemporadas {
 
     private Map<Integer, Temporada> temporadas;
 
     public RepositorioTemporadas() {
-        temporadas= new HashMap<>();
+        temporadas = new HashMap<>();
     }
-    /**
-     * @brief constructor parametrizado
-     * @param temporadas
-     */
-    public RepositorioTemporadas(Map<Integer, Temporada> temporadas) {
-        this.temporadas = temporadas;
-    }
+
     /**
      * @param temporada temporada a crear
      * @brief Crea una nueva temporada
@@ -35,8 +31,6 @@ public class RepositorioTemporadas {
         temporadas.put(temporada.getAnio(), temporada);
     }
 
-
-
     /**
      * @param anio año de la temporada
      * @return temporada con el año dado
@@ -47,7 +41,6 @@ public class RepositorioTemporadas {
             throw new TemporadaNoExistente();
         return temporadas.get(anio);
     }
-
 
     /**
      * @return lista de todas las temporadas
