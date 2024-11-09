@@ -17,29 +17,33 @@ public class Solicitud {
     private LocalDate fecha;
     @PositiveOrZero
     private int plazasAceptadas;
-    @Valid
-    private Socio solicitante;
+    @Pattern(regexp = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$", message = "El email no es válido")
+    private String emailSocio;
+    @PositiveOrZero
+    private int idActividad;
 
     /**
      * @brief Constructor por defecto de la clase solicitud
      */
-    public Solicitud(Socio socio) {
+    public Solicitud() {
         this.nAcompanantes = 0;
         this.fecha = LocalDate.now();
         this.plazasAceptadas = 0;
-        this.solicitante = socio;
+        this.emailSocio = "";
+        this.idActividad = 0;
     }
 
     /**
      * @param nAcompanantes numero de acompañantes
-     * @param solicitante   Socio que realiza la solicitud
+     * @param emailSocio   Socio que realiza la solicitud
      * @brief Constructor parametrizado
      */
-    public Solicitud(Socio solicitante, int nAcompanantes) {
+    public Solicitud(String emailSocio, int idActividad, int nAcompanantes) {
         this.nAcompanantes = nAcompanantes;
         this.fecha = LocalDate.now();
-        this.solicitante = solicitante;
+        this.emailSocio = emailSocio;
         this.plazasAceptadas = 0;
+        this.idActividad = idActividad;
     }
 
     /**
@@ -50,8 +54,8 @@ public class Solicitud {
         this.nAcompanantes = nAcompanantes;
     }
 
-    public Socio getSolicitante() {
-        return solicitante;
+    public String getEmailSocio() {
+        return emailSocio;
     }
 
     @Min(0)

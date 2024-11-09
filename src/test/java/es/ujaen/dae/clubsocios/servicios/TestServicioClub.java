@@ -345,6 +345,22 @@ public class TestServicioClub {
         assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(SolicitudNoExistente.class);
     }
 
+    @Test
+    @DirtiesContext
+    void testAceptarAcompanante() {
+        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
+        Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
+
+        //Actividad a la que es posible inscribirse.
+        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now().minusDays(2), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        //Comprobamos que se lance una excepción si el socio que realiza la operación no es el administrador.
+        assertThatThrownBy(() -> servicioClub.aceptarAcompanante(socio, socio, actividad)).isInstanceOf(OperacionDeDireccion.class);
+
+
+    }
 
     @Test
     @DirtiesContext

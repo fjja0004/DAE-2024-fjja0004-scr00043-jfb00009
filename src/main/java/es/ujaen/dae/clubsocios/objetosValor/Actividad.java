@@ -1,12 +1,17 @@
 package es.ujaen.dae.clubsocios.objetosValor;
 
+import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.excepciones.*;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudNoValida;
+import es.ujaen.dae.clubsocios.repositorios.RepositorioSocios;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.LinkedList;
@@ -80,7 +85,7 @@ public class Actividad {
      */
     public Optional<Solicitud> buscarSolicitudPorEmail(String email) {
         for (Solicitud solicitud : solicitudes) {
-            if (solicitud.getSolicitante().getEmail().equals(email)) {
+            if (solicitud.getEmailSocio().equals(email)) {
                 return Optional.of(solicitud);
             }
         }
@@ -88,17 +93,19 @@ public class Actividad {
     }
 
     /**
-     * @param solicitud Solicitud para inscripción a una actividad
-     * @brief realiza una solicitud a la actividad
+     * @param socio         socio que realiza la solicitud
+     * @param nAcompanantes número de acompañantes
+     * @brief Realiza una solicitud de inscripción a una actividad
      */
-    public void realizarSolicitud(@Valid Solicitud solicitud) {
+    public void realizarSolicitud(@Valid Socio socio, int nAcompanantes) {
 
-        if (buscarSolicitudPorEmail(solicitud.getSolicitante().getEmail()).isPresent()) {
+        if (buscarSolicitudPorEmail(socio.getEmail()).isPresent()) {
             throw new SolicitudYaRealizada();
         }
 
         if (this.isAbierta()) {
-            if (plazasOcupadas < plazas && solicitud.getSolicitante().isCuotaPagada()) {
+            Solicitud solicitud = new Solicitud(socio.getEmail(), this.id, nAcompanantes);
+            if (plazasOcupadas < plazas && socio.isCuotaPagada()) {
                 solicitud.setPlazasAceptadas(1);
                 plazasOcupadas++;
             }

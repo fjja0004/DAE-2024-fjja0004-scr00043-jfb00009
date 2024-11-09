@@ -6,6 +6,7 @@ import es.ujaen.dae.clubsocios.objetosValor.Actividad;
 import es.ujaen.dae.clubsocios.objetosValor.Solicitud;
 import es.ujaen.dae.clubsocios.repositorios.RepositorioActividades;
 import es.ujaen.dae.clubsocios.repositorios.RepositorioSocios;
+import es.ujaen.dae.clubsocios.repositorios.RepositorioTemporadas;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,8 @@ public class ServicioClub {
     RepositorioSocios repositorioSocios;
     @Autowired
     RepositorioActividades repositorioActividades;
-
-    private final ArrayList<Temporada> temporadas;
+    @Autowired
+    RepositorioTemporadas repositorioTemporadas;
 
     // Socio especial que representa al administrador del club
     private static final Socio admin = new Socio("administrador", "-", "admin@club.es", "666666666", "ElAdMiN");
@@ -37,8 +38,7 @@ public class ServicioClub {
     public ServicioClub() {
         repositorioSocios = new RepositorioSocios();
         repositorioActividades = new RepositorioActividades();
-        temporadas = new ArrayList<>();
-        temporadas.add(new Temporada(LocalDate.now().getYear()));
+        repositorioTemporadas = new RepositorioTemporadas();
     }
 
     /**
@@ -71,7 +71,7 @@ public class ServicioClub {
     }
 
     /**
-     * @param socio Socio
+     * @param socio Socio que se va a registrar
      * @throws SocioYaRegistrado en caso de que sea el mismo que el administrador
      * @throws SocioYaRegistrado en caso de que ya esté registrado
      * @brief añade un nuevo socio
@@ -94,6 +94,7 @@ public class ServicioClub {
     }
 
     /**
+     * @param direccion Miembro de la dirección que realiza la operación
      * @param socio Socio que paga la cuota
      * @brief marca la cuota del socio como pagada, en caso de que ya esté pagado lanza una excepción
      */
@@ -132,8 +133,7 @@ public class ServicioClub {
     public void realizarSolicitud(Socio solicitante, Actividad actividad, int nAcompanantes) {
         Socio socio = login(solicitante.getEmail(), solicitante.getClave());
         Actividad actSolicitada = repositorioActividades.buscarPorId(actividad.getId());
-        Solicitud solicitud = new Solicitud(socio, nAcompanantes);
-        actSolicitada.realizarSolicitud(solicitud);
+        actSolicitada.realizarSolicitud(socio, nAcompanantes);
     }
 
     /**
@@ -174,34 +174,27 @@ public class ServicioClub {
         actCancel.cancelarSolicitud(socioCancel.getEmail());
     }
 
+    //TODO: método de aceptar solicitudes (o acompañantes)
+
     /**
-     * @brief acepta 1 acompañante más, se realiza 1 a 1
-     * @param socio Socio del que se quiere añadir acompante
-     * @param actividad Actividad de la que se va a añadir acompañante
+     * @brief
+     * @param direccion Miembro de la dirección que realiza la operación
+     * @param socio Socio que realiza la solicitud de inscripción
+     * @param actividad Actividad a la que se solicita la inscripción
      */
-    public void aceptarAcompanante(Socio socio,Actividad actividad){
-        Optional<Solicitud> solicitudOptional=repositorioActividades.buscarPorId(actividad.getId()).buscarSolicitudPorEmail(socio.getEmail());
-        if (solicitudOptional.isPresent()){
-            solicitudOptional.get().setPlazasAceptadas(solicitudOptional.get().getPlazasAceptadas()+1);
-        }
+    public void aceptarAcompanante(Socio direccion, Socio socio, Actividad actividad) {
+        if (!esAdmin(direccion))
+            throw new OperacionDeDireccion();
 
     }
 
     //TODO: COMPLETAR
+
     /**
-     * @brief crea una nueva temporada al inicio de cada año
+     * @brief Crea una nueva temporada al inicio de cada año
      */
     @Scheduled(cron = "0 0 0 1 1 ?")
     void crearNuevaTemporada() {
-        Temporada nuevaTemporada = new Temporada(LocalDate.now().getYear());
-        if (!temporadas.contains(nuevaTemporada)) {
-            temporadas.add(new Temporada(LocalDate.now().getYear()));
-            //poner todos los socios con la cuota no pagada - false
-            for (Socio socio : repositorioSocios.buscaTodos()) {
-                socio.setCuotaPagada(false);
-            }
-        } else {
-            throw new TemporadaYaExistente();
-        }
+        repositorioSocios.marcarTodasCuotasNoPagadas();
     }
 }

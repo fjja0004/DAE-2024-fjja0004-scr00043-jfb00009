@@ -1,12 +1,7 @@
 package es.ujaen.dae.clubsocios.entidades;
 
-import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
-import es.ujaen.dae.clubsocios.objetosValor.Actividad;
 import jakarta.validation.constraints.Positive;
-
 import java.time.LocalDate;
-import java.util.LinkedList;
-import java.util.List;
 
 public class Temporada {
     @Positive
