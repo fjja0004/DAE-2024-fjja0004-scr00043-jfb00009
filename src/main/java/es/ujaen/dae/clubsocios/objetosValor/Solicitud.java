@@ -10,10 +10,11 @@ import java.time.LocalDate;
 
 public class Solicitud {
 
+    @PositiveOrZero
+    private int id;
     @Min(0)
     @Max(5)
     private int nAcompanantes;
-
     private LocalDate fecha;
     @PositiveOrZero
     private int plazasAceptadas;
@@ -26,6 +27,7 @@ public class Solicitud {
      * @brief Constructor por defecto de la clase solicitud
      */
     public Solicitud() {
+        this.id = 0;
         this.nAcompanantes = 0;
         this.fecha = LocalDate.now();
         this.plazasAceptadas = 0;
@@ -35,10 +37,11 @@ public class Solicitud {
 
     /**
      * @param nAcompanantes numero de acompañantes
-     * @param emailSocio   Socio que realiza la solicitud
+     * @param emailSocio    Socio que realiza la solicitud
      * @brief Constructor parametrizado
      */
     public Solicitud(String emailSocio, int idActividad, int nAcompanantes) {
+        this.id = 0;
         this.nAcompanantes = nAcompanantes;
         this.fecha = LocalDate.now();
         this.emailSocio = emailSocio;
@@ -71,5 +74,20 @@ public class Solicitud {
     @PositiveOrZero
     public int getPlazasAceptadas() {
         return plazasAceptadas;
+    }
+
+    @PositiveOrZero
+    public int getId() {
+        return id;
+    }
+
+    public void setId(@PositiveOrZero int id) {
+        this.id = id;
+    }
+
+    public void aceptarPlaza() {
+        if (this.plazasAceptadas < this.nAcompanantes) {
+            this.plazasAceptadas++;
+        }
     }
 }

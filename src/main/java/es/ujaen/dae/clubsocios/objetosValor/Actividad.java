@@ -3,15 +3,12 @@ package es.ujaen.dae.clubsocios.objetosValor;
 import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.excepciones.*;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudNoValida;
-import es.ujaen.dae.clubsocios.repositorios.RepositorioSocios;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+
 
 import java.time.LocalDate;
 import java.util.LinkedList;
@@ -38,6 +35,12 @@ public class Actividad {
     @NotNull
     private LocalDate fechaCelebracion;
     private List<Solicitud> solicitudes;
+
+    private int contadorIdsSolicitudes = 0;
+
+    private int generarId() {
+        return contadorIdsSolicitudes++;
+    }
 
     /**
      * @brief Constructor por defecto de la clase Actividad
@@ -109,6 +112,7 @@ public class Actividad {
                 solicitud.setPlazasAceptadas(1);
                 plazasOcupadas++;
             }
+            solicitud.setId(generarId());
             solicitudes.add(solicitud);
         } else {
             throw new SolicitudNoValida();
@@ -135,16 +139,6 @@ public class Actividad {
     }
 
     /**
-     * @return true si es posible realizar una solicitud, false en caso contrario
-     * @brief Comprueba si es posible realizar una solicitud
-     */
-    public boolean isAbierta() {
-        if (LocalDate.now().isBefore(fechaInicioInscripcion) || LocalDate.now().isAfter(fechaFinInscripcion))
-            return false;
-        return true;
-    }
-
-    /**
      * @param email         email del socio que realiza la solicitud
      * @param nAcompanantes número de acompañantes
      * @throws SolicitudNoValida en caso de que la solicitud no sea válida
@@ -154,8 +148,35 @@ public class Actividad {
         if (!isAbierta())
             throw new InscripcionCerrada();
         buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> solicitud.modificarAcompanantes(nAcompanantes), () -> {
-            throw new SolicitudNoValida();
+            throw new SolicitudNoExistente();
         });
+    }
+
+    /**
+     * @param email email del solicitante
+     * @brief Acepta una plaza de una solicitud de inscripción a una actividad
+     */
+    public void aceptarPlaza(String email) {
+        if (isAbierta())
+            throw new InscripcionAbierta();
+        if (plazas > plazasOcupadas) {
+            buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> {
+                solicitud.aceptarPlaza();
+                plazasOcupadas++;
+            }, () -> {
+                throw new SolicitudNoExistente();
+            });
+        }
+    }
+
+    /**
+     * @return true si es posible realizar una solicitud, false en caso contrario
+     * @brief Comprueba si es posible realizar una solicitud
+     */
+    public boolean isAbierta() {
+        if (LocalDate.now().isBefore(fechaInicioInscripcion) || LocalDate.now().isAfter(fechaFinInscripcion))
+            return false;
+        return true;
     }
 
     /**
@@ -207,4 +228,13 @@ public class Actividad {
         return solicitudes;
     }
 
+    @PositiveOrZero
+    public int getPlazasOcupadas() {
+        return plazasOcupadas;
+    }
+
+    @Positive
+    public int getPlazas() {
+        return plazas;
+    }
 }

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -95,7 +94,7 @@ public class ServicioClub {
 
     /**
      * @param direccion Miembro de la dirección que realiza la operación
-     * @param socio Socio que paga la cuota
+     * @param socio     Socio que paga la cuota
      * @brief marca la cuota del socio como pagada, en caso de que ya esté pagado lanza una excepción
      */
     public void marcarCuotaPagada(Socio direccion, @Valid Socio socio) {
@@ -177,15 +176,17 @@ public class ServicioClub {
     //TODO: método de aceptar solicitudes (o acompañantes)
 
     /**
-     * @brief
      * @param direccion Miembro de la dirección que realiza la operación
-     * @param socio Socio que realiza la solicitud de inscripción
+     * @param socio     Socio que realiza la solicitud de inscripción
      * @param actividad Actividad a la que se solicita la inscripción
+     * @brief Acepta una de las plazas solicitadas por un socio
      */
-    public void aceptarAcompanante(Socio direccion, Socio socio, Actividad actividad) {
+    public void asignarPlaza(Socio direccion, Socio socio, Actividad actividad) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
-
+        Socio solicitante = login(socio.getEmail(), socio.getClave());
+        Actividad actividadSolicitada = repositorioActividades.buscarPorId(actividad.getId());
+        actividadSolicitada.aceptarPlaza(solicitante.getEmail());
     }
 
     //TODO: COMPLETAR
