@@ -7,6 +7,7 @@ import es.ujaen.dae.clubsocios.objetosValor.Solicitud;
 import es.ujaen.dae.clubsocios.repositorios.RepositorioActividades;
 import es.ujaen.dae.clubsocios.repositorios.RepositorioSocios;
 import es.ujaen.dae.clubsocios.repositorios.RepositorioTemporadas;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -187,8 +188,6 @@ public class ServicioClub {
         actividadSolicitada.aceptarPlaza(solicitante.getEmail());
     }
 
-    //TODO: método de quitar plazas de solicitudes (o acompañantes)
-
     /**
      * @param direccion Miembro de la dirección que realiza la operación
      * @param socio     Socio que realiza la solicitud de inscripción
@@ -203,13 +202,37 @@ public class ServicioClub {
         actividadSolicitada.quitarPlaza(solicitante.getEmail());
     }
 
-    //TODO: COMPLETAR
+    /**
+     * @brief Crea una temporada al iniciar la aplicación
+     */
+    @PostConstruct
+    void crearTemporadaInicial() {
+        crearNuevaTemporada();
+    }
 
     /**
      * @brief Crea una nueva temporada al inicio de cada año
      */
     @Scheduled(cron = "0 0 0 1 1 ?")
     void crearNuevaTemporada() {
+        repositorioTemporadas.crear();
         repositorioSocios.marcarTodasCuotasNoPagadas();
+    }
+
+    /**
+     * @param anio año de la temporada
+     * @return temporada con el año dado
+     * @brief Busca una temporada por su año
+     */
+    public Temporada buscarTemporadaPorAnio(int anio) {
+        return repositorioTemporadas.buscarPorAnio(anio);
+    }
+
+    /**
+     * @return lista de todas las temporadas
+     * @brief Busca todas las temporadas
+     */
+    public List<Temporada> buscarTodasTemporadas() {
+        return repositorioTemporadas.buscarTodas();
     }
 }

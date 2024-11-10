@@ -6,6 +6,7 @@ import es.ujaen.dae.clubsocios.excepciones.*;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import es.ujaen.dae.clubsocios.repositorios.RepositorioTemporadas;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,17 +21,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(classes = es.ujaen.dae.clubsocios.app.ClubSocios.class)
 @ActiveProfiles("test")
 public class TestServicioClub {
+
     @Autowired
     private ServicioClub servicioClub;
 
     @BeforeEach
     public void setUp() {
-        // Crea una instancia de ServicioClub antes de cada test
-        servicioClub = new ServicioClub();
         servicioClub.anadirSocio(new Socio("Socio", "Prueba", "socio_prueba@club.com", "621302025", "password123"));
     }
 
     @Test
+    @DirtiesContext
     public void testLogin() {
         // Verifica el login con el administrador.
         assertEquals("admin@club.es", servicioClub.login("admin@club.es", "ElAdMiN").getEmail());
@@ -52,6 +53,7 @@ public class TestServicioClub {
     }
 
     @Test
+    @DirtiesContext
     public void testEsAdmin() {
         Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
         Socio noDireccion = new Socio("noadministrador", "-", "noadmin@club.es", "000000000", "NoElAdMiN");
@@ -68,7 +70,7 @@ public class TestServicioClub {
     @DirtiesContext
     void testAnadirSocio() {
         //verificamos que no se pueda añadir un socio igual al admin.
-        Socio admin = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
+        Socio admin = new Socio("administrador", "-", "admin@club.es", "623456789", "ElAdMiN");
         assertThatThrownBy(() -> servicioClub.anadirSocio(admin)).isInstanceOf(SocioYaRegistrado.class);
 
         //verificamos que no se pueda añadir un socio igual al otro usuario ya registrado.
@@ -128,6 +130,9 @@ public class TestServicioClub {
 
         //compruebo que funcione con los datos correctos.
         assertDoesNotThrow(() -> servicioClub.marcarCuotaPagada(direccion, socioTest));
+
+        //Comprobar que se ha marcado la cuota como pagada.
+        assertTrue(socioTest.isCuotaPagada());
 
         //Compruebo que el socio no tuviera ya pagada la cuota.
         assertThatThrownBy(() -> servicioClub.marcarCuotaPagada(direccion, socioTest)).isInstanceOf(PagoYaRealizado.class);
@@ -199,7 +204,7 @@ public class TestServicioClub {
     @DirtiesContext
     void testRealizarSolicitud() {
 
-        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
+        Socio direccion = new Socio("administrador", "-", "admin@club.es", "621302025", "ElAdMiN");
         Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
 
         //Actividad a la que es posible inscribirse.
@@ -238,7 +243,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testModificarAcompanantes() {
-        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
+        Socio direccion = new Socio("administrador", "-", "admin@club.es", "621302025", "ElAdMiN");
         Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
 
         //Actividad a la que es posible inscribirse.
@@ -450,9 +455,32 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
-    void testCrearNuevaTemporada() {
-
+    void testCrearTemporadaInicial() {
+        //Verificamos que se crea la temporada inicial.
+        assertEquals(LocalDate.now().getYear(), servicioClub.buscarTemporadaPorAnio(LocalDate.now().getYear()).getAnio());
     }
 
+    @Test
+    @DirtiesContext
+    void testCrearNuevaTemporada() {
+        //Verificamos que se lance una excepción si la temporada ya existe.
+        assertThatThrownBy(() -> servicioClub.crearNuevaTemporada()).isInstanceOf(TemporadaYaExistente.class);
+    }
 
+    @Test
+    @DirtiesContext
+    void testBuscarTemporadaPorAnio() {
+        //Verificamos que se lance una excepción si la temporada no existe.
+        assertThatThrownBy(() -> servicioClub.buscarTemporadaPorAnio(2020)).isInstanceOf(TemporadaNoExistente.class);
+
+        //Verificamos que se devuelva la temporada si existe.
+        assertEquals(LocalDate.now().getYear(), servicioClub.buscarTemporadaPorAnio(LocalDate.now().getYear()).getAnio());
+    }
+
+    @Test
+    @DirtiesContext
+    void testBuscarTodasTemporadas() {
+        //Verificamos que se devuelvan todas las temporadas.
+        assertEquals(1, servicioClub.buscarTodasTemporadas().size());
+    }
 }
