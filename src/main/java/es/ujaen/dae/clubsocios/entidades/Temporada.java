@@ -14,15 +14,6 @@ public class Temporada {
         this.anio = LocalDate.now().getYear();
     }
 
-    /**
-     * @param anio año de la temporada
-     * @param anio año de la temporada
-     * @brief Constructor parametrizado de la clase Temporada
-     */
-    public Temporada(int anio) {
-        this.anio = anio;
-    }
-
     public int getAnio() {
         return anio;
     }

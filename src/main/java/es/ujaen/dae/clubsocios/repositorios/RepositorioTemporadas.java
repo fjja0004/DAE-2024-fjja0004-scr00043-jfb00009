@@ -5,7 +5,6 @@ import es.ujaen.dae.clubsocios.excepciones.TemporadaNoExistente;
 import es.ujaen.dae.clubsocios.excepciones.TemporadaYaExistente;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +20,10 @@ public class RepositorioTemporadas {
     }
 
     /**
-     * @param temporada temporada a crear
      * @brief Crea una nueva temporada
      */
-    public void crear(Temporada temporada) {
+    public void crear() {
+        Temporada temporada = new Temporada();
         if (temporadas.containsKey(temporada.getAnio()))
             throw new TemporadaYaExistente();
 
@@ -46,7 +45,7 @@ public class RepositorioTemporadas {
      * @return lista de todas las temporadas
      * @brief Busca todas las temporadas
      */
-    public List<Temporada> buscaTodos() {
+    public List<Temporada> buscarTodas() {
         return temporadas.values().stream().collect(Collectors.toList());
     }
 }
