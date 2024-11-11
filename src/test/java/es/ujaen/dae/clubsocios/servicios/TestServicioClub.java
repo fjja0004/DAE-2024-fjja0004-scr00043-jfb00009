@@ -484,4 +484,19 @@ public class TestServicioClub {
         //Verificamos que se devuelvan todas las temporadas.
         assertEquals(1, servicioClub.buscarTodasTemporadas().size());
     }
+
+    @Test
+    @DirtiesContext
+    void testBuscarTodosSocios() {
+        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
+        Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
+
+        servicioClub.anadirSocio(socio);
+
+        //Comprobamos que se lance una excepción si el socio que realiza la operación no es el administrador.
+        assertThatThrownBy(() -> servicioClub.buscarTodosSocios(socio)).isInstanceOf(OperacionDeDireccion.class);
+
+        //Verificamos que se devuelvan todos los socios.
+        assertEquals(2, servicioClub.buscarTodosSocios(direccion).size());
+    }
 }

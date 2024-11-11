@@ -84,6 +84,16 @@ public class ServicioClub {
     }
 
     /**
+     * @return lista de todos los socios
+     * @brief Busca todos los socios
+     */
+    public List<Socio> buscarTodosSocios(Socio direccion) {
+        if (!esAdmin(direccion))
+            throw new OperacionDeDireccion();
+        return repositorioSocios.buscaTodos();
+    }
+
+    /**
      * @param actividad Actividad que se crea
      * @brief creación de una actividad
      */
