@@ -158,14 +158,14 @@ public class TestServicioClub {
                 10, LocalDate.now().minusDays(2), LocalDate.now().minusDays(1),
                 LocalDate.now().plusDays(10));
 
-        //Comprobamos que se lance la excepción NoHayActividades si no hay actividades abiertas.
+        //Comprobamos que la lista esté vacía si no hay actividades abiertas.
 
         //Si no hay ninguna.
-        assertThatThrownBy(() -> servicioClub.buscarActividadesAbiertas()).isInstanceOf(NoHayActividades.class);
+        assertEquals(0, servicioClub.buscarActividadesAbiertas().size());
 
         //Si hay alguna, pero todas están cerradas.
         servicioClub.crearActividad(direccion, actividadCerrada);
-        assertThatThrownBy(() -> servicioClub.buscarActividadesAbiertas()).isInstanceOf(NoHayActividades.class);
+        assertEquals(0, servicioClub.buscarActividadesAbiertas().size());
 
         //Si hay tanto abiertas como cerradas, solo se devuelven las abiertas.
         servicioClub.crearActividad(direccion, actividadAbierta);
@@ -189,8 +189,8 @@ public class TestServicioClub {
                 10, LocalDate.now().minusDays(2), LocalDate.now().minusDays(1),
                 LocalDate.now().plusDays(10));
 
-        //Comprobamos que se lance la excepción NoHayActividades si no hay actividades.
-        assertThatThrownBy(() -> servicioClub.buscarTodasActividadesTemporadaActual()).isInstanceOf(NoHayActividades.class);
+        //Comprobamos que la lista esté vacía si no hay actividades.
+        assertEquals(0, servicioClub.buscarTodasActividadesTemporadaActual().size());
 
         //Comprobamos que se devuelvan las actividades de la temporada actual.
         servicioClub.crearActividad(direccion, actividadAbierta);

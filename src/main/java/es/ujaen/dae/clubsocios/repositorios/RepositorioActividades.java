@@ -71,11 +71,6 @@ public class RepositorioActividades {
                 actividadesTemporadaActual.add(actividad);
             }
         }
-
-        if (actividadesTemporadaActual.isEmpty()) {
-            throw new NoHayActividades();
-        }
-
         return actividadesTemporadaActual;
     }
 
@@ -90,9 +85,6 @@ public class RepositorioActividades {
             if (actividad.isAbierta()) {
                 actividadesAbiertas.add(actividad);
             }
-        }
-        if (actividadesAbiertas.isEmpty()) {
-            throw new NoHayActividades();
         }
         return actividadesAbiertas;
     }
