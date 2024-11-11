@@ -224,7 +224,7 @@ public class ServicioClub {
      * @return temporada con el año dado
      * @brief Busca una temporada por su año
      */
-    public Temporada buscarTemporadaPorAnio(int anio) {
+    public Optional<Temporada> buscarTemporadaPorAnio(int anio) {
         return repositorioTemporadas.buscarPorAnio(anio);
     }
 

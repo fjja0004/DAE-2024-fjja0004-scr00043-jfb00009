@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -35,10 +36,8 @@ public class RepositorioTemporadas {
      * @return temporada con el año dado
      * @brief Busca una temporada por su año
      */
-    public Temporada buscarPorAnio(int anio) {
-        if (!temporadas.containsKey(anio))
-            throw new TemporadaNoExistente();
-        return temporadas.get(anio);
+    public Optional<Temporada> buscarPorAnio(int anio) {
+        return Optional.ofNullable(temporadas.get(anio));
     }
 
     /**

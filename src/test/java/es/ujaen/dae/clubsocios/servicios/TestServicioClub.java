@@ -15,6 +15,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -457,7 +458,7 @@ public class TestServicioClub {
     @DirtiesContext
     void testCrearTemporadaInicial() {
         //Verificamos que se crea la temporada inicial.
-        assertEquals(LocalDate.now().getYear(), servicioClub.buscarTemporadaPorAnio(LocalDate.now().getYear()).getAnio());
+        assertEquals(LocalDate.now().getYear(), servicioClub.buscarTemporadaPorAnio(LocalDate.now().getYear()).get().getAnio());
     }
 
     @Test
@@ -470,11 +471,11 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testBuscarTemporadaPorAnio() {
-        //Verificamos que se lance una excepción si la temporada no existe.
-        assertThatThrownBy(() -> servicioClub.buscarTemporadaPorAnio(2020)).isInstanceOf(TemporadaNoExistente.class);
+        //Verificamos que no se devuelva la temporada si no existe.
+        assertEquals(Optional.empty(), servicioClub.buscarTemporadaPorAnio(2022));
 
         //Verificamos que se devuelva la temporada si existe.
-        assertEquals(LocalDate.now().getYear(), servicioClub.buscarTemporadaPorAnio(LocalDate.now().getYear()).getAnio());
+        assertEquals(LocalDate.now().getYear(), servicioClub.buscarTemporadaPorAnio(LocalDate.now().getYear()).get().getAnio());
     }
 
     @Test
