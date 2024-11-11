@@ -1,7 +1,6 @@
 package es.ujaen.dae.clubsocios.repositorios;
 
 import es.ujaen.dae.clubsocios.entidades.Temporada;
-import es.ujaen.dae.clubsocios.excepciones.TemporadaNoExistente;
 import es.ujaen.dae.clubsocios.excepciones.TemporadaYaExistente;
 import org.springframework.stereotype.Repository;
 
