@@ -14,7 +14,7 @@ public class Temporada {
     private int anio;
 
     @ElementCollection
-    @CollectionTable (name ="actividades")
+    @CollectionTable
     List<Actividad> actividades;
     /**
      * @brief Constructor por defecto de la clase Temporada

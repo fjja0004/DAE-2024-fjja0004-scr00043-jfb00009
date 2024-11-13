@@ -36,7 +36,7 @@ public class Actividad {
     private LocalDate fechaFinInscripcion;
     @NotNull
     private LocalDate fechaCelebracion;
-    @OneToMany @Embedded
+    @ElementCollection
     private List<Solicitud> solicitudes;
 
     private int contadorIdsSolicitudes = 0;
