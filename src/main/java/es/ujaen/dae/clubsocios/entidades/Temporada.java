@@ -1,10 +1,13 @@
 package es.ujaen.dae.clubsocios.entidades;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
-
+@Entity
 public class Temporada {
     @Positive
+    @Id
     private int anio;
 
     /**
