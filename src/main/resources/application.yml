@@ -1,2 +1,0 @@
-spring.datasource.url: jdbc:sqlite:clubsocios.db
-spring.jpa.hibernate.ddl-auto: create-drop
