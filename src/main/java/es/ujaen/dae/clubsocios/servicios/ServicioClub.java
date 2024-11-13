@@ -100,7 +100,7 @@ public class ServicioClub {
     void crearActividad(Socio direccion, @Valid Actividad actividad) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
-        repositorioActividades.crear(actividad);
+        repositorioActividades.crearActividad(actividad);
     }
 
     /**
@@ -131,7 +131,7 @@ public class ServicioClub {
      * @brief Devuelve una lista con todas las actividades de la temporada actual
      */
     public List<Actividad> buscarTodasActividadesTemporadaActual() {
-        return repositorioActividades.buscarTodasTemporadaActual();
+        return repositorioActividades.buscarTodasActividadesTemporadaActual();
     }
 
     /**
@@ -225,7 +225,7 @@ public class ServicioClub {
      */
     @Scheduled(cron = "0 0 0 1 1 ?")
     void crearNuevaTemporada() {
-        repositorioTemporadas.crear();
+        repositorioTemporadas.crearTemporada();
         repositorioSocios.marcarTodasCuotasNoPagadas();
     }
 
@@ -243,6 +243,6 @@ public class ServicioClub {
      * @brief Busca todas las temporadas
      */
     public List<Temporada> buscarTodasTemporadas() {
-        return repositorioTemporadas.buscarTodas();
+        return repositorioTemporadas.buscarTodasTemporadas();
     }
 }

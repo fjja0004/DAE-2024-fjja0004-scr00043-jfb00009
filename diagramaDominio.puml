@@ -4,26 +4,37 @@ hide circle
 'skinparam classAttributeIconSize 0
 
 class ServicioClub <<servicio>> <<repositorio>> {
+    - esAdmin(socio: Socio): Boolean
     + login(email: String, clave: String): Socio
     + añadirSocio(nombre: String, apellido: String, email: String, teléfono: String, clave: String): void
-    + añadirActividad(título: String, descripción: String, precio: Double, nPlazas: Integer, fechaCelebración: Date, fechaInicioInscripción: Date, fechaFinInscripción: Date): Boolean
-    + revisarSolicitudes(): void
+    + buscarTodosSocios(direccion: Socio): List<Socio>
+    + crearActividad(título: String, descripción: String, precio: Double, nPlazas: Integer, fechaCelebración: Date, fechaInicioInscripción: Date, fechaFinInscripción: Date): Boolean
     + marcarCuotaPagada(socio: Socio): void
-    + buscarActividad(título: String, año: int): Actividad
+    + buscarActividadesAbiertas(): List<Actividad>
+    + buscarTodasActividadesTemporadaActual(): List<Actividad>
     + realizarSolicitud(nAcompañantes: Integer, actividad: Actividad): void
     + modificarAcompañantes(socio: Socio,actividad: Actividad,nAcompañantes:Integer): void
-    + borrarSolicitud(actividad: Actividad,socio: Socio): void
+    + buscarSolicitudesDeActividad(Socio direccion, Actividad actividad): List<Solicitud>
+    + cancelarSolicitud(socio: Socio, actividad: Actividad): void
+    + asignarPlaza(direccion: Socio, socio: Socio, actividad: Actividad): void
+    + quitarPlaza(direccion: Socio, socio: Socio, actividad: Actividad): void
+    + crearTemporadaInicial(): void
     + crearNuevaTemporada(): void
+    + buscarTemporadaPorAnio(int anio): Optional<Temporada>
+    + buscarTodasTemporadas(): List<Temporada>
 }
 
 class Socio <<entidad>> {
-- nombre: String
-- apellido: String
-- email: String
-- teléfono: String
-- clave: String
-- cuotaPagada: Enum[NoPagado, Pendiente, Pagado]
-- admin: Boolean
+    - id: Integer
+    - nombre: String
+    - apellidos: String
+    - email: String
+    - teléfono: String
+    - clave: String
+    - cuotaPagada: Enum[NoPagado, Pendiente, Pagado]
+
+    + isCuotaPagada(): Boolean
+    + comprobarCredenciales(clave: String)
 }
 
 class Actividad <<entidad>> {
@@ -40,24 +51,49 @@ class Actividad <<entidad>> {
 }
 
 class Solicitud <<objeto-valor>> {
-- nAcompañantes: Integer
-- fecha: Date
-- insAceptadas: Integer
-+ modificarAcompañantes(Integer:nAcompañantes):void
+    - id: Integer
+    - nAcompañantes: Integer
+    - fecha: Date
+    - plazasAceptadas: Integer
+    - socio: Socio
+
+    + modificarAcompañantes(Integer:nAcompañantes):void
+    + aceptarPlaza(): void
+    + quitarPlaza(): void
 }
 
 class Temporada <<entidad>> {
-- año: Integer
-    + crearActividad(actividad: Actividad)): void
-    + buscarActividadPorTitulo(String: titulo)): Actividad
-    + buscaTodasActividadesAbiertas():Actividad[]
+    - año: Integer
+    - actividades: List<Actividad>
+    - contadorIds: Integer
 
+    - generarId(): Integer
+    + crearActividad(actividad Actividad): void
+    + buscarActividadPorTitulo(titulo: String): Optional<Actividad>
+    + buscarTodasActividadesTemporadaActual(): List<Actividad>
+    + buscaTodasActividadesAbiertas(): List<Actividad>
+    + buscarPorId(id: Integer): Actividad
 }
 
-Solicitud "*" -- "1" Socio : > solicitante
-Actividad "1" *-- "*" Solicitud : > solicitud
-Temporada "1" *-- "*" Actividad : > actividades
-ServicioClub "1" *-- "*" Socio : > socio
-ServicioClub "1" *-- "*" Temporada : > temporada
+class RepositorioSocios <<Repositorio>> {
+    + crear(Socio socio): void
+    + buscarPorEmail(email: String): Socio
+    + buscaTodos(): List<Socio>
+    + marcarTodasCuotasNoPagadas(): void
+}
+
+class RepositorioTemporada <<Repositorio>> {
+    + crearTemporada(): void
+    + buscarPorAnio(anio: Integer): Optional<Temporada>
+    + buscarTodasTemporadas(): List<Temporada>
+}
+
+Solicitud "*" -> "1" Socio : solicitante
+Actividad "1" *-> "*" Solicitud : solicitud
+Temporada "1" *--> "*" Actividad : actividades
+ServicioClub ...> RepositorioSocios : usa
+RepositorioSocios "1" *--> "*" Socio : socio
+RepositorioTemporada "1" *--> "*" Temporada : temporada
+ServicioClub ..> RepositorioTemporada : usa
 
 @enduml
