@@ -1,2 +1,11 @@
-spring.datasource.url: jdbc:sqlite:clubsocios.db
+spring:
+  datasource:
+    url: jdbc:sqlite:clubsocios.db
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.SQLiteDialect
+
+
 spring.jpa.hibernate.ddl-auto: create-drop
