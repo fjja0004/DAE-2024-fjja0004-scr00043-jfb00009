@@ -4,6 +4,8 @@ package es.ujaen.dae.clubsocios.objetosValor;
 import es.ujaen.dae.clubsocios.entidades.Socio;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
@@ -20,10 +22,10 @@ public class Solicitud {
     private LocalDate fecha;
     @PositiveOrZero
     private int plazasAceptadas;
-    @Pattern(regexp = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$", message = "El email no es válido")
-    private String emailSocio;
-    @PositiveOrZero
-    private int idActividad;
+    @ManyToOne
+    @JoinColumn (name="solicitante")
+    Socio socio;
+
 
     /**
      * @brief Constructor por defecto de la clase solicitud
@@ -33,22 +35,20 @@ public class Solicitud {
         this.nAcompanantes = 0;
         this.fecha = LocalDate.now();
         this.plazasAceptadas = 0;
-        this.emailSocio = "";
-        this.idActividad = 0;
+        this.socio=null;
     }
 
     /**
      * @param nAcompanantes numero de acompañantes
-     * @param emailSocio    Socio que realiza la solicitud
+     * @param socio    Socio que realiza la solicitud
      * @brief Constructor parametrizado
      */
-    public Solicitud(String emailSocio, int idActividad, int nAcompanantes) {
+    public Solicitud(Socio socio,  int nAcompanantes) {
         this.id = 0;
         this.nAcompanantes = nAcompanantes;
         this.fecha = LocalDate.now();
-        this.emailSocio = emailSocio;
+        this.socio = socio;
         this.plazasAceptadas = 0;
-        this.idActividad = idActividad;
     }
 
     /**
@@ -59,8 +59,8 @@ public class Solicitud {
         this.nAcompanantes = nAcompanantes;
     }
 
-    public String getEmailSocio() {
-        return emailSocio;
+    public Socio getSocio() {
+        return socio;
     }
 
     @Min(0)

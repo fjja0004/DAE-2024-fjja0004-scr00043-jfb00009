@@ -1,15 +1,20 @@
 package es.ujaen.dae.clubsocios.entidades;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import es.ujaen.dae.clubsocios.objetosValor.Actividad;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
+import java.util.List;
+
 @Entity
 public class Temporada {
     @Positive
     @Id
     private int anio;
 
+    @ElementCollection
+    @CollectionTable (name ="actividades")
+    List<Actividad> actividades;
     /**
      * @brief Constructor por defecto de la clase Temporada
      */

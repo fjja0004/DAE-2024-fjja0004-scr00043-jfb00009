@@ -3,8 +3,7 @@ package es.ujaen.dae.clubsocios.objetosValor;
 import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.excepciones.*;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudNoValida;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -37,6 +36,7 @@ public class Actividad {
     private LocalDate fechaFinInscripcion;
     @NotNull
     private LocalDate fechaCelebracion;
+    @OneToMany @Embedded
     private List<Solicitud> solicitudes;
 
     private int contadorIdsSolicitudes = 0;
@@ -91,7 +91,7 @@ public class Actividad {
      */
     public Optional<Solicitud> buscarSolicitudPorEmail(String email) {
         for (Solicitud solicitud : solicitudes) {
-            if (solicitud.getEmailSocio().equals(email)) {
+            if (solicitud.getSocio().equals(email)) {
                 return Optional.of(solicitud);
             }
         }
@@ -110,7 +110,7 @@ public class Actividad {
         }
 
         if (this.isAbierta()) {
-            Solicitud solicitud = new Solicitud(socio.getEmail(), this.id, nAcompanantes);
+            Solicitud solicitud = new Solicitud(socio, nAcompanantes);
             if (plazasOcupadas < plazas && socio.isCuotaPagada()) {
                 solicitud.setPlazasAceptadas(1);
                 plazasOcupadas++;
