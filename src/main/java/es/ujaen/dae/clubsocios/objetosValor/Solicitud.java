@@ -2,14 +2,16 @@ package es.ujaen.dae.clubsocios.objetosValor;
 
 
 import es.ujaen.dae.clubsocios.entidades.Socio;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Id;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
-
+@Embeddable
 public class Solicitud {
-
+@Id
     @PositiveOrZero
     private int id;
     @Min(0)

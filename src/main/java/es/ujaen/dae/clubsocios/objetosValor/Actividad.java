@@ -3,6 +3,8 @@ package es.ujaen.dae.clubsocios.objetosValor;
 import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.excepciones.*;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudNoValida;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Id;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -14,8 +16,9 @@ import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-
+@Embeddable
 public class Actividad {
+    @Id
     private int id;
     private int idTemporada;
     @NotBlank
