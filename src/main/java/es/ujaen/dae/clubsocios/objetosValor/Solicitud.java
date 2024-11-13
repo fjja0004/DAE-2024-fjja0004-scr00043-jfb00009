@@ -2,18 +2,14 @@ package es.ujaen.dae.clubsocios.objetosValor;
 
 
 import es.ujaen.dae.clubsocios.entidades.Socio;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.validation.Valid;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
 @Embeddable
 public class Solicitud {
-@Id
+    @Id
     @PositiveOrZero
     private int id;
     @Min(0)
@@ -23,9 +19,7 @@ public class Solicitud {
     @PositiveOrZero
     private int plazasAceptadas;
     @ManyToOne
-    @JoinColumn (name="solicitante")
     Socio socio;
-
 
     /**
      * @brief Constructor por defecto de la clase solicitud
@@ -35,7 +29,7 @@ public class Solicitud {
         this.nAcompanantes = 0;
         this.fecha = LocalDate.now();
         this.plazasAceptadas = 0;
-        this.socio=null;
+        this.socio = null;
     }
 
     /**

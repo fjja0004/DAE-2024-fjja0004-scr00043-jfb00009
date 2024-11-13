@@ -4,6 +4,7 @@ import es.ujaen.dae.clubsocios.objetosValor.Actividad;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,6 +21,7 @@ public class Temporada {
      */
     public Temporada() {
         this.anio = LocalDate.now().getYear();
+        this.actividades = new ArrayList<>();
     }
 
     public int getAnio() {
