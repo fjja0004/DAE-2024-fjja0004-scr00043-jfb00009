@@ -1,10 +1,16 @@
 package es.ujaen.dae.clubsocios.entidades;
 
 import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
 
+@Entity
 public class Socio {
+    @Id
+    @PositiveOrZero
     private int id;
     @NotBlank
     private String nombre;
