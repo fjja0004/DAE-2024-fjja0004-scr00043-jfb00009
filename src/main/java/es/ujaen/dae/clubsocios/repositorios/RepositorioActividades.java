@@ -30,7 +30,7 @@ public class RepositorioActividades {
      * @param actividad actividad a crear
      * @brief Crea una nueva actividad
      */
-    public void crear(Actividad actividad) {
+    public void crearActividad(Actividad actividad) {
         Optional<Actividad> actividadExistente = buscarActividadPorTitulo(actividad.getTitulo());
         if ((!actividadExistente.isEmpty()) && actividadExistente.get().getFechaCelebracion() == actividad.getFechaCelebracion()) {
             throw new ActividadYaExistente();
@@ -64,7 +64,7 @@ public class RepositorioActividades {
      * @throws NoHayActividades si no hay actividades en la temporada actual
      * @brief Devuelve una lista con todas las actividades de la temporada actual
      */
-    public List<Actividad> buscarTodasTemporadaActual() {
+    public List<Actividad> buscarTodasActividadesTemporadaActual() {
         List<Actividad> actividadesTemporadaActual = new LinkedList<>();
         for (Actividad actividad : actividades) {
             if (actividad.getIdTemporada() == LocalDate.now().getYear()) {

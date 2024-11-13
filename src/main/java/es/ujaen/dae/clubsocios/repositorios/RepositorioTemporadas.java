@@ -22,7 +22,7 @@ public class RepositorioTemporadas {
     /**
      * @brief Crea una nueva temporada
      */
-    public void crear() {
+    public void crearTemporada() {
         Temporada temporada = new Temporada();
         if (temporadas.containsKey(temporada.getAnio()))
             throw new TemporadaYaExistente();
@@ -43,7 +43,7 @@ public class RepositorioTemporadas {
      * @return lista de todas las temporadas
      * @brief Busca todas las temporadas
      */
-    public List<Temporada> buscarTodas() {
+    public List<Temporada> buscarTodasTemporadas() {
         return temporadas.values().stream().collect(Collectors.toList());
     }
 }
