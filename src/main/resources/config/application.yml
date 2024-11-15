@@ -1,8 +1,0 @@
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/clubsocios
-    username: admin
-    password: admin
-  jpa:
-    hibernate:
-      ddl-auto: update
