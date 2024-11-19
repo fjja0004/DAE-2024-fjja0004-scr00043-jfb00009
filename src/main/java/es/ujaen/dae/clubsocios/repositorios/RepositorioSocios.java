@@ -46,4 +46,9 @@ public class RepositorioSocios {
     public void marcarTodasCuotasNoPagadas() {
         Query query = em.createQuery("UPDATE Socio s SET s.cuotaPagada = false"); query.executeUpdate();
     }
+
+    @Transactional
+    public void marcarCuotasPagadaEnSocio(Socio socio) {
+        Query query = em.createQuery("UPDATE Socio s SET s.cuotaPagada = true WHERE s = :socio");
+        query.setParameter("socio", socio); query.executeUpdate(); }
 }

@@ -2,7 +2,6 @@ package es.ujaen.dae.clubsocios.repositorios;
 
 import es.ujaen.dae.clubsocios.app.ClubSocios;
 import es.ujaen.dae.clubsocios.entidades.Socio;
-import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
