@@ -37,7 +37,6 @@ public class RepositorioActividades {
         }
 
         actividad.fechasValidas();
-        actividad.setId(generarId());
         actividades.add(actividad);
     }
 

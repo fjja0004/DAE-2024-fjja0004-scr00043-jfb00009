@@ -51,7 +51,7 @@ class Actividad <<entidad>> {
     + modificarAcompañantes(String: email,Integer:nAcompañantes):void
 }
 
-class Solicitud <<objeto-valor>> {
+class Solicitud <<entidad>> {
     - id: Integer
     - nAcompañantes: Integer
     - fecha: Date
@@ -77,8 +77,8 @@ class Temporada <<entidad>> {
 }
 
 class RepositorioSocios <<Repositorio>> {
-    + crear(Socio socio): void
-    + buscarPorEmail(email: String): Socio
+    + guardar(Socio socio): void
+    + buscar(email: String): Socio
     + buscaTodos(): List<Socio>
     + marcarTodasCuotasNoPagadas(): void
 }
@@ -89,12 +89,21 @@ class RepositorioTemporada <<Repositorio>> {
     + buscarTodasTemporadas(): List<Temporada>
 }
 
+class RepositorioActividad <<Repositorio>> {
+    + crear(Socio socio): void
+    + buscarPorEmail(email: String): Socio
+    + buscaTodos(): List<Socio>
+    + marcarTodasCuotasNoPagadas(): void
+}
+
 Solicitud "*" -> "1" Socio : solicitante
 Actividad "1" *-> "*" Solicitud : solicitud
-Temporada "1" *--> "*" Actividad : actividades
+Temporada "1" *-> "*" Actividad : actividades
 ServicioClub ...> RepositorioSocios : usa
-RepositorioSocios "1" *--> "*" Socio : socio
+RepositorioSocios "1" *-> "*" Socio : socio
+ServicioClub ...> RepositorioTemporada : usa
 RepositorioTemporada "1" *--> "*" Temporada : temporada
-ServicioClub ..> RepositorioTemporada : usa
+ServicioClub ...> RepositorioActividad : usa
+RepositorioActividad "1" *--> "*" Actividad : actividad
 
 @enduml

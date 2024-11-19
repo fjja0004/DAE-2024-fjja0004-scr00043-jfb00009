@@ -2,8 +2,8 @@ package es.ujaen.dae.clubsocios.entidades;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
+
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,7 +12,7 @@ public class Temporada {
     @Id
     private int anio;
 
-    @OneToMany
+    @OneToMany(fetch=FetchType.LAZY)
     @JoinColumn
     List<Actividad> actividades;
     /**

@@ -1,7 +1,5 @@
 package es.ujaen.dae.clubsocios.entidades;
 
-
-import es.ujaen.dae.clubsocios.entidades.Socio;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
