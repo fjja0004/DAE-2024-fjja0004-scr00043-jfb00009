@@ -65,7 +65,7 @@ public class ServicioClub {
             return admin;
         }
 
-        Socio socio = repositorioSocios.buscarPorEmail(email);
+        Socio socio = repositorioSocios.buscar(email).get();
         socio.comprobarCredenciales(clave);
         return socio;
     }
@@ -90,7 +90,7 @@ public class ServicioClub {
     public List<Socio> buscarTodosSocios(Socio direccion) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
-        return repositorioSocios.buscaTodos();
+        return repositorioSocios.buscarTodos();
     }
 
     /**
@@ -111,8 +111,8 @@ public class ServicioClub {
     public void marcarCuotaPagada(Socio direccion, @Valid Socio socio) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
-        if (!repositorioSocios.buscarPorEmail(socio.getEmail()).isCuotaPagada()) {
-            repositorioSocios.buscarPorEmail(socio.getEmail()).setCuotaPagada(true);
+        if (!repositorioSocios.buscar(socio.getEmail()).get().isCuotaPagada()) {
+            repositorioSocios.buscar(socio.getEmail()).get().setCuotaPagada(true);
         } else {
             throw new PagoYaRealizado();
         }
