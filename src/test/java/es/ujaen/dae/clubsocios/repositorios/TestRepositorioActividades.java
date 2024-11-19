@@ -1,10 +1,12 @@
 package es.ujaen.dae.clubsocios.repositorios;
 
+import es.ujaen.dae.clubsocios.app.ClubSocios;
 import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.excepciones.FechaNoValida;
 import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.Assertions.*;
@@ -12,6 +14,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.time.LocalDate;
 
 @ActiveProfiles("test")
+@SpringBootTest(classes = ClubSocios.class)
 public class TestRepositorioActividades {
 
     RepositorioActividades repositorioActividades;
