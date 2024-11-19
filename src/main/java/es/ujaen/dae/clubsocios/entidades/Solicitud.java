@@ -1,4 +1,4 @@
-package es.ujaen.dae.clubsocios.objetosValor;
+package es.ujaen.dae.clubsocios.entidades;
 
 
 import es.ujaen.dae.clubsocios.entidades.Socio;
@@ -7,7 +7,7 @@ import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 
-@Embeddable
+@Entity
 public class Solicitud {
     @Id
     @PositiveOrZero

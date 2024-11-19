@@ -1,6 +1,5 @@
 package es.ujaen.dae.clubsocios.entidades;
 
-import es.ujaen.dae.clubsocios.objetosValor.Actividad;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
@@ -13,8 +12,7 @@ public class Temporada {
     @Id
     private int anio;
 
-    @ElementCollection
-    @CollectionTable
+    @OneToMany
     List<Actividad> actividades;
     /**
      * @brief Constructor por defecto de la clase Temporada

@@ -1,6 +1,5 @@
-package es.ujaen.dae.clubsocios.objetosValor;
+package es.ujaen.dae.clubsocios.entidades;
 
-import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.excepciones.*;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudNoValida;
 import jakarta.persistence.*;
@@ -15,7 +14,7 @@ import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-@Embeddable
+@Entity
 public class Actividad {
     @Id
     private int id;
@@ -36,7 +35,7 @@ public class Actividad {
     private LocalDate fechaFinInscripcion;
     @NotNull
     private LocalDate fechaCelebracion;
-    @ElementCollection
+    @OneToMany
     private List<Solicitud> solicitudes;
 
     private int contadorIdsSolicitudes = 0;

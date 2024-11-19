@@ -1,12 +1,11 @@
 package es.ujaen.dae.clubsocios.servicios;
 
-import es.ujaen.dae.clubsocios.objetosValor.Actividad;
+import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.excepciones.*;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import es.ujaen.dae.clubsocios.repositorios.RepositorioTemporadas;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

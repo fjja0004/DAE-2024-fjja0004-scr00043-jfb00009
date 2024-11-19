@@ -1,6 +1,6 @@
 package es.ujaen.dae.clubsocios.repositorios;
 
-import es.ujaen.dae.clubsocios.objetosValor.Actividad;
+import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.excepciones.FechaNoValida;
 import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
 import org.junit.jupiter.api.BeforeEach;

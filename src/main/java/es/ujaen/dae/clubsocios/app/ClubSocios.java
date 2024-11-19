@@ -7,8 +7,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(scanBasePackages="es.ujaen.dae.clubsocios.*")
-@EntityScan(basePackages = "src.main.java.entidades")
-@EnableScheduling
+@EntityScan(basePackages ={"es.ujaen.dae.clubsocios.entidades", "es.ujaen.dae.clubsocios.objetosValor"})
+//@EnableScheduling
 public class ClubSocios {
     public static void main(String[] args) {
         SpringApplication.run(ClubSocios.class);

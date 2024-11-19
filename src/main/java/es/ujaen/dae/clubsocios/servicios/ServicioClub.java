@@ -2,8 +2,8 @@ package es.ujaen.dae.clubsocios.servicios;
 
 import es.ujaen.dae.clubsocios.entidades.*;
 import es.ujaen.dae.clubsocios.excepciones.*;
-import es.ujaen.dae.clubsocios.objetosValor.Actividad;
-import es.ujaen.dae.clubsocios.objetosValor.Solicitud;
+import es.ujaen.dae.clubsocios.entidades.Actividad;
+import es.ujaen.dae.clubsocios.entidades.Solicitud;
 import es.ujaen.dae.clubsocios.repositorios.RepositorioActividades;
 import es.ujaen.dae.clubsocios.repositorios.RepositorioSocios;
 import es.ujaen.dae.clubsocios.repositorios.RepositorioTemporadas;
