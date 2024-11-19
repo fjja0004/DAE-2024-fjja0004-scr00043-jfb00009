@@ -35,7 +35,8 @@ public class RepositorioSocios {
      */
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<Socio> buscarTodos() {
-        return em.createQuery("SELECT s FROM Socio s", Socio.class).getResultList(); }
+        return em.createQuery("SELECT s FROM Socio s", Socio.class).getResultList();
+    }
     /**
      * @brief Marca todas las cuotas como no pagadas
      */
