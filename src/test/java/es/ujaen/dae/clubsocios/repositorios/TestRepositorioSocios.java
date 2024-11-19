@@ -1,23 +1,30 @@
 package es.ujaen.dae.clubsocios.repositorios;
 
+import es.ujaen.dae.clubsocios.app.ClubSocios;
 import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @ActiveProfiles("test")
+@SpringBootTest(classes = ClubSocios.class)
 public class TestRepositorioSocios {
+    @Autowired
+    private RepositorioSocios repositorioSocios;
 
     @Test
     @DirtiesContext
-    void testOperacionesCRUD() {
-        RepositorioSocios repositorioSocios = new RepositorioSocios();
+    @Transactional
+    public void testOperacionesCRUD() {
         var socio = new Socio("nombre", "apellidos", "email@gmail.com", "123456789", "clave");
         var socioSinRegistrar = new Socio("nombre", "apellidos", "email2@gmail.com", "123456789", "clave");
 
