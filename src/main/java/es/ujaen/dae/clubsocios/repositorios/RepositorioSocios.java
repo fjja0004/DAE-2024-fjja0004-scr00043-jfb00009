@@ -1,9 +1,7 @@
 package es.ujaen.dae.clubsocios.repositorios;
 
 import es.ujaen.dae.clubsocios.entidades.Socio;
-import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -25,20 +23,10 @@ public class RepositorioSocios {
         return Optional.ofNullable(em.find(Socio.class,email));
     }
     public void guardar(Socio socio){
-        if (em.find(Socio.class,socio.getEmail())!=null)
-            throw new SocioYaRegistrado();
-    em.persist(socio);
-    }
 
-    /**
-     * @param socio socio a crear
-     * @brief Crea un nuevo socio
-     */
-    public void crear(Socio socio) {
         if (buscar(socio.getEmail()).isPresent())
             throw new SocioYaRegistrado();
-        else
-            guardar(socio);
+    em.persist(socio);
     }
 
     /**
