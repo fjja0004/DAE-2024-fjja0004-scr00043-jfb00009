@@ -42,18 +42,6 @@ public class TestRepositorioActividades {
         assertThatCode(() -> repositorioActividades.crearActividad(actividad4)).doesNotThrowAnyException();
     }
 
-    @Test
-    void testBuscarTodasActividadesTemporadaActual() {
-        // Comprobamos que se lance la excepción NoHayActividades si no hay actividades en la temporada actual
-        assertThatThrownBy(() -> repositorioActividades.buscarTodasActividadesTemporadaActual()).isInstanceOf(NoHayActividades.class);
-
-        // Comprobamos que se devuelva una lista con todas las actividades de la temporada actual
-        var actividad1 = new Actividad("Actividad 1", "Descripcion 1", 10, 10,
-                LocalDate.now().plusDays(2), LocalDate.now().plusDays(7),
-                LocalDate.now().plusDays(10));
-        repositorioActividades.crearActividad(actividad1);
-        assertThat(repositorioActividades.buscarTodasActividadesTemporadaActual()).isNotEmpty();
-    }
 
     @Test
     void buscaTodasActividadesAbiertas() {

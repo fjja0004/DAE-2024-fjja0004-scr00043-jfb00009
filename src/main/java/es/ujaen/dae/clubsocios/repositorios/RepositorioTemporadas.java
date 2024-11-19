@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class RepositorioTemporadas {
 
     private Map<Integer, Temporada> temporadas;
-
+//TODO buscar todas las actividades de la temporada
     public RepositorioTemporadas() {
         temporadas = new HashMap<>();
     }

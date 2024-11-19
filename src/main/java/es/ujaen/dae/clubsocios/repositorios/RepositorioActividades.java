@@ -1,45 +1,64 @@
 package es.ujaen.dae.clubsocios.repositorios;
 
 import es.ujaen.dae.clubsocios.entidades.Actividad;
+import es.ujaen.dae.clubsocios.entidades.Solicitud;
 import es.ujaen.dae.clubsocios.excepciones.ActividadYaExistente;
 import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 @Repository
+
 public class RepositorioActividades {
+
+    @PersistenceContext
+    EntityManager em;
+
+/*
     private List<Actividad> actividades;
     private int contadorIds = 1;
 
     private int generarId() {
         return contadorIds++;
     }
-
+*/
     /**
      * @brief Constructor por defecto de la clase RepositorioActividades
      */
-    public RepositorioActividades() {
+    /*public RepositorioActividades() {
         actividades = new LinkedList<>();
-    }
+    }*/
 
+
+
+    public void guardarActividad(Actividad actividad) {
+        em.persist(actividad);
+    }
     /**
      * @param actividad actividad a crear
      * @brief Crea una nueva actividad
      */
-    public void crearActividad(Actividad actividad) {
-        Optional<Actividad> actividadExistente = buscarActividadPorTitulo(actividad.getTitulo());
-        if ((!actividadExistente.isEmpty()) && actividadExistente.get().getFechaCelebracion() == actividad.getFechaCelebracion()) {
-            throw new ActividadYaExistente();
-        }
 
-        actividad.fechasValidas();
-        actividad.setId(generarId());
-        actividades.add(actividad);
+    public void crearActividad(Actividad actividad) {
+        if (buscarPorId(actividad.getId()).isPresent()) {
+            throw new ActividadYaExistente();
+        }else guardarActividad(actividad);
     }
+
+
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public List<Integer> listadoIds() {
+        return em.createQuery("select h.id from Actividad h").getResultList();
+    }
+
 
     /**
      * @param titulo título de la actividad
@@ -47,32 +66,16 @@ public class RepositorioActividades {
      * @throws NoHayActividades lanza una excepción si no existe ninguna actividad.
      * @brief Buscar una actividad por su título
      */
-    public Optional<Actividad> buscarActividadPorTitulo(String titulo) {
-        if (actividades.isEmpty()) {
-            return Optional.empty();
-        }
-        for (Actividad actividad : actividades) {
-            if (actividad.getTitulo().equals(titulo)) {
-                return Optional.of(actividad);
-            }
-        }
-        return Optional.empty();
+
+
+    public List<Actividad> buscarActividadPorTitulo(String titulo) {
+        if (listadoIds().isEmpty()) {
+            throw new NoHayActividades();
+        }return em.createQuery("select a from Actividad a where " +
+                        "a.titulo like ?1", Actividad.class)
+                .setParameter(1, "%" + (titulo) + "%").getResultList();
     }
 
-    /**
-     * @return lista de todas las actividades de la temporada actual
-     * @throws NoHayActividades si no hay actividades en la temporada actual
-     * @brief Devuelve una lista con todas las actividades de la temporada actual
-     */
-    /*public List<Actividad> buscarTodasActividadesTemporadaActual() {
-        List<Actividad> actividadesTemporadaActual = new LinkedList<>();
-        for (Actividad actividad : actividades) {
-            if (actividad.getIdTemporada() == LocalDate.now().getYear()) {
-                actividadesTemporadaActual.add(actividad);
-            }
-        }
-        return actividadesTemporadaActual;
-    }*/
 
     /**
      * @return lista de todas las actividades abiertas
@@ -80,26 +83,38 @@ public class RepositorioActividades {
      * @brief Devuelve una lista con todas las actividades a las que es posible inscribirse
      */
     public List<Actividad> buscaTodasActividadesAbiertas() {
-        List<Actividad> actividadesAbiertas = new LinkedList<>();
-        for (Actividad actividad : actividades) {
-            if (actividad.isAbierta()) {
-                actividadesAbiertas.add(actividad);
-            }
+        if (listadoIds().isEmpty()){
+            throw new NoHayActividades();
         }
-        return actividadesAbiertas;
+        return em.createQuery("SELECT a FROM Actividad a WHERE a.fechaInicioInscripcion < :fechaActual AND a.fechaFinInscripcion>:fechaActual", Actividad.class)
+                .setParameter("fechaActual",LocalDate.now() ).getResultList();
     }
 
     /**
      * @param id id de la actividad
-     * @return la actividad con el id dado
+     * @return optional la actividad con el id dado
      * @brief Busca una actividad por su id
      */
-    public Actividad buscarPorId(int id) {
-        for (Actividad actividad : actividades) {
-            if (actividad.getId() == id) {
-                return actividad;
-            }
-        }
-        throw new NoHayActividades();
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public Optional<Actividad> buscarPorId(int id) {
+        return Optional.ofNullable(em.find(Actividad.class, id));
     }
+
+
+    public Actividad actualizar(Actividad actividad) {
+        return em.merge(actividad);
+    }
+
+    public void comprobarErrores() {
+        em.flush();
+    }
+
+    public void guardarSolicitud(Solicitud solicitud) {
+        em.persist(solicitud);
+    }
+
+    public void borrarReserva(Solicitud solicitud) {
+        em.remove(solicitud);
+    }
+
 }

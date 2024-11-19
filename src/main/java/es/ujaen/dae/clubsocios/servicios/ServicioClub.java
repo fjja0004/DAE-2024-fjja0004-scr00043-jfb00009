@@ -80,7 +80,7 @@ public class ServicioClub {
         if (esAdmin(socio)) {
             throw new SocioYaRegistrado();
         }
-        repositorioSocios.crear(socio);
+        repositorioSocios.guardar(socio);
     }
 
     /**
@@ -142,8 +142,9 @@ public class ServicioClub {
      */
     public void realizarSolicitud(Socio solicitante, Actividad actividad, int nAcompanantes) {
         Socio socio = login(solicitante.getEmail(), solicitante.getClave());
-        Actividad actSolicitada = repositorioActividades.buscarPorId(actividad.getId());
-        actSolicitada.realizarSolicitud(socio, nAcompanantes);
+        if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()){
+            Actividad actSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
+            actSolicitada.realizarSolicitud(socio, nAcompanantes);}
     }
 
     /**
@@ -155,8 +156,10 @@ public class ServicioClub {
      */
     public void modificarAcompanantes(Socio socio, Actividad actividad, int nAcompanantes) {
         Socio socioMod = login(socio.getEmail(), socio.getClave());
-        Actividad actMod = repositorioActividades.buscarPorId(actividad.getId());
+        if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()){
+        Actividad actMod = repositorioActividades.buscarPorId(actividad.getId()).get();
         actMod.modificarAcompanantes(socioMod.getEmail(), nAcompanantes);
+        }
     }
 
     /**
@@ -169,8 +172,12 @@ public class ServicioClub {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
 
-        Actividad act = repositorioActividades.buscarPorId(actividad.getId());
-        return act.getSolicitudes();
+        if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()){
+            Actividad act = repositorioActividades.buscarPorId(actividad.getId()).get();
+            return act.getSolicitudes();
+        }else {
+        return new ArrayList<>();
+        }
     }
 
     /**
@@ -180,8 +187,10 @@ public class ServicioClub {
      */
     public void cancelarSolicitud(Socio socio, Actividad actividad) {
         Socio socioCancel = login(socio.getEmail(), socio.getClave());
-        Actividad actCancel = repositorioActividades.buscarPorId(actividad.getId());
-        actCancel.cancelarSolicitud(socioCancel.getEmail());
+        if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()){
+            Actividad actCancel = repositorioActividades.buscarPorId(actividad.getId()).get();
+            actCancel.cancelarSolicitud(socioCancel.getEmail());
+        }
     }
 
     /**
@@ -194,8 +203,10 @@ public class ServicioClub {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
         Socio solicitante = login(socio.getEmail(), socio.getClave());
-        Actividad actividadSolicitada = repositorioActividades.buscarPorId(actividad.getId());
-        actividadSolicitada.aceptarPlaza(solicitante.getEmail());
+        if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()){
+            Actividad actividadSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
+            actividadSolicitada.aceptarPlaza(solicitante.getEmail());
+        }
     }
 
     /**
@@ -208,8 +219,10 @@ public class ServicioClub {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
         Socio solicitante = login(socio.getEmail(), socio.getClave());
-        Actividad actividadSolicitada = repositorioActividades.buscarPorId(actividad.getId());
-        actividadSolicitada.quitarPlaza(solicitante.getEmail());
+            if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()){
+                Actividad actividadSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
+                actividadSolicitada.quitarPlaza(solicitante.getEmail());
+            }
     }
 
     /**
