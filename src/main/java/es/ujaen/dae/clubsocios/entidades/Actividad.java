@@ -44,7 +44,6 @@ public class Actividad {
      * @brief Constructor por defecto de la clase Actividad
      */
     public Actividad() {
-        this.id = 0;
         this.titulo = "";
         this.descripcion = "";
         this.precio = 0;
@@ -65,7 +64,6 @@ public class Actividad {
      * @brief Constructor parametrizado de la clase Actividad
      */
     public Actividad(String titulo, String descripcion, int precio, int plazas, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion, LocalDate fechaCelebracion) {
-        this.id = 0;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.precio = precio;
@@ -220,10 +218,6 @@ public class Actividad {
     public Actividad setFechaCelebracion(@NotNull LocalDate fechaCelebracion) {
         this.fechaCelebracion = fechaCelebracion;
         return this;
-    }
-
-    public void setId(int i) {
-        this.id = i;
     }
 
     public int getId() {

@@ -11,6 +11,7 @@ import java.time.LocalDate;
 public class Solicitud {
     @Id
     @PositiveOrZero
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Min(0)
     @Max(5)
@@ -25,7 +26,6 @@ public class Solicitud {
      * @brief Constructor por defecto de la clase solicitud
      */
     public Solicitud() {
-        this.id = 0;
         this.nAcompanantes = 0;
         this.fecha = LocalDate.now();
         this.plazasAceptadas = 0;
@@ -38,7 +38,6 @@ public class Solicitud {
      * @brief Constructor parametrizado
      */
     public Solicitud(Socio socio,  int nAcompanantes) {
-        this.id = 0;
         this.nAcompanantes = nAcompanantes;
         this.fecha = LocalDate.now();
         this.socio = socio;
@@ -75,10 +74,6 @@ public class Solicitud {
     @PositiveOrZero
     public int getId() {
         return id;
-    }
-
-    public void setId(@PositiveOrZero int id) {
-        this.id = id;
     }
 
     public void aceptarPlaza() {

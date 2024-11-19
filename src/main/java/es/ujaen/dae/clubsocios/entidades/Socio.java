@@ -2,6 +2,8 @@ package es.ujaen.dae.clubsocios.entidades;
 
 import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -11,6 +13,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 public class Socio {
     @Id
     @PositiveOrZero
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @NotBlank
     private String nombre;
@@ -29,7 +32,6 @@ public class Socio {
      * @brief Constructor por defecto de la clase Socio
      */
     public Socio() {
-        id = -1;
         nombre = "nombre";
         apellidos = "apellidos";
         email = "email@email.com";
@@ -47,7 +49,6 @@ public class Socio {
      * @brief Contructor parametrizado de la clase Socio
      */
     public Socio(String nombre, String apellidos, String email, String telefono, String clave) {
-        this.id = -1;
         this.nombre = nombre;
         this.apellidos = apellidos;
         this.email = email;
@@ -58,10 +59,6 @@ public class Socio {
 
     public int getId() {
         return id;
-    }
-
-    public void setId(int i) {
-        this.id = i;
     }
 
     public String getEmail() {
