@@ -3,23 +3,31 @@ package es.ujaen.dae.clubsocios.repositorios;
 import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Repository
+@Transactional
 public class RepositorioSocios {
+    @PersistenceContext
+    EntityManager em;
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public Optional<Socio> buscar(String email){
 
-    private Map<String, Socio> socios;
-
-    /**
-     * @brief Constructor por defecto de la clase RepositorioSocios
-     */
-    public RepositorioSocios() {
-        socios = new HashMap<>();
+        return Optional.ofNullable(em.find(Socio.class,email));
+    }
+    public void guardar(Socio socio){
+        if (em.find(Socio.class,socio.getEmail())!=null)
+            throw new SocioYaRegistrado();
+    em.persist(socio);
     }
 
     /**
@@ -27,35 +35,25 @@ public class RepositorioSocios {
      * @brief Crea un nuevo socio
      */
     public void crear(Socio socio) {
-        if (socios.containsKey(socio.getEmail()))
+        if (buscar(socio.getEmail()).isPresent())
             throw new SocioYaRegistrado();
-
-        socios.put(socio.getEmail(), socio);
-    }
-
-    /**
-     * @param email email del socio
-     * @return socio con el email dado
-     * @brief Busca un socio por su email
-     */
-    public Socio buscarPorEmail(String email) {
-        if (!socios.containsKey(email))
-            throw new SocioNoValido();
-        return socios.get(email);
+        else
+            guardar(socio);
     }
 
     /**
      * @return lista de todos los socios
      * @brief Busca todos los socios
      */
-    public List<Socio> buscaTodos() {
-        return socios.values().stream().collect(Collectors.toList());
-    }
-
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public List<Socio> buscarTodos() {
+        return em.createQuery("SELECT s FROM Socio s", Socio.class).getResultList(); }
     /**
      * @brief Marca todas las cuotas como no pagadas
      */
+
+    @Transactional
     public void marcarTodasCuotasNoPagadas() {
-        socios.values().forEach(socio -> socio.setCuotaPagada(false));
+        Query query = em.createQuery("UPDATE Socio s SET s.cuotaPagada = false"); query.executeUpdate();
     }
 }
