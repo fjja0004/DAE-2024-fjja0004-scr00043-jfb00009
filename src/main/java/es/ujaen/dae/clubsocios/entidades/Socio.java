@@ -2,24 +2,18 @@ package es.ujaen.dae.clubsocios.entidades;
 
 import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.PositiveOrZero;
 
 @Entity
 public class Socio {
-    @Id
-    @PositiveOrZero
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
     @NotBlank
     private String nombre;
     @NotBlank
     private String apellidos;
     @Pattern(regexp = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$", message = "El email no es válido")
+    @Id
     private String email;
     @Pattern(regexp = "^(\\+34|0034|34)?[6789]\\d{8}$", message = "El teléfono no es válido")
     private String telefono;
@@ -57,25 +51,13 @@ public class Socio {
         this.cuotaPagada = false;
     }
 
-    public int getId() {
-        return id;
-    }
+    public String getEmail() {return email;}
 
-    public String getEmail() {
-        return email;
-    }
+    public String getClave() {return clave;}
 
-    public String getClave() {
-        return clave;
-    }
+    public boolean isCuotaPagada() {return cuotaPagada;}
 
-    public boolean isCuotaPagada() {
-        return cuotaPagada;
-    }
-
-    public void setCuotaPagada(boolean cuotaPagada) {
-        this.cuotaPagada = cuotaPagada;
-    }
+    public void setCuotaPagada(boolean cuotaPagada) {this.cuotaPagada = cuotaPagada;}
 
     public boolean comprobarCredenciales(String clave) {
         if (this.clave.equals(clave)) {
