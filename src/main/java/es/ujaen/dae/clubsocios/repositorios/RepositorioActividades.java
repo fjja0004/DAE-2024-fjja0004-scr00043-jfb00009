@@ -64,7 +64,7 @@ public class RepositorioActividades {
      * @throws NoHayActividades si no hay actividades en la temporada actual
      * @brief Devuelve una lista con todas las actividades de la temporada actual
      */
-    public List<Actividad> buscarTodasActividadesTemporadaActual() {
+    /*public List<Actividad> buscarTodasActividadesTemporadaActual() {
         List<Actividad> actividadesTemporadaActual = new LinkedList<>();
         for (Actividad actividad : actividades) {
             if (actividad.getIdTemporada() == LocalDate.now().getYear()) {
@@ -72,7 +72,7 @@ public class RepositorioActividades {
             }
         }
         return actividadesTemporadaActual;
-    }
+    }*/
 
     /**
      * @return lista de todas las actividades abiertas

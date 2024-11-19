@@ -38,16 +38,17 @@ class Socio <<entidad>> {
 }
 
 class Actividad <<entidad>> {
-- título: String
-- descripción: String
-- precio: Double
-- nPlazas: Integer
-- fechaCelebración: Date
-- fechaInicioInscripción: Date
-- fechaFinInscripción: Date
-+ realizarSolicitud(Solicitud:solicitud):void
-+ borrarSolicitud(Solicitud:solicitud)):void
-+ modificarAcompañantes(String: email,Integer:nAcompañantes):void
+    - id: Integer
+    - título: String
+    - descripción: String
+    - precio: Double
+    - nPlazas: Integer
+    - fechaCelebración: Date
+    - fechaInicioInscripción: Date
+    - fechaFinInscripción: Date
+    + realizarSolicitud(Solicitud:solicitud):void
+    + borrarSolicitud(Solicitud:solicitud)):void
+    + modificarAcompañantes(String: email,Integer:nAcompañantes):void
 }
 
 class Solicitud <<objeto-valor>> {

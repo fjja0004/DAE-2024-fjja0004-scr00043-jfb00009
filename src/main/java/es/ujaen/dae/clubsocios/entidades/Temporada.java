@@ -13,13 +13,13 @@ public class Temporada {
     private int anio;
 
     @OneToMany
+    @JoinColumn
     List<Actividad> actividades;
     /**
      * @brief Constructor por defecto de la clase Temporada
      */
     public Temporada() {
         this.anio = LocalDate.now().getYear();
-        this.actividades = new ArrayList<>();
     }
 
     public int getAnio() {

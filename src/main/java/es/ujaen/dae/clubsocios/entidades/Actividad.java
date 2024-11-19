@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.persistence.ForeignKey;
 
 
 import java.time.LocalDate;
@@ -17,8 +18,8 @@ import java.util.Optional;
 @Entity
 public class Actividad {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int idTemporada;
     @NotBlank
     private String titulo;
     @NotBlank
@@ -36,20 +37,14 @@ public class Actividad {
     @NotNull
     private LocalDate fechaCelebracion;
     @OneToMany
+    @JoinColumn
     private List<Solicitud> solicitudes;
-
-    private int contadorIdsSolicitudes = 0;
-
-    private int generarId() {
-        return contadorIdsSolicitudes++;
-    }
 
     /**
      * @brief Constructor por defecto de la clase Actividad
      */
     public Actividad() {
         this.id = 0;
-        this.idTemporada = LocalDate.now().getYear();
         this.titulo = "";
         this.descripcion = "";
         this.precio = 0;
@@ -57,7 +52,6 @@ public class Actividad {
         this.fechaInicioInscripcion = LocalDate.now();
         this.fechaFinInscripcion = LocalDate.now();
         this.fechaCelebracion = LocalDate.now();
-        this.solicitudes = new LinkedList<>();
     }
 
     /**
@@ -72,7 +66,6 @@ public class Actividad {
      */
     public Actividad(String titulo, String descripcion, int precio, int plazas, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion, LocalDate fechaCelebracion) {
         this.id = 0;
-        this.idTemporada = LocalDate.now().getYear();
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.precio = precio;
@@ -80,7 +73,6 @@ public class Actividad {
         this.fechaInicioInscripcion = fechaInicioInscripcion;
         this.fechaFinInscripcion = fechaFinInscripcion;
         this.fechaCelebracion = fechaCelebracion;
-        this.solicitudes = new LinkedList<>();
     }
 
     /**
@@ -114,7 +106,6 @@ public class Actividad {
                 solicitud.setPlazasAceptadas(1);
                 plazasOcupadas++;
             }
-            solicitud.setId(generarId());
             solicitudes.add(solicitud);
         } else {
             throw new SolicitudNoValida();
@@ -237,10 +228,6 @@ public class Actividad {
 
     public int getId() {
         return id;
-    }
-
-    public int getIdTemporada() {
-        return idTemporada;
     }
 
     public List<Solicitud> getSolicitudes() {
