@@ -69,10 +69,11 @@ public Optional<Temporada> buscar(int anio){
                 getResultList();
 
     }
-    //TODO buscar todas las actividades de la temporada
-    public List<Temporada> buscarTodasActividadesDeTemporadas() {
-        return em.createQuery("SELECT t FROM Temporada t", Temporada.class).
-                getResultList();
 
+    public List<Actividad> buscarTodasActividadesDeTemporadas(int anio) {
+        return em.createQuery("SELECT a FROM Temporada t JOIN t.actividades a WHERE t.anio = :anio", Actividad.class)
+                .setParameter("anio", anio).getResultList();
     }
+
+
 }
