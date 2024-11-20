@@ -144,7 +144,7 @@ public class ServicioClub {
         Socio socio = login(solicitante.getEmail(), solicitante.getClave());
         if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
             Actividad actSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
-            repositorioActividades.guardarSolicitud(socio,nAcompanantes,actSolicitada);
+            repositorioActividades.guardarSolicitud(socio, nAcompanantes, actSolicitada);
         }
     }
 
@@ -205,7 +205,9 @@ public class ServicioClub {
             throw new OperacionDeDireccion();
         Socio solicitante = login(socio.getEmail(), socio.getClave());
         if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
-            Actividad actividadSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
+
+            Actividad actividadSolicitada = repositorioActividades.actualizar(actividad);
+            actividadSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
             actividadSolicitada.aceptarPlaza(solicitante.getEmail());
         }
     }
