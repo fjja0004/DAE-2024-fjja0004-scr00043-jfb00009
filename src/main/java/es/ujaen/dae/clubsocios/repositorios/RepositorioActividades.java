@@ -22,26 +22,11 @@ public class RepositorioActividades {
     @PersistenceContext
     EntityManager em;
 
-/*
-    private List<Actividad> actividades;
-    private int contadorIds = 1;
-
-    private int generarId() {
-        return contadorIds++;
-    }
-*/
-    /**
-     * @brief Constructor por defecto de la clase RepositorioActividades
-     */
-    /*public RepositorioActividades() {
-        actividades = new LinkedList<>();
-    }*/
-
-
-@Transactional
+    @Transactional
     public void guardarActividad(Actividad actividad) {
         em.persist(actividad);
     }
+
     /**
      * @param actividad actividad a crear
      * @brief Crea una nueva actividad
@@ -50,7 +35,7 @@ public class RepositorioActividades {
     public void crearActividad(Actividad actividad) {
         if (buscarPorId(actividad.getId()).isPresent()) {
             throw new ActividadYaExistente();
-        }else guardarActividad(actividad);
+        } else guardarActividad(actividad);
     }
 
 
@@ -71,7 +56,8 @@ public class RepositorioActividades {
     public List<Actividad> buscarActividadPorTitulo(String titulo) {
         if (listadoIds().isEmpty()) {
             throw new NoHayActividades();
-        }return em.createQuery("select a from Actividad a where " +
+        }
+        return em.createQuery("select a from Actividad a where " +
                         "a.titulo like ?1", Actividad.class)
                 .setParameter(1, "%" + (titulo) + "%").getResultList();
     }
@@ -83,11 +69,11 @@ public class RepositorioActividades {
      * @brief Devuelve una lista con todas las actividades a las que es posible inscribirse
      */
     public List<Actividad> buscaTodasActividadesAbiertas() {
-        if (listadoIds().isEmpty()){
+        if (listadoIds().isEmpty()) {
             throw new NoHayActividades();
         }
         return em.createQuery("SELECT a FROM Actividad a WHERE a.fechaInicioInscripcion < :fechaActual AND a.fechaFinInscripcion>:fechaActual", Actividad.class)
-                .setParameter("fechaActual",LocalDate.now() ).getResultList();
+                .setParameter("fechaActual", LocalDate.now()).getResultList();
     }
 
     /**
