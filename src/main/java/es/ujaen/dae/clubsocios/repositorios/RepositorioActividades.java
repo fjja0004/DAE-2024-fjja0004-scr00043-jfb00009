@@ -1,11 +1,13 @@
 package es.ujaen.dae.clubsocios.repositorios;
 
 import es.ujaen.dae.clubsocios.entidades.Actividad;
+import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.entidades.Solicitud;
 import es.ujaen.dae.clubsocios.excepciones.ActividadYaExistente;
 import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,26 +24,11 @@ public class RepositorioActividades {
     @PersistenceContext
     EntityManager em;
 
-/*
-    private List<Actividad> actividades;
-    private int contadorIds = 1;
-
-    private int generarId() {
-        return contadorIds++;
-    }
-*/
-    /**
-     * @brief Constructor por defecto de la clase RepositorioActividades
-     */
-    /*public RepositorioActividades() {
-        actividades = new LinkedList<>();
-    }*/
-
-
-@Transactional
+    @Transactional
     public void guardarActividad(Actividad actividad) {
         em.persist(actividad);
     }
+
     /**
      * @param actividad actividad a crear
      * @brief Crea una nueva actividad
@@ -50,7 +37,7 @@ public class RepositorioActividades {
     public void crearActividad(Actividad actividad) {
         if (buscarPorId(actividad.getId()).isPresent()) {
             throw new ActividadYaExistente();
-        }else guardarActividad(actividad);
+        } else guardarActividad(actividad);
     }
 
 
@@ -71,7 +58,8 @@ public class RepositorioActividades {
     public List<Actividad> buscarActividadPorTitulo(String titulo) {
         if (listadoIds().isEmpty()) {
             throw new NoHayActividades();
-        }return em.createQuery("select a from Actividad a where " +
+        }
+        return em.createQuery("select a from Actividad a where " +
                         "a.titulo like ?1", Actividad.class)
                 .setParameter(1, "%" + (titulo) + "%").getResultList();
     }
@@ -83,11 +71,11 @@ public class RepositorioActividades {
      * @brief Devuelve una lista con todas las actividades a las que es posible inscribirse
      */
     public List<Actividad> buscaTodasActividadesAbiertas() {
-        if (listadoIds().isEmpty()){
+        if (listadoIds().isEmpty()) {
             throw new NoHayActividades();
         }
         return em.createQuery("SELECT a FROM Actividad a WHERE a.fechaInicioInscripcion < :fechaActual AND a.fechaFinInscripcion>:fechaActual", Actividad.class)
-                .setParameter("fechaActual",LocalDate.now() ).getResultList();
+                .setParameter("fechaActual", LocalDate.now()).getResultList();
     }
 
     /**
@@ -109,7 +97,11 @@ public class RepositorioActividades {
         em.flush();
     }
 
-    public void guardarSolicitud(Solicitud solicitud) {
+    @Transactional
+    public void guardarSolicitud( @Valid Socio socio, int nAcompanantes,Actividad actividad) {
+
+        actividad = em.find(actividad.getClass(),actividad.getId());
+        Solicitud solicitud = actividad.realizarSolicitud(socio, nAcompanantes);
         em.persist(solicitud);
     }
 

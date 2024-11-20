@@ -19,17 +19,19 @@ import java.util.Optional;
 public class RepositorioSocios {
     @PersistenceContext
     EntityManager em;
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-    public Optional<Socio> buscar(String email){
 
-        return Optional.ofNullable(em.find(Socio.class,email));
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public Optional<Socio> buscar(String email) {
+
+        return Optional.ofNullable(em.find(Socio.class, email));
     }
+
     @Transactional//(propagation = Propagation.SUPPORTS)
-    public void guardar(Socio socio){
+    public void guardar(Socio socio) {
 
         if (buscar(socio.getEmail()).isPresent())
             throw new SocioYaRegistrado();
-    em.persist(socio);
+        em.persist(socio);
     }
 
     /**
@@ -40,6 +42,7 @@ public class RepositorioSocios {
     public List<Socio> buscarTodos() {
         return em.createQuery("SELECT s FROM Socio s", Socio.class).getResultList();
     }
+
     /**
      * @brief Marca todas las cuotas como no pagadas
      */

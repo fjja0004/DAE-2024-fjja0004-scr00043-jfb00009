@@ -75,7 +75,7 @@ public class Solicitud {
     }
 
     public void aceptarPlaza() {
-        if (this.plazasAceptadas < this.nAcompanantes) {
+        if (this.plazasAceptadas <= this.nAcompanantes) {
             this.plazasAceptadas++;
         }
     }

@@ -79,6 +79,10 @@ public class Actividad {
 
     //TODO revisar creo que hay que cambiarlo
     public Optional<Solicitud> buscarSolicitudPorEmail(String email) {
+
+        if(solicitudes.isEmpty()){
+            throw new SolicitudNoExistente();
+        }
         for (Solicitud solicitud : solicitudes) {
             if (solicitud.getSocio().equals(email)) {
                 return Optional.of(solicitud);
@@ -92,11 +96,7 @@ public class Actividad {
      * @param nAcompanantes número de acompañantes
      * @brief Realiza una solicitud de inscripción a una actividad
      */
-    public void realizarSolicitud(@Valid Socio socio, int nAcompanantes) {
-
-        if (buscarSolicitudPorEmail(socio.getEmail()).isPresent()) {
-            throw new SolicitudYaRealizada();
-        }
+    public Solicitud realizarSolicitud(@Valid Socio socio, int nAcompanantes) {
 
         if (this.isAbierta()) {
             Solicitud solicitud = new Solicitud(socio, nAcompanantes);
@@ -105,6 +105,7 @@ public class Actividad {
                 plazasOcupadas++;
             }
             solicitudes.add(solicitud);
+            return solicitud;
         } else {
             throw new SolicitudNoValida();
         }

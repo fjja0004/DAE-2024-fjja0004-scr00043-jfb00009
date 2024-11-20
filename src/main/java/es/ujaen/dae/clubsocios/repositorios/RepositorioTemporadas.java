@@ -24,37 +24,28 @@ import java.util.stream.Collectors;
 @Transactional
 public class RepositorioTemporadas {
 
-@PersistenceContext
+    @PersistenceContext
     EntityManager em;
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-public Optional<Temporada> buscar(int anio){
 
-    return Optional.ofNullable(em.find(Temporada.class,anio));
-}
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+    public Optional<Temporada> buscar(int anio) {
 
-    public void guardar(Temporada temporada){
+        return Optional.ofNullable(em.find(Temporada.class, anio));
+    }
+
+    public void guardar(Temporada temporada) {
 
         if (buscar(temporada.getAnio()).isPresent())
             throw new TemporadaYaExistente();
         em.persist(temporada);
     }
 
-
-
-    //private Map<Integer, Temporada> temporadas;
-
-    /*public RepositorioTemporadas() {
-        temporadas = new HashMap<>();
-    }*/
-
     /**
      * @brief Crea una nueva temporada
      */
     public void crearTemporada() {
         Temporada temporada = new Temporada();
-        if (buscar(LocalDate.now().getYear()).isPresent()){
-            throw new TemporadaYaExistente();
-        }else{
+        if (!buscar(LocalDate.now().getYear()).isPresent()) {
             em.persist(temporada);
         }
     }
