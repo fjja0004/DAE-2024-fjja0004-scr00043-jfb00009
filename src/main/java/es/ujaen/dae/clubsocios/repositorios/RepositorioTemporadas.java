@@ -47,7 +47,7 @@ public class RepositorioTemporadas {
         Temporada temporada = new Temporada();
         if (!buscar(LocalDate.now().getYear()).isPresent()) {
             em.persist(temporada);
-        }
+        }else throw new TemporadaYaExistente();
     }
 
     /**
