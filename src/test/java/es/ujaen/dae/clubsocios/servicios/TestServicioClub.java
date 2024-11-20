@@ -146,7 +146,7 @@ public class TestServicioClub {
         assertDoesNotThrow(() -> servicioClub.marcarCuotaPagada(direccion, socioTest));
 
         //Comprobar que se ha marcado la cuota como pagada.
-        assertTrue(socioTest.isCuotaPagada());
+        assertTrue(servicioClub.login(socioTest.getEmail(), socioTest.getClave()).isCuotaPagada());
 
         //Compruebo que el socio no tuviera ya pagada la cuota.
         assertThatThrownBy(() -> servicioClub.marcarCuotaPagada(direccion, socioTest)).isInstanceOf(PagoYaRealizado.class);
