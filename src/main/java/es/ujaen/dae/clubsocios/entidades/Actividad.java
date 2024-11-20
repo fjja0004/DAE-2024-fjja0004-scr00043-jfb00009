@@ -95,10 +95,10 @@ public class Actividad {
     public Optional<Solicitud> buscarSolicitudPorEmail(String email) {
 
         if(solicitudes.isEmpty()){
-            throw new SolicitudNoExistente();
+            return Optional.empty();
         }
         for (Solicitud solicitud : solicitudes) {
-            if (solicitud.getSocio().equals(email)) {
+            if (solicitud.getSocio().getEmail().equals(email)) {
                 return Optional.of(solicitud);
             }
         }

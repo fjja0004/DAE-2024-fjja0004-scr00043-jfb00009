@@ -88,10 +88,10 @@ public class RepositorioActividades {
     @Transactional
     public void guardarSolicitud( @Valid Socio socio, int nAcompanantes, Actividad actividad) {
         actividad = em.find(actividad.getClass(),actividad.getId());
-        Solicitud solicitud = actividad.realizarSolicitud(socio, nAcompanantes);
-        if(actividad.buscarSolicitudPorEmail(socio.getEmail()).isEmpty()) {
+        if(actividad.buscarSolicitudPorEmail(socio.getEmail()).isPresent()) {
             throw new SolicitudYaRealizada();
         }
+        Solicitud solicitud = actividad.realizarSolicitud(socio, nAcompanantes);
         em.persist(solicitud);
     }
 

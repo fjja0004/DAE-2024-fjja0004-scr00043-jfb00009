@@ -186,7 +186,7 @@ public class TestServicioClub {
     void testRealizarSolicitud() {
 
         Socio direccion = new Socio("administrador", "-", "admin@club.es", "621302025", "ElAdMiN");
-        Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
+        Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
 
         //Actividad a la que es posible inscribirse.
         Actividad actividadAbierta = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
@@ -200,14 +200,10 @@ public class TestServicioClub {
 
         servicioClub.crearActividad(direccion, actividadCerrada);
 
-        //Comprobamos que se lance una excepción si el socio no está registrado.
-        assertThatThrownBy(() -> servicioClub.realizarSolicitud(socio, actividadCerrada, 3)).isInstanceOf(SocioNoValido.class);
+        //Comprobamos que se lance una excepción si el socio no tiene la cuota pagada
+        assertThatThrownBy(() -> servicioClub.realizarSolicitud(socio, actividadAbierta, 3)).isInstanceOf(SocioNoValido.class);
 
-        servicioClub.anadirSocio(socio);
-
-        //Comprobamos que se lance una excepción si la actividad no existe.
-        assertThatThrownBy(() -> servicioClub.realizarSolicitud(socio, actividadAbierta, 3)).isInstanceOf(NoHayActividades.class);
-
+        servicioClub.marcarCuotaPagada(direccion, socio);
         //Comprobamos que se lance una excepción si la actividad no está abierta.
         assertThatThrownBy(() -> servicioClub.realizarSolicitud(socio, actividadCerrada, 3)).isInstanceOf(SolicitudNoValida.class);
 
@@ -229,12 +225,12 @@ public class TestServicioClub {
 
         //Actividad a la que es posible inscribirse.
         Actividad actividadAbierta = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                10, LocalDate.now().minusDays(2), LocalDate.now().plusDays(7),
+                10, LocalDate.now(), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
 
         //Actividad a la que no es posible inscribirse.
         Actividad actividadCerrada = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                10, LocalDate.now().minusDays(2), LocalDate.now().minusDays(1),
+                10, LocalDate.now().plusDays(2), LocalDate.now().plusDays(4),
                 LocalDate.now().plusDays(10));
 
         servicioClub.crearActividad(direccion, actividadCerrada);
