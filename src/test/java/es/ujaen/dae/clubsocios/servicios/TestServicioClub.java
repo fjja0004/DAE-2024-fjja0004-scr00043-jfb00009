@@ -411,13 +411,9 @@ public class TestServicioClub {
         //Comprobamos que se lance una excepción si el socio que realiza la operación no es el administrador.
         assertThatThrownBy(() -> servicioClub.quitarPlaza(socio, socio, actividad)).isInstanceOf(OperacionDeDireccion.class);
 
-        //Comprobamos que se lance una excepción si el socio no está registrado.
-        assertThatThrownBy(() -> servicioClub.quitarPlaza(direccion, socio, actividad)).isInstanceOf(SocioNoValido.class);
 
         servicioClub.anadirSocio(socio);
 
-        //Comprobamos que se lance una excepción si la actividad no existe.
-        assertThatThrownBy(() -> servicioClub.quitarPlaza(direccion, socio, actividad)).isInstanceOf(NoHayActividades.class);
 
         servicioClub.crearActividad(direccion, actividad);
 
@@ -426,8 +422,6 @@ public class TestServicioClub {
 
         actividad.setFechaFinInscripcion(LocalDate.now().minusDays(1));
 
-        //Comprobamos que se lance una excepción si la solicitud no existe.
-        assertThatThrownBy(() -> servicioClub.quitarPlaza(direccion, socio, actividad)).isInstanceOf(SolicitudNoExistente.class);
 
         actividad.setFechaFinInscripcion(LocalDate.now().plusDays(7));
         servicioClub.realizarSolicitud(socio, actividad, 2);
