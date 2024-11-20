@@ -144,7 +144,7 @@ public class ServicioClub {
         Socio socio = login(solicitante.getEmail(), solicitante.getClave());
         if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
             Actividad actSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
-            repositorioActividades.guardarSolicitud(socio,nAcompanantes);
+            repositorioActividades.guardarSolicitud(socio,nAcompanantes,actSolicitada);
         }
     }
 

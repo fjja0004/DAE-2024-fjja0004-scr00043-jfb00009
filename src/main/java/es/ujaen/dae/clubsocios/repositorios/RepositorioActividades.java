@@ -98,8 +98,10 @@ public class RepositorioActividades {
     }
 
     @Transactional
-    public void guardarSolicitud( @Valid Socio socio, int nAcompanantes) {
-        Solicitud solicitud =new Solicitud(socio,nAcompanantes);
+    public void guardarSolicitud( @Valid Socio socio, int nAcompanantes,Actividad actividad) {
+
+        actividad = em.find(actividad.getClass(),actividad.getId());
+        Solicitud solicitud = actividad.realizarSolicitud(socio, nAcompanantes);
         em.persist(solicitud);
     }
 
