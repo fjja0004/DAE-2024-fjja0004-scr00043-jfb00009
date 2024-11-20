@@ -159,7 +159,7 @@ public class TestServicioClub {
 
         //Actividad a la que es posible inscribirse.
         Actividad actividadAbierta = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                10, LocalDate.now().minusDays(2), LocalDate.now().plusDays(7),
+                10, LocalDate.now(), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
 
         //Actividad a la que no es posible inscribirse.
@@ -168,19 +168,14 @@ public class TestServicioClub {
                 LocalDate.now().plusDays(10));
 
         //Comprobamos que la lista esté vacía si no hay actividades abiertas.
-
-        //Si no hay ninguna.
         assertEquals(0, servicioClub.buscarActividadesAbiertas().size());
 
-        //Si hay alguna, pero todas están cerradas.
-        servicioClub.crearActividad(direccion, actividadCerrada);
-        assertEquals(0, servicioClub.buscarActividadesAbiertas().size());
+        //En TestRepositorioActividades se comprueba que no se devuelvan actividades cerradas.
 
-        //Si hay tanto abiertas como cerradas, solo se devuelven las abiertas.
+        //Comprobamos que se devuelva la actividad abierta.
         servicioClub.crearActividad(direccion, actividadAbierta);
         assertEquals(1, servicioClub.buscarActividadesAbiertas().size());
         assertTrue(servicioClub.buscarActividadesAbiertas().contains(actividadAbierta));
-
     }
 
 
