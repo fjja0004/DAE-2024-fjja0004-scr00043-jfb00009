@@ -100,7 +100,7 @@ public class RepositorioActividades {
         return Optional.ofNullable(em.find(Actividad.class, id));
     }
 
-
+@Transactional
     public Actividad actualizar(Actividad actividad) {
         return em.merge(actividad);
     }

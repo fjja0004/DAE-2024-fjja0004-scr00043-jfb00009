@@ -211,7 +211,6 @@ public class ServicioClub {
         if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
 
             Actividad actividadSolicitada = repositorioActividades.actualizar(actividad);
-            actividadSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
             actividadSolicitada.aceptarPlaza(solicitante.getEmail());
         }
     }
