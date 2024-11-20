@@ -116,7 +116,7 @@ public class ServicioClub {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
         if (!repositorioSocios.buscar(socio.getEmail()).get().isCuotaPagada()) {
-            repositorioSocios.buscar(socio.getEmail()).get().setCuotaPagada(true);
+            repositorioSocios.marcarCuotasPagadaEnSocio(socio);
         } else {
             throw new PagoYaRealizado();
         }

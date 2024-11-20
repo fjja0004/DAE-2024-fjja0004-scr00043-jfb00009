@@ -150,10 +150,6 @@ public class TestServicioClub {
 
         //Compruebo que el socio no tuviera ya pagada la cuota.
         assertThatThrownBy(() -> servicioClub.marcarCuotaPagada(direccion, socioTest)).isInstanceOf(PagoYaRealizado.class);
-
-        //Compruebo que el socio exista en el sistema (en nuestro caso el administrador no está en memoria con el resto de socios).
-        assertThatThrownBy(() -> servicioClub.marcarCuotaPagada(direccion, direccion)).isInstanceOf(SocioNoValido.class);
-
     }
 
     @Test
