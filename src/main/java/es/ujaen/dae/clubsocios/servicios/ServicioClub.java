@@ -145,10 +145,14 @@ public class ServicioClub {
      * @brief realiza la solicitud de una actividad
      */
     public void realizarSolicitud(Socio solicitante, Actividad actividad, int nAcompanantes) {
-        Socio socio = login(solicitante.getEmail(), solicitante.getClave());
-        if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
-            Actividad actSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
-            repositorioActividades.guardarSolicitud(socio, nAcompanantes, actSolicitada);
+        if (actividad.isAbierta()) {
+            Socio socio = login(solicitante.getEmail(), solicitante.getClave());
+            if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
+                Actividad actSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
+                repositorioActividades.guardarSolicitud(socio, nAcompanantes, actSolicitada);
+            }
+        } else {
+            throw new SolicitudNoValida();
         }
     }
 

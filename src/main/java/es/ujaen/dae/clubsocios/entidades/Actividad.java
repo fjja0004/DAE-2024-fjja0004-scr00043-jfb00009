@@ -35,7 +35,7 @@ public class Actividad {
     @NotNull
     private LocalDate fechaCelebracion;
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn
+    @JoinColumn(name = "actividad")
     private List<Solicitud> solicitudes;
 
     /**

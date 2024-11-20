@@ -6,8 +6,10 @@ import es.ujaen.dae.clubsocios.entidades.Solicitud;
 import es.ujaen.dae.clubsocios.excepciones.ActividadYaExistente;
 import es.ujaen.dae.clubsocios.excepciones.FechaNoValida;
 import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
+import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
@@ -87,10 +89,12 @@ public class RepositorioActividades {
     }
 
     @Transactional
-    public void guardarSolicitud( @Valid Socio socio, int nAcompanantes,Actividad actividad) {
-
+    public void guardarSolicitud( @Valid Socio socio, int nAcompanantes, Actividad actividad) {
         actividad = em.find(actividad.getClass(),actividad.getId());
         Solicitud solicitud = actividad.realizarSolicitud(socio, nAcompanantes);
+        if(actividad.buscarSolicitudPorEmail(socio.getEmail()).isEmpty()) {
+            throw new SolicitudYaRealizada();
+        }
         em.persist(solicitud);
     }
 
