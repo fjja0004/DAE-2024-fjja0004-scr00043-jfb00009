@@ -24,7 +24,6 @@ public class TestRepositorioSocios {
 
     @Test
     @DirtiesContext
-    @Transactional
     public void testOperacionesCRUD() {
         Socio socio = new Socio("nombre", "apellidos", "email@gmail.com", "623456789", "clave");
         Socio socioSinRegistrar = new Socio("nombre", "apellidos", "email2@gmail.com", "623456789", "clave");
@@ -45,7 +44,6 @@ public class TestRepositorioSocios {
 
     @Test
     @DirtiesContext
-    @Transactional
     public void testCuotas() {
         Socio socio1 = new Socio("nombre", "apellidos", "email1@gmail.com", "623456789", "clave");
         Socio socio2 = new Socio("nombre", "apellidos", "email2@gmail.com", "623456789", "clave");

@@ -25,7 +25,6 @@ public class TestRepositorioActividades {
 
     @Test
     @DirtiesContext
-    @Transactional
     void TestCrearActividad() {
         // Comprobamos que no se pueda crear una actividad con fecha de fin de inscripción anterior a la de inicio
         var actividad2 = new Actividad("Actividad 2", "Descripcion 2", 10, 10,
@@ -48,6 +47,7 @@ public class TestRepositorioActividades {
 
 
     @Test
+    @DirtiesContext
     void buscaTodasActividadesAbiertas() {
         // Comprobamos que se lance la excepción NoHayActividades si no hay actividades abiertas
         assertThatThrownBy(() -> repositorioActividades.buscaTodasActividadesAbiertas()).isInstanceOf(NoHayActividades.class);
