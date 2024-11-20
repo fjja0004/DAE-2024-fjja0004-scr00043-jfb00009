@@ -38,7 +38,7 @@ public class RepositorioActividades {
     }*/
 
 
-
+@Transactional
     public void guardarActividad(Actividad actividad) {
         em.persist(actividad);
     }

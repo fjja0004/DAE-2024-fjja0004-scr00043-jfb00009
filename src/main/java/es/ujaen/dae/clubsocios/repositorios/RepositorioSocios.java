@@ -22,7 +22,7 @@ public class RepositorioSocios {
 
         return Optional.ofNullable(em.find(Socio.class,email));
     }
-    @Transactional(propagation = Propagation.SUPPORTS)
+    @Transactional//(propagation = Propagation.SUPPORTS)
     public void guardar(Socio socio){
 
         if (buscar(socio.getEmail()).isPresent())

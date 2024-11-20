@@ -76,6 +76,8 @@ public class Actividad {
      * @return solicitud de inscripción a la actividad
      * @brief Comprueba si existe una solicitud de inscripción a la actividad
      */
+
+    //TODO revisar creo que hay que cambiarlo
     public Optional<Solicitud> buscarSolicitudPorEmail(String email) {
         for (Solicitud solicitud : solicitudes) {
             if (solicitud.getSocio().equals(email)) {
