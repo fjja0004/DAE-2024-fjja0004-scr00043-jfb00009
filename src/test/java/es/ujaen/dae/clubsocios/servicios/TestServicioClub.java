@@ -241,7 +241,7 @@ public class TestServicioClub {
         }
 
         //Comprobamos que se lance una excepción si la solicitud no existe.
-        /*Actividad finalActividadAbierta = actividadAbierta; //para que funcionene las funciones lambda
+        Actividad finalActividadAbierta = actividadAbierta; //para que funcionene las funciones lambda
         assertThatThrownBy(() -> servicioClub.modificarAcompanantes(socio, finalActividadAbierta, 3)).isInstanceOf(SolicitudNoExistente.class);
 
         //Comprobamos que no se lance una excepción si la modificación es correcta.
@@ -249,13 +249,13 @@ public class TestServicioClub {
         assertDoesNotThrow(() -> servicioClub.modificarAcompanantes(socio, finalActividadAbierta, 5));
 
         //Comprobamos que se haya modificado el número de acompañantes.
-        Solicitud solicitud;
-        for (Actividad actividad : servicioClub.buscarActividadesAbiertas()) {
-            if (finalActividadAbierta.equals(actividad)) {
-                actividadAbierta = actividad;
+        Solicitud solicitud = new Solicitud();
+        for (Solicitud s : servicioClub.buscarSolicitudesDeActividad(direccion, finalActividadAbierta)) {
+            if (s.getSocio().equals(socio)) {
+                solicitud = s;
             }
         }
-        assertEquals(5, actividadAbierta.getSolicitudes());*/
+        assertEquals(5, solicitud.getnAcompanantes());
 
     }
 
