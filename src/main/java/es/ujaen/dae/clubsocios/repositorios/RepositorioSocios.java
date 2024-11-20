@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,8 +46,10 @@ public class RepositorioSocios {
 
     @Transactional
     public void marcarTodasCuotasNoPagadas() {
-        Query query = em.createQuery("UPDATE Socio s SET s.cuotaPagada = false");
-        query.executeUpdate();
+        List<Socio> socios = buscarTodos();
+        for (Socio socio : socios) {
+            socio.setCuotaPagada(false);
+        }
     }
 
     @Transactional
