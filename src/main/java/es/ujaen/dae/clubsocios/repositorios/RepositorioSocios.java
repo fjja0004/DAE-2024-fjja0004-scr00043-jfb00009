@@ -44,11 +44,13 @@ public class RepositorioSocios {
 
     @Transactional
     public void marcarTodasCuotasNoPagadas() {
-        Query query = em.createQuery("UPDATE Socio s SET s.cuotaPagada = false"); query.executeUpdate();
+        Query query = em.createQuery("UPDATE Socio s SET s.cuotaPagada = false");
+        query.executeUpdate();
     }
 
     @Transactional
     public void marcarCuotasPagadaEnSocio(Socio socio) {
-        Query query = em.createQuery("UPDATE Socio s SET s.cuotaPagada = true WHERE s = :socio");
-        query.setParameter("socio", socio); query.executeUpdate(); }
+        socio = em.find(socio.getClass(), socio.getEmail());
+        socio.setCuotaPagada(true);
+    }
 }

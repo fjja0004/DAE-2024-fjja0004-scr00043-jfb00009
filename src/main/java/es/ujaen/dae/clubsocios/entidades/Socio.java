@@ -51,6 +51,20 @@ public class Socio {
         this.cuotaPagada = false;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Socio socio = (Socio) o;
+        return getEmail().equals(socio.getEmail());
+    }
+
+    @Override
+    public int hashCode() {
+        return getEmail().hashCode();
+    }
+
     public String getEmail() {return email;}
 
     public String getClave() {return clave;}

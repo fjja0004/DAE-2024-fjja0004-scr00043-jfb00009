@@ -81,6 +81,7 @@ class RepositorioSocios <<Repositorio>> {
     + buscar(email: String): Socio
     + buscaTodos(): List<Socio>
     + marcarTodasCuotasNoPagadas(): void
+    + marcarCuotasPagadaEnSocio(socio: Socio): void
 }
 
 class RepositorioTemporada <<Repositorio>> {
