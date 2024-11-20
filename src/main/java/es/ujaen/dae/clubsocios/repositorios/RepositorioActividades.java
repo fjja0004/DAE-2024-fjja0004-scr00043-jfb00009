@@ -36,7 +36,7 @@ public class RepositorioActividades {
      * @brief Crea una nueva actividad
      */
 
-    public void crearActividad(Actividad actividad) {
+    public Actividad crearActividad(Actividad actividad) {
         if (actividad.getFechaCelebracion().isBefore(actividad.getFechaFinInscripcion())
                 || actividad.getFechaFinInscripcion().isBefore(actividad.getFechaInicioInscripcion())
                 || LocalDate.now().isAfter(actividad.getFechaInicioInscripcion())) {
@@ -46,7 +46,10 @@ public class RepositorioActividades {
         if (buscarPorId(actividad.getId()).isPresent()) {
             throw new ActividadYaExistente();
         }
-        else guardarActividad(actividad);
+        else {
+            guardarActividad(actividad);
+            return actividad;
+        }
     }
 
 
@@ -83,7 +86,7 @@ public class RepositorioActividades {
         if (listadoIds().isEmpty()) {
             throw new NoHayActividades();
         }
-        return em.createQuery("SELECT a FROM Actividad a WHERE a.fechaInicioInscripcion < :fechaActual AND a.fechaFinInscripcion>:fechaActual", Actividad.class)
+        return em.createQuery("SELECT a FROM Actividad a WHERE a.fechaInicioInscripcion <= :fechaActual AND a.fechaFinInscripcion>:fechaActual", Actividad.class)
                 .setParameter("fechaActual", LocalDate.now()).getResultList();
     }
 
