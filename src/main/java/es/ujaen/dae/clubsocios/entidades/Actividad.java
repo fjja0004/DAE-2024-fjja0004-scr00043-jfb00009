@@ -238,4 +238,12 @@ public class Actividad {
     public int getPlazas() {
         return plazas;
     }
+
+    public @NotNull LocalDate getFechaInicioInscripcion() {
+        return fechaInicioInscripcion;
+    }
+
+    public @NotNull LocalDate getFechaFinInscripcion() {
+        return fechaFinInscripcion;
+    }
 }
