@@ -168,10 +168,8 @@ public class ServicioClub {
      * @brief modifica el número de acompañantes que tendrá un socio
      */
     public void modificarAcompanantes(Socio socio, Actividad actividad, int nAcompanantes) {
-        Socio socioMod = login(socio.getEmail(), socio.getClave());
         if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
-            Actividad actMod = repositorioActividades.buscarPorId(actividad.getId()).get();
-            actMod.modificarAcompanantes(socioMod.getEmail(), nAcompanantes);
+            repositorioActividades.modificarAcompanantes(socio, nAcompanantes, actividad);
         }
     }
 

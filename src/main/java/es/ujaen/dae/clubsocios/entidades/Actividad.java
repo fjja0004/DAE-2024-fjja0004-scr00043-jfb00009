@@ -92,7 +92,6 @@ public class Actividad {
      * @brief Comprueba si existe una solicitud de inscripción a la actividad
      */
 
-    //TODO revisar creo que hay que cambiarlo
     public Optional<Solicitud> buscarSolicitudPorEmail(String email) {
 
         if (solicitudes.isEmpty()) {

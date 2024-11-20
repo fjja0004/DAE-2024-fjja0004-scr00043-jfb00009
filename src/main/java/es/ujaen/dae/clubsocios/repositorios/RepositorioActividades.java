@@ -3,10 +3,7 @@ package es.ujaen.dae.clubsocios.repositorios;
 import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.entidades.Solicitud;
-import es.ujaen.dae.clubsocios.excepciones.ActividadYaExistente;
-import es.ujaen.dae.clubsocios.excepciones.FechaNoValida;
-import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
-import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
+import es.ujaen.dae.clubsocios.excepciones.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -32,7 +29,7 @@ public class RepositorioActividades {
      * @param actividad actividad a crear
      * @brief Crea una nueva actividad
      */
-
+    @Transactional
     public Actividad crearActividad(Actividad actividad) {
         if (actividad.getFechaCelebracion().isBefore(actividad.getFechaFinInscripcion())
                 || actividad.getFechaFinInscripcion().isBefore(actividad.getFechaInicioInscripcion())
@@ -60,6 +57,7 @@ public class RepositorioActividades {
      * @throws NoHayActividades si no hay actividades abiertas
      * @brief Devuelve una lista con todas las actividades a las que es posible inscribirse
      */
+    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<Actividad> buscaTodasActividadesAbiertas() {
         return em.createQuery("SELECT a FROM Actividad a WHERE a.fechaInicioInscripcion <= :fechaActual AND a.fechaFinInscripcion>:fechaActual", Actividad.class)
                 .setParameter("fechaActual", LocalDate.now()).getResultList();
@@ -94,8 +92,22 @@ public class RepositorioActividades {
         em.persist(solicitud);
     }
 
+    @Transactional
     public void borrarReserva(Solicitud solicitud) {
         em.remove(solicitud);
+    }
+
+    @Transactional
+    public void modificarAcompanantes(Socio socio, int nAcompanantes, Actividad actividad) {
+        actividad = em.find(actividad.getClass(),actividad.getId());
+        if(actividad.buscarSolicitudPorEmail(socio.getEmail()).isEmpty()){
+            throw new SolicitudNoExistente();
+        } else if (actividad.isAbierta()){
+            Solicitud solicitud = actividad.buscarSolicitudPorEmail(socio.getEmail()).get();
+            solicitud.modificarAcompanantes(nAcompanantes);
+        } else {
+            throw new InscripcionCerrada();
+        }
     }
 
 }
