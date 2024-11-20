@@ -304,6 +304,11 @@ public class TestServicioClub {
                 10, LocalDate.now(), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
 
+        //Actividad a la que no es posible inscribirse.
+        Actividad actividadCerrada = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now().plusDays(2), LocalDate.now().plusDays(4),
+                LocalDate.now().plusDays(10));
+
         //Comprobamos que se lance una excepción si el socio no está registrado.
         assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(SocioNoValido.class);
 
@@ -314,18 +319,19 @@ public class TestServicioClub {
         assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(NoHayActividades.class);
 
         servicioClub.crearActividad(direccion, actividad);
+        servicioClub.crearActividad(direccion, actividadCerrada);
 
         //Comprobamos que se lance una excepción si la solicitud no existe.
         assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(SolicitudNoExistente.class);
         servicioClub.realizarSolicitud(socio, actividad, 3);
 
-        //Comprobamos que no permita cancelar la solicitud si ha terminado el plazo de inscripción.
-        actividad.setFechaFinInscripcion(LocalDate.now().minusDays(1));
-        assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(InscripcionCerrada.class);
+        //Comprobamos que no permita cancelar la solicitud si el periodo de inscripción ha finalizado.
+        assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividadCerrada)).isInstanceOf(InscripcionCerrada.class);
 
         //Comprobamos que se haya cancelado la solicitud.
-        actividad.setFechaFinInscripcion(LocalDate.now().plusDays(7));
         assertDoesNotThrow(() -> servicioClub.cancelarSolicitud(socio, actividad));
+        servicioClub.buscarSolicitudesDeActividad(direccion, actividad);
+        //Nota: debuggeando se ve que la solicitud se elimina correctamente, pero al volver a cancelarla, la actividad no está actualizada y no se lanza la excepción.
         assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(SolicitudNoExistente.class);
     }
 
