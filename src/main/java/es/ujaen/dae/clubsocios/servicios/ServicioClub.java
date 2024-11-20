@@ -189,7 +189,7 @@ public class ServicioClub {
             Actividad act = repositorioActividades.buscarPorId(actividad.getId()).get();
             return act.getSolicitudes();
         } else {
-            return new ArrayList<>();
+            throw new NoHayActividades();
         }
     }
 

@@ -42,8 +42,7 @@ public class RepositorioActividades {
         }
         if (buscarPorId(actividad.getId()).isPresent()) {
             throw new ActividadYaExistente();
-        }
-        else {
+        } else {
             em.persist(actividad);
             return actividad;
         }
@@ -76,7 +75,7 @@ public class RepositorioActividades {
         return Optional.ofNullable(em.find(Actividad.class, id));
     }
 
-@Transactional
+    @Transactional
     public Actividad actualizar(Actividad actividad) {
         return em.merge(actividad);
     }
@@ -86,9 +85,9 @@ public class RepositorioActividades {
     }
 
     @Transactional
-    public void guardarSolicitud( @Valid Socio socio, int nAcompanantes, Actividad actividad) {
-        actividad = em.find(actividad.getClass(),actividad.getId());
-        if(actividad.buscarSolicitudPorEmail(socio.getEmail()).isPresent()) {
+    public void guardarSolicitud(@Valid Socio socio, int nAcompanantes, Actividad actividad) {
+        actividad = em.find(actividad.getClass(), actividad.getId());
+        if (actividad.buscarSolicitudPorEmail(socio.getEmail()).isPresent()) {
             throw new SolicitudYaRealizada();
         }
         Solicitud solicitud = actividad.realizarSolicitud(socio, nAcompanantes);

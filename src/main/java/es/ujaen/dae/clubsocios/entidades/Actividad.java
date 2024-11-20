@@ -13,6 +13,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
 @Entity
 public class Actividad {
     @Id
@@ -34,7 +35,7 @@ public class Actividad {
     private LocalDate fechaFinInscripcion;
     @NotNull
     private LocalDate fechaCelebracion;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "actividad")
     private List<Solicitud> solicitudes;
 
@@ -94,7 +95,7 @@ public class Actividad {
     //TODO revisar creo que hay que cambiarlo
     public Optional<Solicitud> buscarSolicitudPorEmail(String email) {
 
-        if(solicitudes.isEmpty()){
+        if (solicitudes.isEmpty()) {
             return Optional.empty();
         }
         for (Solicitud solicitud : solicitudes) {
@@ -131,8 +132,7 @@ public class Actividad {
      * @brief Cancela una solicitud de inscripción a una actividad
      */
     public void cancelarSolicitud(String email) {
-        if (!isAbierta())
-            throw new InscripcionCerrada();
+        if (!isAbierta()) throw new InscripcionCerrada();
 
         buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> {
             if (solicitud.getPlazasAceptadas() == 1) {
@@ -151,8 +151,7 @@ public class Actividad {
      * @brief modifica el número de acompañantes que tendrá una solicitud
      */
     public void modificarAcompanantes(String email, int nAcompanantes) {
-        if (!isAbierta())
-            throw new InscripcionCerrada();
+        if (!isAbierta()) throw new InscripcionCerrada();
         buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> solicitud.modificarAcompanantes(nAcompanantes), () -> {
             throw new SolicitudNoExistente();
         });
@@ -163,8 +162,7 @@ public class Actividad {
      * @brief Acepta una plaza de una solicitud de inscripción a la actividad
      */
     public void aceptarPlaza(String email) {
-        if (isAbierta())
-            throw new InscripcionAbierta();
+        if (isAbierta()) throw new InscripcionAbierta();
         if (plazas > plazasOcupadas) {
             buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> {
                 solicitud.aceptarPlaza();
@@ -180,8 +178,7 @@ public class Actividad {
      * @brief Retira una plaza de una solicitud de inscripción a la actividad
      */
     public void quitarPlaza(String email) {
-        if (isAbierta())
-            throw new InscripcionAbierta();
+        if (isAbierta()) throw new InscripcionAbierta();
 
         buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> {
             solicitud.quitarPlaza();
@@ -207,8 +204,7 @@ public class Actividad {
      * @brief Comprueba si las fechas de la actividad son válidas
      */
     public void fechasValidas() {
-        if (fechaCelebracion.isBefore(fechaInicioInscripcion) || fechaCelebracion.isBefore(fechaFinInscripcion)
-                || fechaInicioInscripcion.isAfter(fechaFinInscripcion))
+        if (fechaCelebracion.isBefore(fechaInicioInscripcion) || fechaCelebracion.isBefore(fechaFinInscripcion) || fechaInicioInscripcion.isAfter(fechaFinInscripcion))
             throw new FechaNoValida();
     }
 
