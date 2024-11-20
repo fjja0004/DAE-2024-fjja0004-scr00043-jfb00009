@@ -26,11 +26,6 @@ public class RepositorioActividades {
     @PersistenceContext
     EntityManager em;
 
-    @Transactional
-    public void guardarActividad(Actividad actividad) {
-        em.persist(actividad);
-    }
-
     /**
      * @param actividad actividad a crear
      * @brief Crea una nueva actividad
@@ -47,7 +42,7 @@ public class RepositorioActividades {
             throw new ActividadYaExistente();
         }
         else {
-            guardarActividad(actividad);
+            em.persist(actividad);
             return actividad;
         }
     }
@@ -56,24 +51,6 @@ public class RepositorioActividades {
     @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<Integer> listadoIds() {
         return em.createQuery("select h.id from Actividad h").getResultList();
-    }
-
-
-    /**
-     * @param titulo título de la actividad
-     * @return la actividad con el título dado
-     * @throws NoHayActividades lanza una excepción si no existe ninguna actividad.
-     * @brief Buscar una actividad por su título
-     */
-
-
-    public List<Actividad> buscarActividadPorTitulo(String titulo) {
-        if (listadoIds().isEmpty()) {
-            throw new NoHayActividades();
-        }
-        return em.createQuery("select a from Actividad a where " +
-                        "a.titulo like ?1", Actividad.class)
-                .setParameter(1, "%" + (titulo) + "%").getResultList();
     }
 
 
