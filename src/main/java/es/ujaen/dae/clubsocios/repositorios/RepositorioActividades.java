@@ -4,6 +4,7 @@ import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.entidades.Solicitud;
 import es.ujaen.dae.clubsocios.excepciones.ActividadYaExistente;
+import es.ujaen.dae.clubsocios.excepciones.FechaNoValida;
 import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,9 +37,16 @@ public class RepositorioActividades {
      */
 
     public void crearActividad(Actividad actividad) {
+        if (actividad.getFechaCelebracion().isBefore(actividad.getFechaFinInscripcion())
+                || actividad.getFechaFinInscripcion().isBefore(actividad.getFechaInicioInscripcion())
+                || LocalDate.now().isAfter(actividad.getFechaInicioInscripcion())) {
+            throw new FechaNoValida();
+
+        }
         if (buscarPorId(actividad.getId()).isPresent()) {
             throw new ActividadYaExistente();
-        } else guardarActividad(actividad);
+        }
+        else guardarActividad(actividad);
     }
 
 

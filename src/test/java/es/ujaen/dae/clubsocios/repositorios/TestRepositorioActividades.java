@@ -6,8 +6,11 @@ import es.ujaen.dae.clubsocios.excepciones.FechaNoValida;
 import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -17,14 +20,12 @@ import java.time.LocalDate;
 @SpringBootTest(classes = ClubSocios.class)
 public class TestRepositorioActividades {
 
+    @Autowired
     RepositorioActividades repositorioActividades;
 
-    @BeforeEach
-    void setUp() {
-        repositorioActividades = new RepositorioActividades();
-    }
-
     @Test
+    @DirtiesContext
+    @Transactional
     void TestCrearActividad() {
         // Comprobamos que no se pueda crear una actividad con fecha de fin de inscripción anterior a la de inicio
         var actividad2 = new Actividad("Actividad 2", "Descripcion 2", 10, 10,
