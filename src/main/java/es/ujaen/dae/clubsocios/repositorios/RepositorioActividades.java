@@ -1,11 +1,13 @@
 package es.ujaen.dae.clubsocios.repositorios;
 
 import es.ujaen.dae.clubsocios.entidades.Actividad;
+import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.entidades.Solicitud;
 import es.ujaen.dae.clubsocios.excepciones.ActividadYaExistente;
 import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,7 +97,9 @@ public class RepositorioActividades {
         em.flush();
     }
 
-    public void guardarSolicitud(Solicitud solicitud) {
+    @Transactional
+    public void guardarSolicitud( @Valid Socio socio, int nAcompanantes) {
+        Solicitud solicitud =new Solicitud(socio,nAcompanantes);
         em.persist(solicitud);
     }
 
