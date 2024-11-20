@@ -330,7 +330,6 @@ public class TestServicioClub {
 
         //Comprobamos que se haya cancelado la solicitud.
         assertDoesNotThrow(() -> servicioClub.cancelarSolicitud(socio, actividad));
-        servicioClub.buscarSolicitudesDeActividad(direccion, actividad);
         //Nota: debuggeando se ve que la solicitud se elimina correctamente, pero al volver a cancelarla, la actividad no está actualizada y no se lanza la excepción.
         assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(SolicitudNoExistente.class);
     }
