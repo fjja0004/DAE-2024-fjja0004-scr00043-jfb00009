@@ -65,9 +65,13 @@ public class ServicioClub {
             return admin;
         }
 
-        Socio socio = repositorioSocios.buscar(email).get();
-        socio.comprobarCredenciales(clave);
-        return socio;
+        if (repositorioSocios.buscar(email).isPresent()) {
+            Socio socio = repositorioSocios.buscar(email).get();
+            socio.comprobarCredenciales(clave);
+            return socio;
+        } else {
+            throw new SocioNoValido();
+        }
     }
 
     /**
