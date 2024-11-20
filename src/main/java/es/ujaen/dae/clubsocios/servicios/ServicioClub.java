@@ -200,7 +200,7 @@ public class ServicioClub {
         Socio socioCancel = login(socio.getEmail(), socio.getClave());
         if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
             Actividad actCancel = repositorioActividades.buscarPorId(actividad.getId()).get();
-            actCancel.cancelarSolicitud(socioCancel.getEmail());
+            repositorioActividades.cancelarSolicitud(socioCancel, actCancel);
         } else {
             throw new NoHayActividades();
         }

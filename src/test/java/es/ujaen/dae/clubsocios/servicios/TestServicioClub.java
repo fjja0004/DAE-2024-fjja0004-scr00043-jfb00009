@@ -291,7 +291,7 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
-    void cancelarSolicitud() {
+    void testCancelarSolicitud() {
         Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
         Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
 
@@ -326,8 +326,16 @@ public class TestServicioClub {
 
         //Comprobamos que se haya cancelado la solicitud.
         assertDoesNotThrow(() -> servicioClub.cancelarSolicitud(socio, actividad));
+
         //Nota: debuggeando se ve que la solicitud se elimina correctamente, pero al volver a cancelarla, la actividad no está actualizada y no se lanza la excepción.
-        assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(SolicitudNoExistente.class);
+        Actividad actividad1 = new Actividad();
+        for (Actividad actividadAux : servicioClub.buscarActividadesAbiertas()){
+            if (actividadAux.getId() == actividad.getId()){
+                actividad1 = actividadAux;
+            }
+        }
+        Actividad actividad2 = actividad1;
+        assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad2)).isInstanceOf(SolicitudNoExistente.class);
     }
 
     @Test

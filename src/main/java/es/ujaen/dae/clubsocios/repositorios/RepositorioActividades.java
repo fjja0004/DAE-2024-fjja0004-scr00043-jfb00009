@@ -110,4 +110,12 @@ public class RepositorioActividades {
         }
     }
 
+    @Transactional
+    public void cancelarSolicitud(Socio socio, Actividad actividad) {
+        socio = em.find(Socio.class, socio.getEmail());
+        actividad = em.find(actividad.getClass(), actividad.getId());
+        actividad.cancelarSolicitud(socio.getEmail());
+        actualizar(actividad);
+    }
+
 }
