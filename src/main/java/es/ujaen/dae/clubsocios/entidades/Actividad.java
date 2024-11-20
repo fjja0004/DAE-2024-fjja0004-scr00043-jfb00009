@@ -71,6 +71,20 @@ public class Actividad {
         this.fechaCelebracion = fechaCelebracion;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Actividad actividad = (Actividad) o;
+        return getId() == actividad.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return getId();
+    }
+
     /**
      * @param email email del solicitante
      * @return solicitud de inscripción a la actividad

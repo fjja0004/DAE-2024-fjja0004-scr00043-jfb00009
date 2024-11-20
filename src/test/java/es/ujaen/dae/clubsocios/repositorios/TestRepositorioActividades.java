@@ -12,8 +12,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @ActiveProfiles("test")
 @SpringBootTest(classes = ClubSocios.class)
@@ -72,14 +74,14 @@ public class TestRepositorioActividades {
     void TestBuscarPorId() {
 
         // Comprobamos que se lance la excepción NoHayActividades si no hay actividades
-        assertThatThrownBy(() -> repositorioActividades.buscarPorId(1)).isInstanceOf(NoHayActividades.class);
+        assertEquals(Optional.empty(), repositorioActividades.buscarPorId(1));
 
         // Comprobamos que se devuelva la actividad con el id dado
         var actividad1 = new Actividad("Actividad 1", "Descripcion 1", 10, 10,
                 LocalDate.now().plusDays(2), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
-        repositorioActividades.crearActividad(actividad1);
-        assertThat(repositorioActividades.buscarPorId(actividad1.getId())).isEqualTo(actividad1);
+        actividad1 = repositorioActividades.crearActividad(actividad1);
+        assertThat(repositorioActividades.buscarPorId(actividad1.getId())).get().isEqualTo(actividad1);
     }
 
 
