@@ -300,13 +300,14 @@ public class TestServicioClub {
 
         //Actividad a la que es posible inscribirse.
         Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                10, LocalDate.now().minusDays(2), LocalDate.now().plusDays(7),
+                10, LocalDate.now(), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
 
         //Comprobamos que se lance una excepción si el socio no está registrado.
         assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(SocioNoValido.class);
 
         servicioClub.anadirSocio(socio);
+        servicioClub.marcarCuotaPagada(direccion,socio);
 
         //Comprobamos que se lance una excepción si la actividad no existe.
         assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(NoHayActividades.class);
@@ -358,13 +359,15 @@ public class TestServicioClub {
         actividad.setFechaFinInscripcion(LocalDate.now().minusDays(1));
 
         //Comprobamos que se lance una excepción si la solicitud no existe.
-        assertThatThrownBy(() -> servicioClub.asignarPlaza(direccion, socio, actividad)).isInstanceOf(SolicitudNoExistente.class);
-/*
+       assertThatThrownBy(() -> servicioClub.asignarPlaza(direccion, socio, actividad)).isInstanceOf(SolicitudNoExistente.class);
+
         actividad.setFechaFinInscripcion(LocalDate.now().plusDays(7));
+        servicioClub.marcarCuotaPagada(direccion,socio);
         servicioClub.realizarSolicitud(socio, actividad, 1);
         actividad.setFechaFinInscripcion(LocalDate.now().minusDays(1));
 
         //Comprobamos que se haya asignado la plaza.
+
         servicioClub.asignarPlaza(direccion, socio, actividad);
         int plazasAceptadas = actividad.buscarSolicitudPorEmail(socio.getEmail()).get().getPlazasAceptadas();
         assertEquals(1, plazasAceptadas);
@@ -375,12 +378,16 @@ public class TestServicioClub {
 
         //Comprobamos que no se asignen más plazas de las disponibles.
         actividad.setFechaFinInscripcion(LocalDate.now().plusDays(7));
+        servicioClub.marcarCuotaPagada(direccion,socio2);
+        servicioClub.marcarCuotaPagada(direccion,socio3);
+
         servicioClub.realizarSolicitud(socio2, actividad, 1);
         servicioClub.realizarSolicitud(socio3, actividad, 1);
         actividad.setFechaFinInscripcion(LocalDate.now().minusDays(1));
+
         servicioClub.asignarPlaza(direccion, socio2, actividad);
         servicioClub.asignarPlaza(direccion, socio3, actividad);
-        assertEquals(actividad.getPlazas(), actividad.getPlazasOcupadas());*/
+        assertEquals(actividad.getPlazas(), actividad.getPlazasOcupadas());
     }
 
     @Test
@@ -410,6 +417,7 @@ public class TestServicioClub {
 
 
         actividad.setFechaFinInscripcion(LocalDate.now().plusDays(7));
+        servicioClub.marcarCuotaPagada(direccion,socio);
         servicioClub.realizarSolicitud(socio, actividad, 2);
         actividad.setFechaFinInscripcion(LocalDate.now().minusDays(1));
 
