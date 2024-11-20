@@ -62,9 +62,6 @@ public class RepositorioActividades {
      * @brief Devuelve una lista con todas las actividades a las que es posible inscribirse
      */
     public List<Actividad> buscaTodasActividadesAbiertas() {
-        if (listadoIds().isEmpty()) {
-            throw new NoHayActividades();
-        }
         return em.createQuery("SELECT a FROM Actividad a WHERE a.fechaInicioInscripcion <= :fechaActual AND a.fechaFinInscripcion>:fechaActual", Actividad.class)
                 .setParameter("fechaActual", LocalDate.now()).getResultList();
     }

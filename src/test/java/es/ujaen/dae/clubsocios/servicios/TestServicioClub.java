@@ -159,28 +159,25 @@ public class TestServicioClub {
 
         //Actividad a la que es posible inscribirse.
         Actividad actividadAbierta = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                10, LocalDate.now().minusDays(2), LocalDate.now().plusDays(7),
+                10, LocalDate.now(), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
 
         //Actividad a la que no es posible inscribirse.
         Actividad actividadCerrada = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                10, LocalDate.now().minusDays(2), LocalDate.now().minusDays(1),
+                10, LocalDate.now().plusDays(2), LocalDate.now().plusDays(4),
                 LocalDate.now().plusDays(10));
 
         //Comprobamos que la lista esté vacía si no hay actividades abiertas.
-
-        //Si no hay ninguna.
         assertEquals(0, servicioClub.buscarActividadesAbiertas().size());
 
         //Si hay alguna, pero todas están cerradas.
         servicioClub.crearActividad(direccion, actividadCerrada);
         assertEquals(0, servicioClub.buscarActividadesAbiertas().size());
 
-        //Si hay tanto abiertas como cerradas, solo se devuelven las abiertas.
+        //Comprobamos que se devuelva la actividad abierta.
         servicioClub.crearActividad(direccion, actividadAbierta);
         assertEquals(1, servicioClub.buscarActividadesAbiertas().size());
         assertTrue(servicioClub.buscarActividadesAbiertas().contains(actividadAbierta));
-
     }
 
 
@@ -193,12 +190,12 @@ public class TestServicioClub {
 
         //Actividad a la que es posible inscribirse.
         Actividad actividadAbierta = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                10, LocalDate.now().minusDays(2), LocalDate.now().plusDays(7),
+                10, LocalDate.now(), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
 
         //Actividad a la que no es posible inscribirse.
         Actividad actividadCerrada = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                10, LocalDate.now().minusDays(2), LocalDate.now().minusDays(1),
+                10, LocalDate.now().plusDays(2), LocalDate.now().plusDays(4),
                 LocalDate.now().plusDays(10));
 
         servicioClub.crearActividad(direccion, actividadCerrada);
