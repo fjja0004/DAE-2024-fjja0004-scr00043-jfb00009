@@ -131,7 +131,8 @@ public class Actividad {
      * @brief Cancela una solicitud de inscripción a una actividad
      */
     public void cancelarSolicitud(String email) {
-        if (!isAbierta()) throw new InscripcionCerrada();
+        if (!this.isAbierta())
+            throw new InscripcionCerrada();
 
         buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> {
             if (solicitud.getPlazasAceptadas() == 1) {

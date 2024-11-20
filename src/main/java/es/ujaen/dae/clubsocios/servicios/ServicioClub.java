@@ -201,6 +201,8 @@ public class ServicioClub {
         if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
             Actividad actCancel = repositorioActividades.buscarPorId(actividad.getId()).get();
             actCancel.cancelarSolicitud(socioCancel.getEmail());
+        } else {
+            throw new NoHayActividades();
         }
     }
 
