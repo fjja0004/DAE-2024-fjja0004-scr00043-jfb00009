@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,7 +48,7 @@ public class TestRepositorioActividades {
 
     @Test
     @DirtiesContext
-    void buscaTodasActividadesAbiertas() {
+    void TestBuscaTodasActividadesAbiertas() {
         // Comprobamos que se lance la excepción NoHayActividades si no hay actividades abiertas
         assertThatThrownBy(() -> repositorioActividades.buscaTodasActividadesAbiertas()).isInstanceOf(NoHayActividades.class);
 
@@ -65,8 +64,15 @@ public class TestRepositorioActividades {
         assertThat(repositorioActividades.buscaTodasActividadesAbiertas()).isNotEmpty();
 
         // Comprobamos que no se devuelvan actividades cerradas
-        var actividad3 = auxCrearActividadYaCerrada();
-        assertThat(repositorioActividades.buscaTodasActividadesAbiertas()).doesNotContain(actividad3);
+        var actividadCerrada = new Actividad("ActividadCerrada", "Descripcion Cerrada", 10, 10,
+                LocalDate.now(), LocalDate.now().plusDays(2),
+                LocalDate.now().plusDays(3));
+        repositorioActividades.crearActividad(actividadCerrada);
+        actividadCerrada.setFechaInicioInscripcion(LocalDate.now().minusDays(5))
+                .setFechaFinInscripcion(LocalDate.now().minusDays(5))
+                .setFechaCelebracion(LocalDate.now().minusDays(5));
+        actividadCerrada = repositorioActividades.actualizar(actividadCerrada);
+        assertThat(repositorioActividades.buscaTodasActividadesAbiertas()).doesNotContain(actividadCerrada);
     }
 
     @Test
@@ -84,17 +90,4 @@ public class TestRepositorioActividades {
         assertThat(repositorioActividades.buscarPorId(actividad1.getId())).get().isEqualTo(actividad1);
     }
 
-
-    //le pongo el tag @Transactional para poder crear la actividad ya cerrada y comprobar ciertos casos.
-    @Transactional
-    Actividad auxCrearActividadYaCerrada() {
-        var actividadCerrada = new Actividad("ActividadCerrada", "Descripcion Cerrada", 10, 10,
-                LocalDate.now(), LocalDate.now().plusDays(2),
-                LocalDate.now().plusDays(3));
-        repositorioActividades.crearActividad(actividadCerrada);
-        actividadCerrada.setFechaInicioInscripcion(LocalDate.now().minusDays(5))
-                .setFechaFinInscripcion(LocalDate.now().minusDays(5))
-                .setFechaCelebracion(LocalDate.now().minusDays(5));
-        return actividadCerrada;
-    }
 }
