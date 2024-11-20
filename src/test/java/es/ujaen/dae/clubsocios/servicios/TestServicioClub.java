@@ -405,7 +405,7 @@ public class TestServicioClub {
 
         //Actividad a la que es posible inscribirse.
         Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                2, LocalDate.now().minusDays(2), LocalDate.now().plusDays(7),
+                2, LocalDate.now(), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
 
         //Comprobamos que se lance una excepción si el socio que realiza la operación no es el administrador.
