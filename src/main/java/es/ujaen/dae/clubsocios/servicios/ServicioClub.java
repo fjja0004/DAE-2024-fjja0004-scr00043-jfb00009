@@ -153,7 +153,7 @@ public class ServicioClub {
                     repositorioActividades.guardarSolicitud(socio, nAcompanantes, actSolicitada);
                 }
             } else {
-                throw new SolicitudNoValida();
+                throw new InscripcionCerrada();
             }
         } else {
             throw new SocioNoValido();
@@ -217,9 +217,7 @@ public class ServicioClub {
             throw new OperacionDeDireccion();
         Socio solicitante = login(socio.getEmail(), socio.getClave());
         if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
-
-            Actividad actividadSolicitada = repositorioActividades.actualizar(actividad);
-            actividadSolicitada.aceptarPlaza(solicitante.getEmail());
+            repositorioActividades.buscarPorId(actividad.getId()).get().aceptarPlaza(solicitante.getEmail());
         }
     }
 
@@ -271,5 +269,15 @@ public class ServicioClub {
      */
     public List<Temporada> buscarTodasTemporadas() {
         return repositorioTemporadas.buscarTodasTemporadas();
+    }
+
+    public void modificarActividad(Socio direccion, Actividad actividad) {
+        if (!esAdmin(direccion))
+            throw new OperacionDeDireccion();
+        if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
+            repositorioActividades.modificarFechaActividad(actividad);
+        } else {
+            throw new ActividadNoEncontrada();
+        }
     }
 }
