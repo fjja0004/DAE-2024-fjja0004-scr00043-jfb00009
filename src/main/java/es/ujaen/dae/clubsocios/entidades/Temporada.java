@@ -12,9 +12,10 @@ public class Temporada {
     @Id
     private int anio;
 
-    @OneToMany(fetch=FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn
     List<Actividad> actividades;
+
     /**
      * @brief Constructor por defecto de la clase Temporada
      */

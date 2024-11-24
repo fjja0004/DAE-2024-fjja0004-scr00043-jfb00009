@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -36,9 +37,9 @@ public class ServicioClub {
      * @brief constructor por defecto de la clase ServicioClub
      */
     public ServicioClub() {
-        //repositorioSocios = new RepositorioSocios();
-        //repositorioActividades = new RepositorioActividades();
-        //repositorioTemporadas = new RepositorioTemporadas();
+        repositorioSocios = new RepositorioSocios();
+        repositorioActividades = new RepositorioActividades();
+        repositorioTemporadas = new RepositorioTemporadas();
     }
 
     /**
@@ -130,13 +131,13 @@ public class ServicioClub {
         return repositorioActividades.buscaTodasActividadesAbiertas();
     }
 
-    /**
-     * @return lista de todas las actividades de la temporada actual
-     * @brief Devuelve una lista con todas las actividades de la temporada actual
-     */
-    /*public List<Actividad> buscarTodasActividadesTemporadaActual() {
-        return repositorioActividades.buscarTodasActividadesTemporadaActual();
-    }*/
+//    /**
+//     * @return lista de todas las actividades de la temporada actual
+//     * @brief Devuelve una lista con todas las actividades de la temporada actual
+//     */
+//    public List<Actividad> buscarTodasActividadesTemporadaActual() {
+//        return repositorioTemporadas.buscarTodasActividadesDeTemporadas(LocalDate.now().getYear());
+//    }
 
     /**
      * @param solicitante   Socio que va a realizar la solicitud
@@ -271,7 +272,12 @@ public class ServicioClub {
         return repositorioTemporadas.buscarTodasTemporadas();
     }
 
-    public void modificarActividad(Socio direccion, Actividad actividad) {
+    /**
+     * @brief Modifica la fecha de una actividad
+     * @param direccion Socio que realiza la operación
+     * @param actividad Actividad a modificar
+     */
+    public void modificarFechaActividad(Socio direccion, Actividad actividad) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
         if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
