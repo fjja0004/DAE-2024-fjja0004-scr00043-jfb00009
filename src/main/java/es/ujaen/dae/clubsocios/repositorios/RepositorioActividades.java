@@ -120,15 +120,10 @@ public class RepositorioActividades {
 
     @Transactional
     public void modificarFechaActividad(Actividad actividad) {
-        if (actividad.getFechaCelebracion().isBefore(actividad.getFechaFinInscripcion())
-                || actividad.getFechaFinInscripcion().isBefore(actividad.getFechaInicioInscripcion())) {
-            throw new FechaNoValida();
-
-        }
+        actividad.fechasValidas();
         Actividad actividadOrig = em.find(Actividad.class, actividad.getId());
         actividadOrig.setFechaFinInscripcion(actividad.getFechaFinInscripcion());
         actividadOrig.setFechaInicioInscripcion(actividad.getFechaInicioInscripcion());
         actividadOrig.setFechaCelebracion(actividad.getFechaCelebracion());
     }
-
 }
