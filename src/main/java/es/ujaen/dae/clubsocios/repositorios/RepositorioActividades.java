@@ -78,6 +78,11 @@ public class RepositorioActividades {
         return em.merge(actividad);
     }
 
+    @Transactional
+    public Solicitud actualizar(Solicitud solicitud) {
+        return em.merge(solicitud);
+    }
+
     public void comprobarErrores() {
         em.flush();
     }

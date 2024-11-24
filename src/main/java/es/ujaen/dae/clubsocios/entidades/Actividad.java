@@ -91,7 +91,6 @@ public class Actividad {
      * @return solicitud de inscripción a la actividad
      * @brief Comprueba si existe una solicitud de inscripción a la actividad
      */
-
     public Optional<Solicitud> buscarSolicitudPorEmail(String email) {
 
         if (solicitudes.isEmpty()) {
@@ -99,6 +98,23 @@ public class Actividad {
         }
         for (Solicitud solicitud : solicitudes) {
             if (solicitud.getSocio().getEmail().equals(email)) {
+                return Optional.of(solicitud);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * @param id id de la solicitud
+     * @return optional de la solicitud con el id dado, o un optional vacío si no existe
+     * @brief Busca una solicitud por su id
+     */
+    public Optional<Solicitud> buscarSolicitudPorId(int id) {
+        if (solicitudes.isEmpty()) {
+            return Optional.empty();
+        }
+        for (Solicitud solicitud : solicitudes) {
+            if (solicitud.getId() == id) {
                 return Optional.of(solicitud);
             }
         }
@@ -177,16 +193,17 @@ public class Actividad {
      * @param email email del solicitante
      * @brief Retira una plaza de una solicitud de inscripción a la actividad
      */
-    public void quitarPlaza(String email) {
+    public Optional<Solicitud> quitarPlaza(String email) {
         if (isAbierta()) throw new InscripcionAbierta();
 
-        buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> {
-            solicitud.quitarPlaza();
+        Optional<Solicitud> solicitud = buscarSolicitudPorEmail(email);
+        if (solicitud.isPresent()) {
+            solicitud.get().quitarPlaza();
             plazasOcupadas--;
-        }, () -> {
+            return solicitud;
+        } else {
             throw new SolicitudNoExistente();
-        });
-
+        }
     }
 
     /**

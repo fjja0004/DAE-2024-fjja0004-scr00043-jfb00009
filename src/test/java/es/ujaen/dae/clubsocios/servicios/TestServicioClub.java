@@ -329,8 +329,8 @@ public class TestServicioClub {
 
         //Nota: debuggeando se ve que la solicitud se elimina correctamente, pero al volver a cancelarla, la actividad no está actualizada y no se lanza la excepción.
         Actividad actividad1 = new Actividad();
-        for (Actividad actividadAux : servicioClub.buscarActividadesAbiertas()){
-            if (actividadAux.getId() == actividad.getId()){
+        for (Actividad actividadAux : servicioClub.buscarActividadesAbiertas()) {
+            if (actividadAux.getId() == actividad.getId()) {
                 actividad1 = actividadAux;
             }
         }
@@ -419,6 +419,47 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
+    void testBuscarActividadPorId() {
+        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
+        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                2, LocalDate.now(), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        //Comprobamos que no devuelva la actividad si no existe.
+        assertEquals(Optional.empty(), servicioClub.buscarActividadPorId(actividad.getId()));
+
+        servicioClub.crearActividad(direccion, actividad);
+
+        //Comprobamos que devuelva la actividad si existe.
+        assertEquals(actividad.getId(), servicioClub.buscarActividadPorId(actividad.getId()).get().getId());
+    }
+
+    @Test
+    @DirtiesContext
+    void testBuscarSolcitudPorId() {
+        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
+        Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
+        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                2, LocalDate.now(), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        servicioClub.anadirSocio(socio);
+        servicioClub.crearActividad(direccion, actividad);
+        servicioClub.marcarCuotaPagada(direccion, socio);
+        servicioClub.realizarSolicitud(socio, actividad, 2);
+
+        Solicitud solicitudNoExistente = new Solicitud(socio, 2);
+
+        //Comprobamos que no devuelva la solicitud si no existe.
+        assertEquals(Optional.empty(), servicioClub.buscarSolicitudPorId(direccion, actividad, solicitudNoExistente.getId()));
+
+        //Comprobamos que devuelva la solicitud si existe.
+        Solicitud solicitud = servicioClub.buscarActividadPorId(actividad.getId()).get().buscarSolicitudPorEmail(socio.getEmail()).get();
+        assertEquals(solicitud.getId(), servicioClub.buscarSolicitudPorId(direccion, actividad, solicitud.getId()).get().getId());
+    }
+
+    @Test
+    @DirtiesContext
     void testQuitarPlaza() {
         Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
         Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
@@ -448,12 +489,12 @@ public class TestServicioClub {
         servicioClub.asignarPlaza(direccion, socio, actividad);
         servicioClub.quitarPlaza(direccion, socio, actividad);
 
-        actividad.setFechaInicioInscripcion(LocalDate.now());
-        servicioClub.modificarFechaActividad(direccion, actividad);
+        Actividad actividadActualizada = servicioClub.buscarActividadPorId(actividad.getId()).get();
+        Solicitud solicitud = actividadActualizada.buscarSolicitudPorEmail(socio.getEmail()).get();
 
-        int plazasAceptadas = actividad.buscarSolicitudPorEmail(socio.getEmail()).get().getPlazasAceptadas();
+        int plazasAceptadas = servicioClub.buscarSolicitudPorId(direccion, actividadActualizada, solicitud.getId()).get().getPlazasAceptadas();
         assertEquals(0, plazasAceptadas);
-        assertEquals(0, actividad.getPlazasOcupadas());
+        assertEquals(0, actividadActualizada.getPlazasOcupadas());
     }
 
     @Test

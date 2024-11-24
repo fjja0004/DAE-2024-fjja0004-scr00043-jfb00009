@@ -124,6 +124,15 @@ public class ServicioClub {
     }
 
     /**
+     * @param id id de la actividad
+     * @return Actividad con el id dado
+     * @brief Busca una actividad por su id
+     */
+    public Optional<Actividad> buscarActividadPorId(int id) {
+        return repositorioActividades.buscarPorId(id);
+    }
+
+    /**
      * @return lista de actividades abiertas
      * @brief Busca todas las actividades a las que es posible inscribirse.
      */
@@ -193,6 +202,23 @@ public class ServicioClub {
     }
 
     /**
+     * @param direccion Socio que realiza la operación
+     * @param actividad Actividad de la que se busca la solicitud
+     * @param id        id de la solicitud
+     * @return Solicitud con el id dado
+     * @brief Busca una solicitud por su id
+     */
+    public Optional<Solicitud> buscarSolicitudPorId(Socio direccion, Actividad actividad, int id) {
+        List<Solicitud> solicitudes = buscarSolicitudesDeActividad(direccion, actividad);
+        for (Solicitud solicitud : solicitudes) {
+            if (solicitud.getId() == id) {
+                return Optional.of(solicitud);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
      * @param socio     Socio que ha realizado la solicitud
      * @param actividad Actividad a la que se ha solicitado la inscripción
      * @brief Elimina la solicitud de inscripción de un socio a una actividad
@@ -234,7 +260,9 @@ public class ServicioClub {
         Socio solicitante = login(socio.getEmail(), socio.getClave());
         if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
             Actividad actividadSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
-            actividadSolicitada.quitarPlaza(solicitante.getEmail());
+            Optional<Solicitud> solicitud = actividadSolicitada.quitarPlaza(solicitante.getEmail());
+            repositorioActividades.actualizar(actividadSolicitada);
+            repositorioActividades.actualizar(solicitud.get());
         }
     }
 
@@ -273,10 +301,11 @@ public class ServicioClub {
     }
 
     /**
-     * @brief Modifica la fecha de una actividad
      * @param direccion Socio que realiza la operación
      * @param actividad Actividad a modificar
+     * @brief Modifica la fecha de una actividad
      */
+    //TODO: hay que pasarle la fecha como parámetro, si no qué sentido tiene?
     public void modificarFechaActividad(Socio direccion, Actividad actividad) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
