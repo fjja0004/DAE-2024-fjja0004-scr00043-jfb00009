@@ -19,7 +19,6 @@ import java.util.Optional;
 
 @Transactional
 @Repository
-
 public class RepositorioActividades {
 
     @PersistenceContext
@@ -29,7 +28,6 @@ public class RepositorioActividades {
      * @param actividad actividad a crear
      * @brief Crea una nueva actividad
      */
-    @Transactional
     public Actividad crearActividad(Actividad actividad) {
         if (actividad.getFechaCelebracion().isBefore(actividad.getFechaFinInscripcion())
                 || actividad.getFechaFinInscripcion().isBefore(actividad.getFechaInicioInscripcion())
@@ -45,19 +43,15 @@ public class RepositorioActividades {
         }
     }
 
-
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<Integer> listadoIds() {
         return em.createQuery("select h.id from Actividad h").getResultList();
     }
-
 
     /**
      * @return lista de todas las actividades abiertas
      * @throws NoHayActividades si no hay actividades abiertas
      * @brief Devuelve una lista con todas las actividades a las que es posible inscribirse
      */
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<Actividad> buscaTodasActividadesAbiertas() {
         return em.createQuery("SELECT a FROM Actividad a WHERE a.fechaInicioInscripcion <= :fechaActual AND a.fechaFinInscripcion>:fechaActual", Actividad.class)
                 .setParameter("fechaActual", LocalDate.now()).getResultList();
@@ -68,17 +62,14 @@ public class RepositorioActividades {
      * @return optional la actividad con el id dado
      * @brief Busca una actividad por su id
      */
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Optional<Actividad> buscarPorId(int id) {
         return Optional.ofNullable(em.find(Actividad.class, id));
     }
 
-    @Transactional
     public Actividad actualizar(Actividad actividad) {
         return em.merge(actividad);
     }
 
-    @Transactional
     public Solicitud actualizar(Solicitud solicitud) {
         return em.merge(solicitud);
     }
@@ -87,7 +78,6 @@ public class RepositorioActividades {
         em.flush();
     }
 
-    @Transactional
     public void guardarSolicitud(@Valid Socio socio, int nAcompanantes, Actividad actividad) {
         actividad = em.find(actividad.getClass(), actividad.getId());
         if (actividad.buscarSolicitudPorEmail(socio.getEmail()).isPresent()) {
@@ -97,12 +87,10 @@ public class RepositorioActividades {
         em.persist(solicitud);
     }
 
-    @Transactional
     public void borrarReserva(Solicitud solicitud) {
         em.remove(solicitud);
     }
 
-    @Transactional
     public void modificarAcompanantes(Socio socio, int nAcompanantes, Actividad actividad) {
         actividad = em.find(actividad.getClass(),actividad.getId());
         if(actividad.buscarSolicitudPorEmail(socio.getEmail()).isEmpty()){
@@ -115,7 +103,6 @@ public class RepositorioActividades {
         }
     }
 
-    @Transactional
     public void cancelarSolicitud(Socio socio, Actividad actividad) {
         socio = em.find(Socio.class, socio.getEmail());
         actividad = em.find(actividad.getClass(), actividad.getId());
@@ -123,7 +110,6 @@ public class RepositorioActividades {
         actualizar(actividad);
     }
 
-    @Transactional
     public void modificarFechaActividad(Actividad actividad) {
         actividad.fechasValidas();
         Actividad actividadOrig = em.find(Actividad.class, actividad.getId());

@@ -27,7 +27,6 @@ public class RepositorioTemporadas {
     @PersistenceContext
     EntityManager em;
 
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Optional<Temporada> buscar(int anio) {
 
         return Optional.ofNullable(em.find(Temporada.class, anio));

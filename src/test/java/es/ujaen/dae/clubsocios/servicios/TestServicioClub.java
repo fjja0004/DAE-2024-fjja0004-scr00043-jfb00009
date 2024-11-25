@@ -400,7 +400,6 @@ public class TestServicioClub {
         servicioClub.marcarCuotaPagada(direccion, socio2);
         servicioClub.marcarCuotaPagada(direccion, socio3);
 
-
         actividad1.setFechaInicioInscripcion(LocalDate.now());
         servicioClub.modificarFechaActividad(direccion, actividad1);
         servicioClub.realizarSolicitud(socio2, actividad1, 1);
