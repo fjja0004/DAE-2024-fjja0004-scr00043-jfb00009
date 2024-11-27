@@ -62,7 +62,7 @@ public class Actividad {
      * @param fechaCelebracion       Fecha en la que se va a realizar la actividad
      * @brief Constructor parametrizado de la clase Actividad
      */
-    public Actividad(String titulo, String descripcion, int precio, int plazas, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion, LocalDate fechaCelebracion) {
+    public Actividad( String titulo, String descripcion, int precio, int plazas, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion, LocalDate fechaCelebracion) {
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.precio = precio;
@@ -273,4 +273,5 @@ public class Actividad {
     public @NotNull LocalDate getFechaFinInscripcion() {
         return fechaFinInscripcion;
     }
+
 }
