@@ -27,18 +27,6 @@ public class RepositorioTemporadas {
     @PersistenceContext
     EntityManager em;
 
-    public Optional<Temporada> buscar(int anio) {
-
-        return Optional.ofNullable(em.find(Temporada.class, anio));
-    }
-
-    public void guardar(Temporada temporada) {
-
-        if (buscar(temporada.getAnio()).isPresent())
-            throw new TemporadaYaExistente();
-        em.persist(temporada);
-    }
-
     /**
      * @brief Crea una nueva temporada
      */
@@ -49,21 +37,21 @@ public class RepositorioTemporadas {
         }
     }
 
+    public Optional<Temporada> buscar(int anio) {
+        return Optional.ofNullable(em.find(Temporada.class, anio));
+    }
+
     /**
      * @return lista de todas las temporadas
      * @brief Busca todas las temporadas
      */
-
     public List<Temporada> buscarTodasTemporadas() {
         return em.createQuery("SELECT t FROM Temporada t", Temporada.class).
                 getResultList();
-
     }
 
-    public List<Actividad> buscarTodasActividadesDeTemporadas(int anio) {
-        return em.createQuery("SELECT a FROM Temporada t JOIN t.actividades a WHERE t.anio = :anio", Actividad.class)
-                .setParameter("anio", anio).getResultList();
+    public Temporada temporadaActual() {
+        return buscar(LocalDate.now().getYear()).get();
     }
-
 
 }

@@ -109,13 +109,49 @@ public class ServicioClub {
     }
 
     /**
+     * @brief Crea una temporada al iniciar la aplicación
+     */
+    @PostConstruct
+    void crearTemporadaInicial() {
+        crearNuevaTemporada();
+    }
+
+    /**
+     * @brief Crea una nueva temporada al inicio de cada año
+     */
+    @Scheduled(cron = "0 0 0 1 1 ?")
+    void crearNuevaTemporada() {
+        repositorioTemporadas.crearTemporada();
+        repositorioSocios.marcarTodasCuotasNoPagadas();
+    }
+
+    /**
+     * @param anio año de la temporada
+     * @return temporada con el año dado
+     * @brief Busca una temporada por su año
+     */
+    public Optional<Temporada> buscarTemporadaPorAnio(int anio) {
+        return repositorioTemporadas.buscar(anio);
+    }
+
+    /**
+     * @return lista de todas las temporadas
+     * @brief Busca todas las temporadas
+     */
+    public List<Temporada> buscarTodasTemporadas() {
+        return repositorioTemporadas.buscarTodasTemporadas();
+    }
+
+    /**
      * @param actividad Actividad que se crea
      * @brief creación de una actividad
      */
     public void crearActividad(Socio direccion, @Valid Actividad actividad) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
-        repositorioActividades.crearActividad(actividad);
+        repositorioTemporadas.temporadaActual().nuevaActividad(actividad);
+        repositorioActividades.guardarActividad(actividad);
+        repositorioActividades.comprobarErrores();
     }
 
     /**
@@ -259,40 +295,6 @@ public class ServicioClub {
             repositorioActividades.actualizar(actividadSolicitada);
             repositorioActividades.actualizar(solicitud.get());
         }
-    }
-
-    /**
-     * @brief Crea una temporada al iniciar la aplicación
-     */
-    @PostConstruct
-    void crearTemporadaInicial() {
-        crearNuevaTemporada();
-    }
-
-    /**
-     * @brief Crea una nueva temporada al inicio de cada año
-     */
-    @Scheduled(cron = "0 0 0 1 1 ?")
-    void crearNuevaTemporada() {
-        repositorioTemporadas.crearTemporada();
-        repositorioSocios.marcarTodasCuotasNoPagadas();
-    }
-
-    /**
-     * @param anio año de la temporada
-     * @return temporada con el año dado
-     * @brief Busca una temporada por su año
-     */
-    public Optional<Temporada> buscarTemporadaPorAnio(int anio) {
-        return repositorioTemporadas.buscar(anio);
-    }
-
-    /**
-     * @return lista de todas las temporadas
-     * @brief Busca todas las temporadas
-     */
-    public List<Temporada> buscarTodasTemporadas() {
-        return repositorioTemporadas.buscarTodasTemporadas();
     }
 
     /**

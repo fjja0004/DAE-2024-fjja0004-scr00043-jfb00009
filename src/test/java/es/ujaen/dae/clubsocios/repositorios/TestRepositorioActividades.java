@@ -25,24 +25,24 @@ public class TestRepositorioActividades {
 
     @Test
     @DirtiesContext
-    void TestCrearActividad() {
+    void TestGuardarActividad() {
         // Comprobamos que no se pueda crear una actividad con fecha de fin de inscripción anterior a la de inicio
         var actividad2 = new Actividad("Actividad 2", "Descripcion 2", 10, 10,
                 LocalDate.now().plusDays(2), LocalDate.now().plusDays(1),
                 LocalDate.now().plusDays(10));
-        assertThatThrownBy(() -> repositorioActividades.crearActividad(actividad2)).isInstanceOf(FechaNoValida.class);
+        assertThatThrownBy(() -> repositorioActividades.guardarActividad(actividad2)).isInstanceOf(FechaNoValida.class);
 
         // Comprobamos que no se pueda crear una actividad con fecha de celebración anterior a la de fin de inscripción
         var actividad3 = new Actividad("Actividad 3", "Descripcion 3", 10, 10,
                 LocalDate.now().plusDays(2), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(5));
-        assertThatThrownBy(() -> repositorioActividades.crearActividad(actividad3)).isInstanceOf(FechaNoValida.class);
+        assertThatThrownBy(() -> repositorioActividades.guardarActividad(actividad3)).isInstanceOf(FechaNoValida.class);
 
         // Comprobamos que se pueda crear una actividad con fechas válidas
         var actividad4 = new Actividad("Actividad 4", "Descripcion 4", 10, 10,
                 LocalDate.now().plusDays(2), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
-        assertThatCode(() -> repositorioActividades.crearActividad(actividad4)).doesNotThrowAnyException();
+        assertThatCode(() -> repositorioActividades.guardarActividad(actividad4)).doesNotThrowAnyException();
     }
 
 
@@ -59,15 +59,15 @@ public class TestRepositorioActividades {
         var actividad2 = new Actividad("Actividad 2", "Descripcion 2", 10, 10,
                 LocalDate.now(), LocalDate.now().plusDays(3),
                 LocalDate.now().plusDays(7));
-        repositorioActividades.crearActividad(actividad1);
-        repositorioActividades.crearActividad(actividad2);
+        repositorioActividades.guardarActividad(actividad1);
+        repositorioActividades.guardarActividad(actividad2);
         assertThat(repositorioActividades.buscaTodasActividadesAbiertas()).isNotEmpty();
 
         // Comprobamos que no se devuelvan actividades cerradas
         var actividadCerrada = new Actividad("ActividadCerrada", "Descripcion Cerrada", 10, 10,
                 LocalDate.now(), LocalDate.now().plusDays(2),
                 LocalDate.now().plusDays(3));
-        repositorioActividades.crearActividad(actividadCerrada);
+        repositorioActividades.guardarActividad(actividadCerrada);
         actividadCerrada.setFechaInicioInscripcion(LocalDate.now().minusDays(5))
                 .setFechaFinInscripcion(LocalDate.now().minusDays(5))
                 .setFechaCelebracion(LocalDate.now().minusDays(5));
@@ -86,7 +86,7 @@ public class TestRepositorioActividades {
         var actividad1 = new Actividad("Actividad 1", "Descripcion 1", 10, 10,
                 LocalDate.now().plusDays(2), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
-        actividad1 = repositorioActividades.crearActividad(actividad1);
+        actividad1 = repositorioActividades.guardarActividad(actividad1);
         assertThat(repositorioActividades.buscarPorId(actividad1.getId())).get().isEqualTo(actividad1);
     }
 

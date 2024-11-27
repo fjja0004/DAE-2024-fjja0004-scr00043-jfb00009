@@ -6,14 +6,11 @@ import es.ujaen.dae.clubsocios.entidades.Solicitud;
 import es.ujaen.dae.clubsocios.excepciones.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,19 +25,10 @@ public class RepositorioActividades {
      * @param actividad actividad a crear
      * @brief Crea una nueva actividad
      */
-    public Actividad crearActividad(Actividad actividad) {
-        if (actividad.getFechaCelebracion().isBefore(actividad.getFechaFinInscripcion())
-                || actividad.getFechaFinInscripcion().isBefore(actividad.getFechaInicioInscripcion())
-                || LocalDate.now().isAfter(actividad.getFechaInicioInscripcion())) {
-            throw new FechaNoValida();
-
-        }
-        if (buscarPorId(actividad.getId()).isPresent()) {
-            throw new ActividadYaExistente();
-        } else {
-            em.persist(actividad);
-            return actividad;
-        }
+    public Actividad guardarActividad(Actividad actividad) {
+        actividad.fechasValidas();
+        em.persist(actividad);
+        return actividad;
     }
 
     public List<Integer> listadoIds() {
@@ -91,16 +79,15 @@ public class RepositorioActividades {
         em.remove(solicitud);
     }
 
-    public void modificarAcompanantes(Socio socio, int nAcompanantes, Actividad actividad) {
-        actividad = em.find(actividad.getClass(),actividad.getId());
-        if(actividad.buscarSolicitudPorEmail(socio.getEmail()).isEmpty()){
-            throw new SolicitudNoExistente();
-        } else if (actividad.isAbierta()){
-            Solicitud solicitud = actividad.buscarSolicitudPorEmail(socio.getEmail()).get();
-            solicitud.modificarAcompanantes(nAcompanantes);
-        } else {
-            throw new InscripcionCerrada();
-        }
+    /**
+     * @param actividad     actividad a la que se inscribe
+     * @param socio         socio que realiza la solicitud
+     * @param nAcompanantes número de acompañantes
+     * @brief Modifica el número de acompañantes de una solicitud
+     */
+    public void modificarAcompanantes(Actividad actividad, Socio socio, int nAcompanantes) {
+        Optional<Actividad> a = Optional.ofNullable(em.find(actividad.getClass(), actividad.getId()));
+        a.get().modificarAcompanantes(socio.getEmail(), nAcompanantes);
     }
 
     public void cancelarSolicitud(Socio socio, Actividad actividad) {

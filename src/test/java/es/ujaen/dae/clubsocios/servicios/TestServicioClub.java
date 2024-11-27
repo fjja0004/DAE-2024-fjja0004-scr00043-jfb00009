@@ -120,41 +120,74 @@ public class TestServicioClub {
         assertTrue(servicioClub.login(socio.getEmail(), socio.getClave()).isCuotaPagada());
     }
 
+
+    @Test
+    @DirtiesContext
+    void testCrearTemporadaInicial() {
+        //Verificamos que se crea la temporada inicial.
+        assertEquals(LocalDate.now().getYear(), servicioClub.buscarTemporadaPorAnio(LocalDate.now().getYear()).get().getAnio());
+    }
+
+    @Test
+    @DirtiesContext
+    void testCrearNuevaTemporada() {
+        //Verificamos que no se cree una nueva temporada si ya existe.
+        int numeroTemporadas = servicioClub.buscarTodasTemporadas().size();
+        servicioClub.crearNuevaTemporada();
+        assertEquals(numeroTemporadas, servicioClub.buscarTodasTemporadas().size());
+
+        //Verificamos que se ha creado la temporada del año actual.
+        assertEquals(LocalDate.now().getYear(), servicioClub.buscarTemporadaPorAnio(LocalDate.now().getYear()).get().getAnio());
+    }
+
+    @Test
+    @DirtiesContext
+    void testBuscarTemporadaPorAnio() {
+        //Verificamos que no se devuelva la temporada si no existe.
+        assertEquals(Optional.empty(), servicioClub.buscarTemporadaPorAnio(2022));
+
+        //Verificamos que se devuelva la temporada si existe.
+        assertEquals(LocalDate.now().getYear(), servicioClub.buscarTemporadaPorAnio(LocalDate.now().getYear()).get().getAnio());
+    }
+
+    @Test
+    @DirtiesContext
+    void testBuscarTodasTemporadas() {
+        //Verificamos que se devuelvan todas las temporadas.
+        assertEquals(1, servicioClub.buscarTodasTemporadas().size());
+    }
+
     @Test
     @DirtiesContext
     void testCrearActividad() {
-        //Actividad válida.
-        Actividad actividad2 = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
+
+        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
                 10, LocalDate.now().plusDays(2), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
 
-        Actividad actividadMalHecha = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+        Actividad actividadNoValida = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
                 10, LocalDate.now().plusDays(7), LocalDate.now().plusDays(2),
-                LocalDate.now().plusDays(10));
+                LocalDate.now().plusDays(1));
 
-        Socio direccion = servicioClub.login("admin@club.es", "ElAdMiN"),
-                noDireccion = servicioClub.login("socio_prueba@club.com", "password123");
+        Actividad actividadNoValida2 = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now().plusDays(2), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(1));
 
         //Comprobaciones para actividades no válidas.
-        assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividadMalHecha)).isInstanceOf(FechaNoValida.class);
-        actividadMalHecha.setFechaInicioInscripcion(LocalDate.now().plusDays(1))
-                .setFechaCelebracion(LocalDate.now()).setFechaFinInscripcion(LocalDate.now().plusDays(10));
-        assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividadMalHecha)).isInstanceOf(FechaNoValida.class);
-        actividadMalHecha.setFechaCelebracion(LocalDate.now().plusDays(7));
-        assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividadMalHecha)).isInstanceOf(FechaNoValida.class);
+        assertThatThrownBy(() -> servicioClub.crearActividad(admin, actividadNoValida)).isInstanceOf(FechaNoValida.class);
+        assertThatThrownBy(() -> servicioClub.crearActividad(admin, actividadNoValida2)).isInstanceOf(FechaNoValida.class);
 
-        /*Comprobamos que el usuario que quiera añadir una actividad válida tenga permisos de administrador.*/
-        assertThatThrownBy(() -> servicioClub.crearActividad(noDireccion, actividad2)).isInstanceOf(OperacionDeDireccion.class);
+        //Comprobamos que se lance una excepción si el socio que realiza la operación no es el administrador.
+        assertThatThrownBy(() -> servicioClub.crearActividad(socio, actividad)).isInstanceOf(OperacionDeDireccion.class);
 
         //Se añade correctamente la actividad.
-        assertDoesNotThrow(() -> servicioClub.crearActividad(direccion, actividad2));
+        assertDoesNotThrow(() -> servicioClub.crearActividad(admin, actividad));
 
-        /*Comprobamos que el usuario que quiera añadir una actividad no válida tenga permisos de administrador.*/
-        assertThatThrownBy(() -> servicioClub.crearActividad(noDireccion, actividad2)).isInstanceOf(OperacionDeDireccion.class);
-
-        //No acepta actividades repetidas.
-        assertThatThrownBy(() -> servicioClub.crearActividad(direccion, actividad2)).isInstanceOf(ActividadYaExistente.class);
-    }
+        //Comprobamos que se ha añadido la actividad.
+        assertEquals(actividad.getTitulo(), servicioClub.buscarActividadPorId(actividad.getId()).get().getTitulo());
+}
 
     @Test
     @DirtiesContext
@@ -496,41 +529,5 @@ public class TestServicioClub {
         int plazasAceptadas = servicioClub.buscarSolicitudPorId(direccion, actividadActualizada, solicitud.getId()).get().getPlazasAceptadas();
         assertEquals(0, plazasAceptadas);
         assertEquals(0, actividadActualizada.getPlazasOcupadas());
-    }
-
-    @Test
-    @DirtiesContext
-    void testCrearTemporadaInicial() {
-        //Verificamos que se crea la temporada inicial.
-        assertEquals(LocalDate.now().getYear(), servicioClub.buscarTemporadaPorAnio(LocalDate.now().getYear()).get().getAnio());
-    }
-
-    @Test
-    @DirtiesContext
-    void testCrearNuevaTemporada() {
-        //Verificamos que no se cree una nueva temporada si ya existe.
-        int numeroTemporadas = servicioClub.buscarTodasTemporadas().size();
-        servicioClub.crearNuevaTemporada();
-        assertEquals(numeroTemporadas, servicioClub.buscarTodasTemporadas().size());
-
-        //Verificamos que se ha creado la temporada del año actual.
-        assertEquals(LocalDate.now().getYear(), servicioClub.buscarTemporadaPorAnio(LocalDate.now().getYear()).get().getAnio());
-    }
-
-    @Test
-    @DirtiesContext
-    void testBuscarTemporadaPorAnio() {
-        //Verificamos que no se devuelva la temporada si no existe.
-        assertEquals(Optional.empty(), servicioClub.buscarTemporadaPorAnio(2022));
-
-        //Verificamos que se devuelva la temporada si existe.
-        assertEquals(LocalDate.now().getYear(), servicioClub.buscarTemporadaPorAnio(LocalDate.now().getYear()).get().getAnio());
-    }
-
-    @Test
-    @DirtiesContext
-    void testBuscarTodasTemporadas() {
-        //Verificamos que se devuelvan todas las temporadas.
-        assertEquals(1, servicioClub.buscarTodasTemporadas().size());
     }
 }
