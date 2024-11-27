@@ -35,9 +35,9 @@ public class TestServicioClub {
     @DirtiesContext
     public void testLogin() {
         // Verifica el login con el administrador.
-        assertEquals("admin@club.es", servicioClub.login("admin@club.es", "ElAdMiN").getEmail());
+        assertEquals("admin@club.com", servicioClub.login("admin@club.com", "admin").getEmail());
 
-        // Verifica el login con el administrador pero con la contraseña erronea.
+        // Verifica el login con el administrador pero con la contraseña incorrecta.
         assertThatThrownBy(() -> servicioClub.login("admin@club.es", "wrongpassword")).isInstanceOf(SocioNoValido.class);
 
         // Verifica el login con un socio válido
@@ -46,7 +46,7 @@ public class TestServicioClub {
         // Comprobamos valores nulos para email.
         assertThatThrownBy(() -> servicioClub.login("", "password123")).isInstanceOf(SocioNoValido.class);
 
-        // Verifica el login con credenciales incorrectas.
+        // Verifica el login con una contraseña incorrecta.
         assertThatThrownBy(() -> servicioClub.login("socio_prueba@club.com", "wrongpassword")).isInstanceOf(SocioNoValido.class);
 
         // Verifica el login con un email no registrado.
@@ -56,29 +56,29 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     public void testEsAdmin() {
-        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
-        Socio noDireccion = new Socio("noadministrador", "-", "noadmin@club.es", "000000000", "NoElAdMiN");
-        //combinaciones correctas.
+        Socio direccion = servicioClub.login("admin@club.com", "admin");
+        Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
+
+        //Comprobamos que devuelva true si el socio es el administrador.
         assertTrue(servicioClub.esAdmin(direccion));
 
-        //combinaciones incorrectas.
-        assertFalse(servicioClub.esAdmin(noDireccion));
-        assertFalse(servicioClub.esAdmin(noDireccion));
-        assertFalse(servicioClub.esAdmin(noDireccion));
+        //Comprobamos que devuelva false si el socio no es el administrador.
+        assertFalse(servicioClub.esAdmin(socio));
     }
 
     @Test
     @DirtiesContext
     void testAnadirSocio() {
-        //verificamos que no se pueda añadir un socio igual al admin.
-        Socio admin = new Socio("administrador", "-", "admin@club.es", "623456789", "ElAdMiN");
-        assertThatThrownBy(() -> servicioClub.anadirSocio(admin)).isInstanceOf(SocioYaRegistrado.class);
+        Socio direccion = servicioClub.login("admin@club.com", "admin");
 
-        //verificamos que no se pueda añadir un socio igual al otro usuario ya registrado.
-        Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
-        assertThrows(SocioYaRegistrado.class, () -> servicioClub.anadirSocio(socio));
+        //Comprobamos que no se pueda añadir un socio igual a la dirección.
+        assertThatThrownBy(() -> servicioClub.anadirSocio(direccion)).isInstanceOf(SocioYaRegistrado.class);
 
-        //verificamos que se pueda añadir un socio no registrado.
+        //Comprobamos que no se pueda añadir un socio igual al otro usuario ya registrado.
+        Socio socioRepetido = servicioClub.login("socio_prueba@club.com", "password123");
+        assertThrows(SocioYaRegistrado.class, () -> servicioClub.anadirSocio(socioRepetido));
+
+        //Comprobamos que se pueda añadir un socio no registrado.
         Socio socioNoRegistrado = new Socio("Socio", "-", "socio_no_registrado@club.com", "623456789", "password123");
         assertDoesNotThrow(() -> servicioClub.anadirSocio(socioNoRegistrado));
     }
@@ -186,7 +186,7 @@ public class TestServicioClub {
     @DirtiesContext
     void testRealizarSolicitud() {
 
-        Socio direccion = new Socio("administrador", "-", "admin@club.es", "621302025", "ElAdMiN");
+        Socio direccion = servicioClub.login("admin@club.com", "admin");
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
 
         //Actividad a la que es posible inscribirse.
@@ -221,15 +221,14 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testModificarAcompanantes() {
-        Socio direccion = new Socio("administrador", "-", "admin@club.es", "621302025", "ElAdMiN");
-        Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
+        Socio direccion = servicioClub.login("admin@club.com", "admin");
+        Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
 
         //Actividad a la que es posible inscribirse.
         Actividad actividadAbierta = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
                 10, LocalDate.now(), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
 
-        servicioClub.anadirSocio(socio);
         servicioClub.marcarCuotaPagada(direccion, socio);
         servicioClub.crearActividad(direccion, actividadAbierta);
 
