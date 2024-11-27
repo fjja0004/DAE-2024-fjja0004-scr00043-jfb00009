@@ -228,7 +228,12 @@ public class Actividad {
     public String getTitulo() {
         return titulo;
     }
-
+    public int getPrecio() {
+        return precio;
+    }
+    public String getDescripcion() {
+        return descripcion;
+    }
     public LocalDate getFechaCelebracion() {
         return fechaCelebracion;
     }
