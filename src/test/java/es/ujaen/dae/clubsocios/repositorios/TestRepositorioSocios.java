@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -56,14 +55,14 @@ public class TestRepositorioSocios {
 
         //Comprobar que se se cambia la cuota pagada de false a true;
         assertFalse(repositorioSocios.buscar(socio1.getEmail()).get().isCuotaPagada());
-        repositorioSocios.marcarCuotasPagadaEnSocio(socio1);
+        repositorioSocios.marcarCuotaPagada(socio1);
         assertTrue(repositorioSocios.buscar(socio1.getEmail()).get().isCuotaPagada());
 
-        repositorioSocios.marcarCuotasPagadaEnSocio(socio2);
+        repositorioSocios.marcarCuotaPagada(socio2);
         assertTrue(repositorioSocios.buscar(socio2.getEmail()).get().isCuotaPagada());
-        repositorioSocios.marcarCuotasPagadaEnSocio(socio3);
+        repositorioSocios.marcarCuotaPagada(socio3);
         assertTrue(repositorioSocios.buscar(socio3.getEmail()).get().isCuotaPagada());
-        repositorioSocios.marcarCuotasPagadaEnSocio(socio4);
+        repositorioSocios.marcarCuotaPagada(socio4);
         assertTrue(repositorioSocios.buscar(socio4.getEmail()).get().isCuotaPagada());
 
         //comprobamos que ponga a false todas las cuotas pagadas al usar la función marcarTodasCuotasNoPagadas

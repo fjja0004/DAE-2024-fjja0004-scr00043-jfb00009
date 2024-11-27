@@ -16,7 +16,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -31,7 +30,7 @@ public class ServicioClub {
     RepositorioTemporadas repositorioTemporadas;
 
     // Socio especial que representa al administrador del club
-    private static final Socio admin = new Socio("administrador", "-", "admin@club.es", "666666666", "ElAdMiN");
+    private static final Socio admin = new Socio("administrador", "-", "admin@club.com", "666666666", "admin");
 
     /**
      * @brief constructor por defecto de la clase ServicioClub
@@ -81,9 +80,9 @@ public class ServicioClub {
      * @throws SocioYaRegistrado en caso de que ya esté registrado
      * @brief añade un nuevo socio
      */
-    public void anadirSocio(@Valid Socio socio) {
+    public void nuevoSocio(@Valid Socio socio) {
         if (esAdmin(socio)) {
-            throw new SocioYaRegistrado();
+            throw new SocioNoValido();
         }
         repositorioSocios.guardar(socio);
     }
@@ -99,28 +98,24 @@ public class ServicioClub {
     }
 
     /**
-     * @param actividad Actividad que se crea
-     * @brief creación de una actividad
-     */
-    void crearActividad(Socio direccion, @Valid Actividad actividad) {
-        if (!esAdmin(direccion))
-            throw new OperacionDeDireccion();
-        repositorioActividades.crearActividad(actividad);
-    }
-
-    /**
      * @param direccion Miembro de la dirección que realiza la operación
      * @param socio     Socio que paga la cuota
-     * @brief marca la cuota del socio como pagada, en caso de que ya esté pagado lanza una excepción
+     * @brief marca la cuota del socio como pagada
      */
     public void marcarCuotaPagada(Socio direccion, @Valid Socio socio) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
-        if (!repositorioSocios.buscar(socio.getEmail()).get().isCuotaPagada()) {
-            repositorioSocios.marcarCuotasPagadaEnSocio(socio);
-        } else {
-            throw new PagoYaRealizado();
-        }
+            repositorioSocios.marcarCuotaPagada(socio);
+    }
+
+    /**
+     * @param actividad Actividad que se crea
+     * @brief creación de una actividad
+     */
+    public void crearActividad(Socio direccion, @Valid Actividad actividad) {
+        if (!esAdmin(direccion))
+            throw new OperacionDeDireccion();
+        repositorioActividades.crearActividad(actividad);
     }
 
     /**
@@ -179,7 +174,7 @@ public class ServicioClub {
      */
     public void modificarAcompanantes(Socio socio, Actividad actividad, int nAcompanantes) {
         if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
-            repositorioActividades.modificarAcompanantes(socio, nAcompanantes, actividad);
+            repositorioActividades.modificarAcompanantes(actividad, socio, nAcompanantes);
         }
     }
 

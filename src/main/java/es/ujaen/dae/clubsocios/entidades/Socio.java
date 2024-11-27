@@ -3,6 +3,7 @@ package es.ujaen.dae.clubsocios.entidades;
 import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
@@ -14,6 +15,7 @@ public class Socio {
     private String apellidos;
     @Pattern(regexp = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$", message = "El email no es válido")
     @Id
+    @Email
     private String email;
     @Pattern(regexp = "^(\\+34|0034|34)?[6789]\\d{8}$", message = "El teléfono no es válido")
     private String telefono;
@@ -73,6 +75,12 @@ public class Socio {
 
     public void setCuotaPagada(boolean cuotaPagada) {this.cuotaPagada = cuotaPagada;}
 
+    /**
+     * @brief Comprueba si la clave introducida es correcta
+     * @param clave clave del socio
+     * @return true si la clave es correcta
+     * @throws SocioNoValido si la clave no es correcta
+     */
     public boolean comprobarCredenciales(String clave) {
         if (this.clave.equals(clave)) {
             return true;
