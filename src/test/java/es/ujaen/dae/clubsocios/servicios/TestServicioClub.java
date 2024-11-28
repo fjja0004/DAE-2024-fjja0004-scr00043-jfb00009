@@ -187,12 +187,29 @@ public class TestServicioClub {
 
         //Comprobamos que se ha añadido la actividad.
         assertEquals(actividad.getTitulo(), servicioClub.buscarActividadPorId(actividad.getId()).get().getTitulo());
-}
+    }
+
+    @Test
+    @DirtiesContext
+    void testBuscarActividadPorId() {
+        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                2, LocalDate.now(), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        //Comprobamos que no devuelva la actividad si no existe.
+        assertEquals(Optional.empty(), servicioClub.buscarActividadPorId(actividad.getId()));
+
+        servicioClub.crearActividad(admin, actividad);
+
+        //Comprobamos que devuelva la actividad si existe.
+        assertEquals(actividad.getId(), servicioClub.buscarActividadPorId(actividad.getId()).get().getId());
+    }
 
     @Test
     @DirtiesContext
     void buscarActividadesAbiertas() {
-        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
+        Socio admin = servicioClub.login("admin@club.com", "admin");
 
         //Actividad a la que es posible inscribirse.
         Actividad actividadAbierta = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
@@ -208,20 +225,37 @@ public class TestServicioClub {
         assertEquals(0, servicioClub.buscarActividadesAbiertas().size());
 
         //Si hay alguna, pero todas están cerradas.
-        servicioClub.crearActividad(direccion, actividadCerrada);
+        servicioClub.crearActividad(admin, actividadCerrada);
         assertEquals(0, servicioClub.buscarActividadesAbiertas().size());
 
         //Comprobamos que se devuelva la actividad abierta.
-        servicioClub.crearActividad(direccion, actividadAbierta);
+        servicioClub.crearActividad(admin, actividadAbierta);
         assertEquals(1, servicioClub.buscarActividadesAbiertas().size());
-        assertTrue(servicioClub.buscarActividadesAbiertas().contains(actividadAbierta));
+        assertEquals(actividadAbierta.getId(), servicioClub.buscarActividadesAbiertas().getLast().getId());
+        //TODO: quitar assertTrue(servicioClub.buscarActividadesAbiertas().contains(actividadAbierta));
     }
 
+    @Test
+    @DirtiesContext
+    void testBuscarActividadesTemporada() {
+        Socio admin = servicioClub.login("admin@club.com", "admin");
+
+        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                2, LocalDate.now(), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        //Comprobamos que no se devuelvan actividades si no hay.
+        assertEquals(0, servicioClub.buscarActividadesTemporada(LocalDate.now().getYear()).size());
+
+        servicioClub.crearActividad(admin, actividad);
+        //Comprobamos que se devuelvan las actividades de la temporada actual.
+        assertEquals(1, servicioClub.buscarActividadesTemporada(LocalDate.now().getYear()).size());
+        assertEquals(actividad.getId(), servicioClub.buscarActividadesTemporada(LocalDate.now().getYear()).getLast().getId());
+    }
 
     @Test
     @DirtiesContext
     void testRealizarSolicitud() {
-
         Socio direccion = servicioClub.login("admin@club.com", "admin");
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
 
@@ -449,23 +483,6 @@ public class TestServicioClub {
         servicioClub.modificarFechaActividad(direccion, actividad1);
         actividad1 = servicioClub.buscarActividadesAbiertas().getFirst();
         assertEquals(actividad1.getPlazas(), actividad1.getPlazasOcupadas());
-    }
-
-    @Test
-    @DirtiesContext
-    void testBuscarActividadPorId() {
-        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
-        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                2, LocalDate.now(), LocalDate.now().plusDays(7),
-                LocalDate.now().plusDays(10));
-
-        //Comprobamos que no devuelva la actividad si no existe.
-        assertEquals(Optional.empty(), servicioClub.buscarActividadPorId(actividad.getId()));
-
-        servicioClub.crearActividad(direccion, actividad);
-
-        //Comprobamos que devuelva la actividad si existe.
-        assertEquals(actividad.getId(), servicioClub.buscarActividadPorId(actividad.getId()).get().getId());
     }
 
     @Test

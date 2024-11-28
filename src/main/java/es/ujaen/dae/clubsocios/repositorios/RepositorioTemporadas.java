@@ -54,4 +54,12 @@ public class RepositorioTemporadas {
         return buscar(LocalDate.now().getYear()).get();
     }
 
+    public Temporada actualizar(Temporada temporada) {
+        return em.merge(temporada);
+    }
+
+    public void comprobarErrores() {
+        em.flush();
+    }
+
 }

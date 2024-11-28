@@ -8,7 +8,6 @@ import java.util.List;
 
 @Entity
 public class Temporada {
-    @Positive
     @Id
     private int anio;
 
@@ -30,6 +29,10 @@ public class Temporada {
     public void nuevaActividad(Actividad actividad) {
         actividad.fechasValidas();
         actividades.add(actividad);
+    }
+
+    public List<Actividad> getActividades() {
+        return actividades;
     }
 
     public int getAnio() {

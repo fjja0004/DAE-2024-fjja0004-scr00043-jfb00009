@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.*;
@@ -105,7 +106,7 @@ public class ServicioClub {
     public void marcarCuotaPagada(Socio direccion, @Valid Socio socio) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
-            repositorioSocios.marcarCuotaPagada(socio);
+        repositorioSocios.marcarCuotaPagada(socio);
     }
 
     /**
@@ -146,12 +147,12 @@ public class ServicioClub {
      * @param actividad Actividad que se crea
      * @brief creación de una actividad
      */
+    @Transactional
     public void crearActividad(Socio direccion, @Valid Actividad actividad) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
         repositorioTemporadas.temporadaActual().nuevaActividad(actividad);
         repositorioActividades.guardarActividad(actividad);
-        repositorioActividades.comprobarErrores();
     }
 
     /**
@@ -171,13 +172,14 @@ public class ServicioClub {
         return repositorioActividades.buscaTodasActividadesAbiertas();
     }
 
-//    /**
-//     * @return lista de todas las actividades de la temporada actual
-//     * @brief Devuelve una lista con todas las actividades de la temporada actual
-//     */
-//    public List<Actividad> buscarTodasActividadesTemporadaActual() {
-//        return repositorioTemporadas.buscarTodasActividadesDeTemporadas(LocalDate.now().getYear());
-//    }
+    /**
+     * @param anio año de la temporada
+     * @return lista de todas las actividades de la temporada dada
+     * @brief Devuelve una lista con todas las actividades de la temporada dada
+     */
+    public List<Actividad> buscarActividadesTemporada(int anio) {
+        return repositorioTemporadas.buscar(anio).get().getActividades();
+    }
 
     /**
      * @param solicitante   Socio que va a realizar la solicitud
