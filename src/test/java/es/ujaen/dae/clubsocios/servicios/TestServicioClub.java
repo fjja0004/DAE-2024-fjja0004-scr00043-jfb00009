@@ -255,6 +255,36 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
+    void testModificarFechaActividad() {
+        Socio admin = servicioClub.login("admin@club.com", "admin");
+
+        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                2, LocalDate.now(), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        servicioClub.crearActividad(admin, actividad);
+
+        //Comprobamos que modifique la fecha de inicio de inscripción.
+        LocalDate nuevaFechaInicio = LocalDate.now().plusDays(1);
+        actividad.setFechaInicioInscripcion(nuevaFechaInicio);
+        servicioClub.modificarFechaActividad(actividad);
+        assertEquals(nuevaFechaInicio, servicioClub.buscarActividadPorId(actividad.getId()).get().getFechaInicioInscripcion());
+
+        //Comprobamos que modifique la fecha de fin de inscripción.
+        LocalDate nuevaFechaFin = LocalDate.now().plusDays(8);
+        actividad.setFechaFinInscripcion(nuevaFechaFin);
+        servicioClub.modificarFechaActividad(actividad);
+        assertEquals(nuevaFechaFin, servicioClub.buscarActividadPorId(actividad.getId()).get().getFechaFinInscripcion());
+
+        //Comprobamos que se modifique la fecha de celebración.
+        LocalDate nuevaFechaCelebracion = LocalDate.now().plusDays(11);
+        actividad.setFechaCelebracion(nuevaFechaCelebracion);
+        servicioClub.modificarFechaActividad(actividad);
+        assertEquals(nuevaFechaCelebracion, servicioClub.buscarActividadPorId(actividad.getId()).get().getFechaCelebracion());
+    }
+
+    @Test
+    @DirtiesContext
     void testRealizarSolicitud() {
         Socio direccion = servicioClub.login("admin@club.com", "admin");
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
@@ -436,13 +466,13 @@ public class TestServicioClub {
 
 
         actividad.setFechaInicioInscripcion(LocalDate.now().plusDays(1));
-        servicioClub.modificarFechaActividad(direccion, actividad);
+        servicioClub.modificarFechaActividad(actividad);
 
         //Comprobamos que se lance una excepción si la solicitud no existe.
         assertThatThrownBy(() -> servicioClub.asignarPlaza(direccion, socio, actividad)).isInstanceOf(SolicitudNoExistente.class);
 
         actividad.setFechaInicioInscripcion(LocalDate.now());
-        servicioClub.modificarFechaActividad(direccion, actividad);
+        servicioClub.modificarFechaActividad(actividad);
         servicioClub.marcarCuotaPagada(direccion, socio);
         servicioClub.realizarSolicitud(socio, actividad, 1);
 
@@ -451,7 +481,7 @@ public class TestServicioClub {
         Actividad actividad1 = servicioClub.buscarActividadesAbiertas().getFirst();
 
         actividad1.setFechaInicioInscripcion(LocalDate.now().plusDays(1));
-        servicioClub.modificarFechaActividad(direccion, actividad1);
+        servicioClub.modificarFechaActividad(actividad1);
         servicioClub.asignarPlaza(direccion, socio, actividad1);
         int plazasAceptadas = actividad1.buscarSolicitudPorEmail(socio.getEmail()).get().getPlazasAceptadas();
         assertEquals(1, plazasAceptadas);
@@ -459,10 +489,10 @@ public class TestServicioClub {
         //Comprobamos que no se asignen más plazas de las solicitadas.
         servicioClub.asignarPlaza(direccion, socio, actividad1);
         actividad1.setFechaInicioInscripcion(LocalDate.now());
-        servicioClub.modificarFechaActividad(direccion, actividad1);
+        servicioClub.modificarFechaActividad(actividad1);
         actividad1 = servicioClub.buscarActividadesAbiertas().getFirst();
         actividad1.setFechaInicioInscripcion(LocalDate.now().plusDays(1));
-        servicioClub.modificarFechaActividad(direccion, actividad1);
+        servicioClub.modificarFechaActividad(actividad1);
         assertEquals(plazasAceptadas, actividad1.buscarSolicitudPorEmail(socio.getEmail()).get().getPlazasAceptadas());
 
         //Comprobamos que no se asignen más plazas de las disponibles.
@@ -470,17 +500,17 @@ public class TestServicioClub {
         servicioClub.marcarCuotaPagada(direccion, socio3);
 
         actividad1.setFechaInicioInscripcion(LocalDate.now());
-        servicioClub.modificarFechaActividad(direccion, actividad1);
+        servicioClub.modificarFechaActividad(actividad1);
         servicioClub.realizarSolicitud(socio2, actividad1, 1);
         servicioClub.realizarSolicitud(socio3, actividad1, 1);
         actividad1.setFechaInicioInscripcion(LocalDate.now().plusDays(1));
-        servicioClub.modificarFechaActividad(direccion, actividad1);
+        servicioClub.modificarFechaActividad(actividad1);
 
         servicioClub.asignarPlaza(direccion, socio2, actividad1);
         servicioClub.asignarPlaza(direccion, socio3, actividad1);
 
         actividad1.setFechaInicioInscripcion(LocalDate.now());
-        servicioClub.modificarFechaActividad(direccion, actividad1);
+        servicioClub.modificarFechaActividad(actividad1);
         actividad1 = servicioClub.buscarActividadesAbiertas().getFirst();
         assertEquals(actividad1.getPlazas(), actividad1.getPlazasOcupadas());
     }
@@ -534,7 +564,7 @@ public class TestServicioClub {
 
         //Cerramos el periodo de inscripción.
         actividad.setFechaInicioInscripcion(LocalDate.now().plusDays(1));
-        servicioClub.modificarFechaActividad(direccion, actividad);
+        servicioClub.modificarFechaActividad(actividad);
 
         //Comprobamos que se haya quitado la plaza.
         servicioClub.asignarPlaza(direccion, socio, actividad);

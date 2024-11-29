@@ -182,6 +182,16 @@ public class ServicioClub {
     }
 
     /**
+     * @param actividad Actividad a modificar.
+     * @implNote Esta función se utiliza únicamente para testear otras operaciones,
+     * no está preparada para que se utilice desde el frontend.
+     * @brief Modifica la(s) fecha(s) de una actividad por la que se pasa como parámetro.
+     */
+    protected void modificarFechaActividad(Actividad actividad) {
+        repositorioActividades.modificarFechaActividad(actividad);
+    }
+
+    /**
      * @param solicitante   Socio que va a realizar la solicitud
      * @param actividad     Actividad para la que se realiza la solicitud
      * @param nAcompanantes número entero de acompañantes
@@ -296,22 +306,6 @@ public class ServicioClub {
             Optional<Solicitud> solicitud = actividadSolicitada.quitarPlaza(solicitante.getEmail());
             repositorioActividades.actualizar(actividadSolicitada);
             repositorioActividades.actualizar(solicitud.get());
-        }
-    }
-
-    /**
-     * @param direccion Socio que realiza la operación
-     * @param actividad Actividad a modificar
-     * @brief Modifica la fecha de una actividad
-     */
-    //TODO: hay que pasarle la fecha como parámetro, si no qué sentido tiene?
-    public void modificarFechaActividad(Socio direccion, Actividad actividad) {
-        if (!esAdmin(direccion))
-            throw new OperacionDeDireccion();
-        if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
-            repositorioActividades.modificarFechaActividad(actividad);
-        } else {
-            throw new ActividadNoEncontrada();
         }
     }
 }
