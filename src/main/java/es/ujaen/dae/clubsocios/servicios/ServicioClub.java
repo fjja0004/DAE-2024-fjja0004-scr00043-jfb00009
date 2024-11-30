@@ -102,7 +102,7 @@ public class ServicioClub {
      * @param actividad Actividad que se crea
      * @brief creación de una actividad
      */
-    void crearActividad(Socio direccion, @Valid Actividad actividad) {
+    public void crearActividad(Socio direccion, @Valid Actividad actividad) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
         repositorioActividades.crearActividad(actividad);
