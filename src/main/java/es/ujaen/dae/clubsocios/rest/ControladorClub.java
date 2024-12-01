@@ -9,8 +9,6 @@ import es.ujaen.dae.clubsocios.rest.dto.DTOSocio;
 import es.ujaen.dae.clubsocios.rest.dto.Mapeador;
 import es.ujaen.dae.clubsocios.servicios.ServicioClub;
 import jakarta.annotation.PostConstruct;
-import jakarta.validation.Constraint;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,8 +29,8 @@ ServicioClub servicioClub;
 
     Socio  admin;
 @PostConstruct
-    void loginDIreccion(){
-    admin = servicioClub.login("admin@club.es","ElAdMiN");
+    void loginDireccion(){
+    admin = servicioClub.login("admin@club.com","admin");
 }
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(ConstraintViolationException.class)
@@ -41,7 +39,7 @@ ServicioClub servicioClub;
     @PostMapping("/socios")
     public ResponseEntity<Void> nuevoSocio(@RequestBody DTOSocio socio){
     try{
-        servicioClub.anadirSocio(mapeador.entidadSocio(socio));
+        servicioClub.crearSocio(mapeador.entidadSocio(socio));
     }catch(SocioYaRegistrado e){
         return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }

@@ -7,6 +7,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="ClubSocios" />
+        <module name="DAE-2024-fjja0004-scr00043-jfb00009" />
       </profile>
     </annotationProcessing>
   </component>
