@@ -28,14 +28,14 @@ public class Actividad {
     @Positive
     private int plazas;
     @PositiveOrZero
-    private int plazasOcupadas;
+    private int plazasOcupadas; //Plazas ocupadas por socios con cuota pagada
     @NotNull
     private LocalDate fechaInicioInscripcion;
     @NotNull
     private LocalDate fechaFinInscripcion;
     @NotNull
     private LocalDate fechaCelebracion;
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany
     @JoinColumn(name = "actividad")
     private List<Solicitud> solicitudes;
 
@@ -122,24 +122,30 @@ public class Actividad {
     }
 
     /**
-     * @param socio         socio que realiza la solicitud
-     * @param nAcompanantes número de acompañantes
-     * @brief Realiza una solicitud de inscripción a una actividad
+     * @param solicitud solicitud a añadir
+     * @brief Crea una solicitud de inscripción a la actividad
      */
-    public Solicitud realizarSolicitud(@Valid Socio socio, int nAcompanantes) {
-
+    public void crearSolicitud(Solicitud solicitud) {
+        //Comprobamos que la actividad esté abierta.
         if (this.isAbierta()) {
-            Solicitud solicitud = new Solicitud(socio, nAcompanantes);
-            if (plazasOcupadas < plazas && socio.isCuotaPagada()) {
+
+            //Comprobamos que no haya una solicitud del mismo socio.
+            if (buscarSolicitudPorEmail(solicitud.getSocio().getEmail()).isPresent()) {
+                throw new SolicitudYaRealizada();
+            }
+
+            //Aumentamos las plazas ocupadas si quedan plazas y el socio tiene la cuota pagada.
+            if (plazasOcupadas < plazas && solicitud.socio.isCuotaPagada()) {
+                //Si el socio tiene la cuota pagada, se le asigna una plaza.
                 solicitud.setPlazasAceptadas(1);
                 plazasOcupadas++;
             }
+            //Añadimos la solicitud a la lista de solicitudes, aunque no tenga la cuota pagada.
             solicitudes.add(solicitud);
-            return solicitud;
-        } else {
-            throw new SolicitudNoValida();
-        }
 
+        } else {
+            throw new InscripcionCerrada();
+        }
     }
 
     /**

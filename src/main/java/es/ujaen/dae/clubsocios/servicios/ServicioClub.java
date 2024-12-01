@@ -14,9 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -31,7 +31,7 @@ public class ServicioClub {
     RepositorioTemporadas repositorioTemporadas;
 
     // Socio especial que representa al administrador del club
-    private static final Socio admin = new Socio("administrador", "-", "admin@club.es", "666666666", "ElAdMiN");
+    private static final Socio admin = new Socio("administrador", "-", "admin@club.com", "666666666", "admin");
 
     /**
      * @brief constructor por defecto de la clase ServicioClub
@@ -58,6 +58,7 @@ public class ServicioClub {
      * @param email email del socio
      * @param clave clave del socio
      * @return Socio que ha iniciado sesión
+     * @throws SocioNoValido en caso de que el socio no exista
      * @brief Función que permite a un usuario iniciar sesión en el sistema.
      */
     public Socio login(@Email String email, String clave) {
@@ -81,9 +82,9 @@ public class ServicioClub {
      * @throws SocioYaRegistrado en caso de que ya esté registrado
      * @brief añade un nuevo socio
      */
-    public void anadirSocio(@Valid Socio socio) {
+    public void crearSocio(@Valid Socio socio) {
         if (esAdmin(socio)) {
-            throw new SocioYaRegistrado();
+            throw new SocioNoValido();
         }
         repositorioSocios.guardar(socio);
     }
@@ -99,28 +100,60 @@ public class ServicioClub {
     }
 
     /**
-     * @param actividad Actividad que se crea
-     * @brief creación de una actividad
-     */
-    public void crearActividad(Socio direccion, @Valid Actividad actividad) {
-        if (!esAdmin(direccion))
-            throw new OperacionDeDireccion();
-        repositorioActividades.crearActividad(actividad);
-    }
-
-    /**
      * @param direccion Miembro de la dirección que realiza la operación
      * @param socio     Socio que paga la cuota
-     * @brief marca la cuota del socio como pagada, en caso de que ya esté pagado lanza una excepción
+     * @brief marca la cuota del socio como pagada
      */
     public void marcarCuotaPagada(Socio direccion, @Valid Socio socio) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
-        if (!repositorioSocios.buscar(socio.getEmail()).get().isCuotaPagada()) {
-            repositorioSocios.marcarCuotasPagadaEnSocio(socio);
-        } else {
-            throw new PagoYaRealizado();
-        }
+        repositorioSocios.marcarCuotaPagada(socio);
+    }
+
+    /**
+     * @brief Crea una temporada al iniciar la aplicación
+     */
+    @PostConstruct
+    void crearTemporadaInicial() {
+        crearNuevaTemporada();
+    }
+
+    /**
+     * @brief Crea una nueva temporada al inicio de cada año
+     */
+    @Scheduled(cron = "0 0 0 1 1 ?")
+    void crearNuevaTemporada() {
+        repositorioTemporadas.crearTemporada();
+        repositorioSocios.marcarTodasCuotasNoPagadas();
+    }
+
+    /**
+     * @param anio año de la temporada
+     * @return temporada con el año dado
+     * @brief Busca una temporada por su año
+     */
+    public Optional<Temporada> buscarTemporadaPorAnio(int anio) {
+        return repositorioTemporadas.buscar(anio);
+    }
+
+    /**
+     * @return lista de todas las temporadas
+     * @brief Busca todas las temporadas
+     */
+    public List<Temporada> buscarTodasTemporadas() {
+        return repositorioTemporadas.buscarTodasTemporadas();
+    }
+
+    /**
+     * @param actividad Actividad que se crea
+     * @brief creación de una actividad
+     */
+    @Transactional
+    public void crearActividad(Socio direccion, @Valid Actividad actividad) {
+        if (!esAdmin(direccion))
+            throw new OperacionDeDireccion();
+        repositorioTemporadas.temporadaActual().nuevaActividad(actividad);
+        repositorioActividades.guardarActividad(actividad);
     }
 
     /**
@@ -140,34 +173,38 @@ public class ServicioClub {
         return repositorioActividades.buscaTodasActividadesAbiertas();
     }
 
-//    /**
-//     * @return lista de todas las actividades de la temporada actual
-//     * @brief Devuelve una lista con todas las actividades de la temporada actual
-//     */
-//    public List<Actividad> buscarTodasActividadesTemporadaActual() {
-//        return repositorioTemporadas.buscarTodasActividadesDeTemporadas(LocalDate.now().getYear());
-//    }
+    /**
+     * @param anio año de la temporada
+     * @return lista de todas las actividades de la temporada dada
+     * @brief Devuelve una lista con todas las actividades de la temporada dada
+     */
+    public List<Actividad> buscarActividadesTemporada(int anio) {
+        return repositorioTemporadas.buscar(anio).get().getActividades();
+    }
+
+    /**
+     * @param actividad Actividad a modificar.
+     * @implNote Esta función se utiliza únicamente para testear otras operaciones,
+     * no está preparada para que se utilice desde el frontend.
+     * @brief Modifica la(s) fecha(s) de una actividad por la que se pasa como parámetro.
+     */
+    protected void modificarFechaActividad(Actividad actividad) {
+        repositorioActividades.modificarFechaActividad(actividad);
+    }
 
     /**
      * @param solicitante   Socio que va a realizar la solicitud
      * @param actividad     Actividad para la que se realiza la solicitud
      * @param nAcompanantes número entero de acompañantes
-     * @brief realiza la solicitud de una actividad
+     * @brief crea la solicitud de una actividad
      */
-    public void realizarSolicitud(Socio solicitante, Actividad actividad, int nAcompanantes) {
-        Socio socio = login(solicitante.getEmail(), solicitante.getClave());
-        if (socio.isCuotaPagada()) {
-            if (actividad.isAbierta()) {
-                if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
-                    Actividad actSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
-                    repositorioActividades.guardarSolicitud(socio, nAcompanantes, actSolicitada);
-                }
-            } else {
-                throw new InscripcionCerrada();
-            }
-        } else {
-            throw new SocioNoValido();
-        }
+    @Transactional
+    public Solicitud crearSolicitud(Socio solicitante, Actividad actividad, int nAcompanantes) {
+        Actividad actSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
+        Solicitud solicitud = new Solicitud(solicitante, nAcompanantes);
+        actSolicitada.crearSolicitud(solicitud);
+        repositorioActividades.guardarSolicitud(solicitud);
+        return solicitud;
     }
 
     /**
@@ -179,7 +216,7 @@ public class ServicioClub {
      */
     public void modificarAcompanantes(Socio socio, Actividad actividad, int nAcompanantes) {
         if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
-            repositorioActividades.modificarAcompanantes(socio, nAcompanantes, actividad);
+            repositorioActividades.modificarAcompanantes(actividad, socio, nAcompanantes);
         }
     }
 
@@ -263,56 +300,6 @@ public class ServicioClub {
             Optional<Solicitud> solicitud = actividadSolicitada.quitarPlaza(solicitante.getEmail());
             repositorioActividades.actualizar(actividadSolicitada);
             repositorioActividades.actualizar(solicitud.get());
-        }
-    }
-
-    /**
-     * @brief Crea una temporada al iniciar la aplicación
-     */
-    @PostConstruct
-    void crearTemporadaInicial() {
-        crearNuevaTemporada();
-    }
-
-    /**
-     * @brief Crea una nueva temporada al inicio de cada año
-     */
-    @Scheduled(cron = "0 0 0 1 1 ?")
-    void crearNuevaTemporada() {
-        repositorioTemporadas.crearTemporada();
-        repositorioSocios.marcarTodasCuotasNoPagadas();
-    }
-
-    /**
-     * @param anio año de la temporada
-     * @return temporada con el año dado
-     * @brief Busca una temporada por su año
-     */
-    public Optional<Temporada> buscarTemporadaPorAnio(int anio) {
-        return repositorioTemporadas.buscar(anio);
-    }
-
-    /**
-     * @return lista de todas las temporadas
-     * @brief Busca todas las temporadas
-     */
-    public List<Temporada> buscarTodasTemporadas() {
-        return repositorioTemporadas.buscarTodasTemporadas();
-    }
-
-    /**
-     * @param direccion Socio que realiza la operación
-     * @param actividad Actividad a modificar
-     * @brief Modifica la fecha de una actividad
-     */
-    //TODO: hay que pasarle la fecha como parámetro, si no qué sentido tiene?
-    public void modificarFechaActividad(Socio direccion, Actividad actividad) {
-        if (!esAdmin(direccion))
-            throw new OperacionDeDireccion();
-        if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
-            repositorioActividades.modificarFechaActividad(actividad);
-        } else {
-            throw new ActividadNoEncontrada();
         }
     }
 }

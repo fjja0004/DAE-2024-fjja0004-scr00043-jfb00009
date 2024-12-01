@@ -4,13 +4,9 @@ import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,15 +16,11 @@ public class RepositorioSocios {
     @PersistenceContext
     EntityManager em;
 
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public Optional<Socio> buscar(String email) {
-
         return Optional.ofNullable(em.find(Socio.class, email));
     }
 
-    @Transactional//(propagation = Propagation.SUPPORTS)
     public void guardar(Socio socio) {
-
         if (buscar(socio.getEmail()).isPresent())
             throw new SocioYaRegistrado();
         em.persist(socio);
@@ -38,7 +30,6 @@ public class RepositorioSocios {
      * @return lista de todos los socios
      * @brief Busca todos los socios
      */
-    @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
     public List<Socio> buscarTodos() {
         return em.createQuery("SELECT s FROM Socio s", Socio.class).getResultList();
     }
@@ -46,8 +37,6 @@ public class RepositorioSocios {
     /**
      * @brief Marca todas las cuotas como no pagadas
      */
-
-    @Transactional
     public void marcarTodasCuotasNoPagadas() {
         List<Socio> socios = buscarTodos();
         for (Socio socio : socios) {
@@ -55,8 +44,7 @@ public class RepositorioSocios {
         }
     }
 
-    @Transactional
-    public void marcarCuotasPagadaEnSocio(Socio socio) {
+    public void marcarCuotaPagada(Socio socio) {
         socio = em.find(socio.getClass(), socio.getEmail());
         socio.setCuotaPagada(true);
     }

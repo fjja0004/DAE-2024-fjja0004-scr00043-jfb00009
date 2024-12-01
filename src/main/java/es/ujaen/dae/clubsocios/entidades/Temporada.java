@@ -8,11 +8,10 @@ import java.util.List;
 
 @Entity
 public class Temporada {
-    @Positive
     @Id
     private int anio;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn
     List<Actividad> actividades;
 
@@ -21,6 +20,19 @@ public class Temporada {
      */
     public Temporada() {
         this.anio = LocalDate.now().getYear();
+    }
+
+    /**
+     * @brief Añade una nueva actividad a la temporada
+     * @param actividad actividad a añadir
+     */
+    public void nuevaActividad(Actividad actividad) {
+        actividad.fechasValidas();
+        actividades.add(actividad);
+    }
+
+    public List<Actividad> getActividades() {
+        return actividades;
     }
 
     public int getAnio() {
