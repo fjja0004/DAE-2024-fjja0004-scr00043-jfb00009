@@ -28,7 +28,7 @@ public class TestServicioClub {
 
     @BeforeEach
     public void setUp() {
-        servicioClub.nuevoSocio(new Socio("Socio", "Prueba", "socio_prueba@club.com", "621302025", "password123"));
+        servicioClub.crearSocio(new Socio("Socio", "Prueba", "socio_prueba@club.com", "621302025", "password123"));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class TestServicioClub {
 
         // Comprobamos que se pueda registrar un nuevo socio y que pueda hacer login.
         Socio socioNuevo = new Socio("Socio", "-", "socio_nuevo@club.com", "623456789", "password123");
-        servicioClub.nuevoSocio(socioNuevo);
+        servicioClub.crearSocio(socioNuevo);
         assertEquals("socio_nuevo@club.com", servicioClub.login(socioNuevo.getEmail(), socioNuevo.getClave()).getEmail());
     }
 
@@ -73,19 +73,19 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
-    void testNuevoSocio() {
+    void testCrearSocio() {
         Socio admin = servicioClub.login("admin@club.com", "admin");
 
         //Comprobamos que no se pueda añadir un socio igual al administrador.
-        assertThatThrownBy(() -> servicioClub.nuevoSocio(admin)).isInstanceOf(SocioNoValido.class);
+        assertThatThrownBy(() -> servicioClub.crearSocio(admin)).isInstanceOf(SocioNoValido.class);
 
         //Comprobamos que no se pueda añadir un socio igual al otro usuario ya registrado.
         Socio socioRepetido = servicioClub.login("socio_prueba@club.com", "password123");
-        assertThrows(SocioYaRegistrado.class, () -> servicioClub.nuevoSocio(socioRepetido));
+        assertThrows(SocioYaRegistrado.class, () -> servicioClub.crearSocio(socioRepetido));
 
         //Comprobamos que se pueda añadir un socio no registrado.
         Socio socioNoRegistrado = new Socio("Socio", "-", "socio_no_registrado@club.com", "623456789", "password123");
-        assertDoesNotThrow(() -> servicioClub.nuevoSocio(socioNoRegistrado));
+        assertDoesNotThrow(() -> servicioClub.crearSocio(socioNoRegistrado));
     }
 
     @Test
@@ -95,7 +95,7 @@ public class TestServicioClub {
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
         Socio socioNuevo = new Socio("Socio", "-", "socio_nuevo@club.com", "623456789", "password123");
 
-        servicioClub.nuevoSocio(socioNuevo);
+        servicioClub.crearSocio(socioNuevo);
 
         //Comprobamos que se lance una excepción si el socio que realiza la operación no es el administrador.
         assertThatThrownBy(() -> servicioClub.buscarTodosSocios(socio)).isInstanceOf(OperacionDeDireccion.class);
@@ -285,9 +285,13 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
-    void testRealizarSolicitud() {
+    void testCrearSolicitud() {
         Socio direccion = servicioClub.login("admin@club.com", "admin");
-        Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
+        Socio socioSinCuota = servicioClub.login("socio_prueba@club.com", "password123");
+        Socio socioConCuota = new Socio("Socio", "Prueba", "socio_cuota@club.com", "621302025", "password123");
+
+        servicioClub.crearSocio(socioConCuota);
+        servicioClub.marcarCuotaPagada(direccion, socioConCuota);
 
         //Actividad a la que es posible inscribirse.
         Actividad actividadAbierta = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
@@ -301,21 +305,33 @@ public class TestServicioClub {
 
         servicioClub.crearActividad(direccion, actividadCerrada);
 
-        //Comprobamos que se lance una excepción si el socio no tiene la cuota pagada
-        assertThatThrownBy(() -> servicioClub.realizarSolicitud(socio, actividadAbierta, 3)).isInstanceOf(SocioNoValido.class);
+        //Comprobamos que se lance una excepción si el socio no está registrado.
+        //assertThatThrownBy(() -> servicioClub.crearSolicitud(new Socio(), actividadCerrada, 3)).isInstanceOf(SocioNoValido.class);
 
-        servicioClub.marcarCuotaPagada(direccion, socio);
         //Comprobamos que se lance una excepción si la actividad no está abierta.
-        assertThatThrownBy(() -> servicioClub.realizarSolicitud(socio, actividadCerrada, 3)).isInstanceOf(InscripcionCerrada.class);
+        assertThatThrownBy(() -> servicioClub.crearSolicitud(socioSinCuota, actividadCerrada, 3)).isInstanceOf(InscripcionCerrada.class);
 
         servicioClub.crearActividad(direccion, actividadAbierta);
 
-        //Comprobamos que no se lance una excepción si la solicitud es correcta.
-        assertDoesNotThrow(() -> servicioClub.realizarSolicitud(socio, actividadAbierta, 3));
+        Solicitud solicitud = servicioClub.crearSolicitud(socioSinCuota, actividadAbierta, 3);
+
+        //Comprobamos que no aumenten las plazas ocupadas si el socio no ha pagado la cuota.
+        assertEquals(0, servicioClub.buscarActividadPorId(actividadAbierta.getId()).get().getPlazasOcupadas());
+
+        //Comprobamos que no aumenten las plazas aceptadas si el socio no ha pagado la cuota.
+        assertEquals(0, solicitud.getPlazasAceptadas());
+
+        Solicitud solicitudConCuota = servicioClub.crearSolicitud(servicioClub.login(socioConCuota.getEmail(),socioConCuota.getClave()), actividadAbierta, 3);
+
+        //Comprobamos que aumenten las plazas ocupadas si el socio ha pagado la cuota.
+        assertEquals(1, servicioClub.buscarActividadPorId(actividadAbierta.getId()).get().getPlazasOcupadas());
+
+        //Comprobamos que aumenten las plazas aceptadas si el socio ha pagado la cuota.
+        assertEquals(1, solicitudConCuota.getPlazasAceptadas());
 
         //Comprobamos que se lance una excepción si la solicitud ya se ha realizado.
-        assertThatThrownBy(() -> servicioClub.realizarSolicitud(socio, actividadAbierta, 3)).isInstanceOf(SolicitudYaRealizada.class);
-
+        assertThatThrownBy(() -> servicioClub.crearSolicitud(socioSinCuota, actividadAbierta, 3)).isInstanceOf(SolicitudYaRealizada.class);
+        assertThatThrownBy(() -> servicioClub.crearSolicitud(socioConCuota, actividadAbierta, 3)).isInstanceOf(SolicitudYaRealizada.class);
     }
 
     @Test
@@ -344,7 +360,7 @@ public class TestServicioClub {
         assertThatThrownBy(() -> servicioClub.modificarAcompanantes(socio, finalActividadAbierta, 3)).isInstanceOf(SolicitudNoExistente.class);
 
         //Comprobamos que no se lance una excepción si la modificación es correcta.
-        servicioClub.realizarSolicitud(socio, actividadAbierta, 3);
+        servicioClub.crearSolicitud(socio, actividadAbierta, 3);
         assertDoesNotThrow(() -> servicioClub.modificarAcompanantes(socio, finalActividadAbierta, 5));
 
         //Comprobamos que se haya modificado el número de acompañantes.
@@ -383,7 +399,7 @@ public class TestServicioClub {
 
         //Comprobamos que devuelva una lista con las solicitudes realizadas.
         servicioClub.marcarCuotaPagada(direccion, socioTest);
-        servicioClub.realizarSolicitud(socioTest, actividad, 3);
+        servicioClub.crearSolicitud(socioTest, actividad, 3);
         assertEquals(1, servicioClub.buscarSolicitudesDeActividad(direccion, actividad).size());
 
     }
@@ -407,7 +423,7 @@ public class TestServicioClub {
         //Comprobamos que se lance una excepción si el socio no está registrado.
         assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(SocioNoValido.class);
 
-        servicioClub.nuevoSocio(socio);
+        servicioClub.crearSocio(socio);
         servicioClub.marcarCuotaPagada(direccion, socio);
 
         //Comprobamos que se lance una excepción si la actividad no existe.
@@ -418,7 +434,7 @@ public class TestServicioClub {
 
         //Comprobamos que se lance una excepción si la solicitud no existe.
         assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(SolicitudNoExistente.class);
-        servicioClub.realizarSolicitud(socio, actividad, 3);
+        servicioClub.crearSolicitud(socio, actividad, 3);
 
         //Comprobamos que no permita cancelar la solicitud si el periodo de inscripción ha finalizado.
         assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividadCerrada)).isInstanceOf(InscripcionCerrada.class);
@@ -454,9 +470,9 @@ public class TestServicioClub {
         assertThatThrownBy(() -> servicioClub.asignarPlaza(socio, socio, actividad)).isInstanceOf(OperacionDeDireccion.class);
 
 
-        servicioClub.nuevoSocio(socio);
-        servicioClub.nuevoSocio(socio2);
-        servicioClub.nuevoSocio(socio3);
+        servicioClub.crearSocio(socio);
+        servicioClub.crearSocio(socio2);
+        servicioClub.crearSocio(socio3);
 
 
         servicioClub.crearActividad(direccion, actividad);
@@ -474,7 +490,7 @@ public class TestServicioClub {
         actividad.setFechaInicioInscripcion(LocalDate.now());
         servicioClub.modificarFechaActividad(actividad);
         servicioClub.marcarCuotaPagada(direccion, socio);
-        servicioClub.realizarSolicitud(socio, actividad, 1);
+        servicioClub.crearSolicitud(socio, actividad, 1);
 
         //Comprobamos que se haya asignado la plaza.
 
@@ -501,8 +517,8 @@ public class TestServicioClub {
 
         actividad1.setFechaInicioInscripcion(LocalDate.now());
         servicioClub.modificarFechaActividad(actividad1);
-        servicioClub.realizarSolicitud(socio2, actividad1, 1);
-        servicioClub.realizarSolicitud(socio3, actividad1, 1);
+        servicioClub.crearSolicitud(socio2, actividad1, 1);
+        servicioClub.crearSolicitud(socio3, actividad1, 1);
         actividad1.setFechaInicioInscripcion(LocalDate.now().plusDays(1));
         servicioClub.modificarFechaActividad(actividad1);
 
@@ -524,10 +540,10 @@ public class TestServicioClub {
                 2, LocalDate.now(), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
 
-        servicioClub.nuevoSocio(socio);
+        servicioClub.crearSocio(socio);
         servicioClub.crearActividad(direccion, actividad);
         servicioClub.marcarCuotaPagada(direccion, socio);
-        servicioClub.realizarSolicitud(socio, actividad, 2);
+        servicioClub.crearSolicitud(socio, actividad, 2);
 
         Solicitud solicitudNoExistente = new Solicitud(socio, 2);
 
@@ -553,14 +569,14 @@ public class TestServicioClub {
         //Comprobamos que se lance una excepción si el socio que realiza la operación no es el administrador.
         assertThatThrownBy(() -> servicioClub.quitarPlaza(socio, socio, actividad)).isInstanceOf(OperacionDeDireccion.class);
 
-        servicioClub.nuevoSocio(socio);
+        servicioClub.crearSocio(socio);
         servicioClub.crearActividad(direccion, actividad);
 
         //Comprobamos que solo se asignen plazas si el periodo de inscripción ha finalizado.
         assertThatThrownBy(() -> servicioClub.quitarPlaza(direccion, socio, actividad)).isInstanceOf(InscripcionAbierta.class);
 
         servicioClub.marcarCuotaPagada(direccion, socio);
-        servicioClub.realizarSolicitud(socio, actividad, 2);
+        servicioClub.crearSolicitud(socio, actividad, 2);
 
         //Cerramos el periodo de inscripción.
         actividad.setFechaInicioInscripcion(LocalDate.now().plusDays(1));

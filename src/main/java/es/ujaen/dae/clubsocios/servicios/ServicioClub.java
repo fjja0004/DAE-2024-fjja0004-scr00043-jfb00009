@@ -58,6 +58,7 @@ public class ServicioClub {
      * @param email email del socio
      * @param clave clave del socio
      * @return Socio que ha iniciado sesión
+     * @throws SocioNoValido en caso de que el socio no exista
      * @brief Función que permite a un usuario iniciar sesión en el sistema.
      */
     public Socio login(@Email String email, String clave) {
@@ -81,7 +82,7 @@ public class ServicioClub {
      * @throws SocioYaRegistrado en caso de que ya esté registrado
      * @brief añade un nuevo socio
      */
-    public void nuevoSocio(@Valid Socio socio) {
+    public void crearSocio(@Valid Socio socio) {
         if (esAdmin(socio)) {
             throw new SocioNoValido();
         }
@@ -195,22 +196,15 @@ public class ServicioClub {
      * @param solicitante   Socio que va a realizar la solicitud
      * @param actividad     Actividad para la que se realiza la solicitud
      * @param nAcompanantes número entero de acompañantes
-     * @brief realiza la solicitud de una actividad
+     * @brief crea la solicitud de una actividad
      */
-    public void realizarSolicitud(Socio solicitante, Actividad actividad, int nAcompanantes) {
-        Socio socio = login(solicitante.getEmail(), solicitante.getClave());
-        if (socio.isCuotaPagada()) {
-            if (actividad.isAbierta()) {
-                if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
-                    Actividad actSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
-                    repositorioActividades.guardarSolicitud(socio, nAcompanantes, actSolicitada);
-                }
-            } else {
-                throw new InscripcionCerrada();
-            }
-        } else {
-            throw new SocioNoValido();
-        }
+    @Transactional
+    public Solicitud crearSolicitud(Socio solicitante, Actividad actividad, int nAcompanantes) {
+        Actividad actSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
+        Solicitud solicitud = new Solicitud(solicitante, nAcompanantes);
+        actSolicitada.crearSolicitud(solicitud);
+        repositorioActividades.guardarSolicitud(solicitud);
+        return solicitud;
     }
 
     /**
