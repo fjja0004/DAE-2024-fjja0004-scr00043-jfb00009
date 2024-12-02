@@ -2,10 +2,13 @@ package es.ujaen.dae.clubsocios.rest;
 
 import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.entidades.Socio;
+import es.ujaen.dae.clubsocios.entidades.Solicitud;
 import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
+import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
 import es.ujaen.dae.clubsocios.rest.dto.DTOActividad;
 import es.ujaen.dae.clubsocios.rest.dto.DTOSocio;
+import es.ujaen.dae.clubsocios.rest.dto.DTOSolicitud;
 import es.ujaen.dae.clubsocios.rest.dto.Mapeador;
 import es.ujaen.dae.clubsocios.servicios.ServicioClub;
 import jakarta.annotation.PostConstruct;
@@ -63,26 +66,24 @@ ServicioClub servicioClub;
     return ResponseEntity.status(HttpStatus.CREATED).build();
     }
     @GetMapping("/actividades")
-    public ResponseEntity<List<DTOActividad>> buscarActividades(
-            @RequestParam int id,
-            @RequestParam (required = false)String titulo,
-            @RequestParam (required = false)String descripcion,
-            @RequestParam (required=false)int precio,
-            @RequestParam (required=false)int plazas,
-            @RequestParam (defaultValue = "0")LocalDate fechaInicioInscripcion,
-            @RequestParam (defaultValue = "0")LocalDate fechaFinInscripcion,
-            @RequestParam (defaultValue = "0")LocalDate fechaCelebracion) {
+    public ResponseEntity<List<DTOActividad>> buscarActividadPorTemporada(@RequestParam int anio) {
 
-        // Definicion de fechas límite en caso de omisión
-        LocalDate desde = LocalDate.of(2023, 1, 1);
-        LocalDate hasta = LocalDate.of(2023, 12, 31);
-
-        final var desdeFinal = desde != null ? desde : LocalDate.now();
-        final var hastaFinal = hasta != null ? hasta : LocalDate.MAX;
         List<Actividad> actividades;
-        actividades= servicioClub.buscarActividadPorId(id).stream().toList();
+        actividades= servicioClub.buscarActividadesTemporada(anio);
+
 
         return ResponseEntity.ok(actividades.stream().map(a->mapeador.dtoActividad(a)).toList());
+    }
+
+    @PostMapping("/solicitudes")
+    public ResponseEntity<Void> nuevaSolicitud(@RequestBody DTOSocio socio,DTOActividad actividad,int nAcompanantes) {
+        try {
+            servicioClub.crearSolicitud(mapeador.entidadSocio(socio),mapeador.entidadActividad(actividad),nAcompanantes);
+        }
+        catch(SolicitudYaRealizada e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 }
