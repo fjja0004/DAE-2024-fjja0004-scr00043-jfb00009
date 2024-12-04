@@ -23,7 +23,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/solicitudes")
+@RequestMapping("/club")
 public class ControladorClub {
 @Autowired
     Mapeador mapeador;
