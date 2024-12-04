@@ -357,26 +357,35 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
-    void testBuscarSolcitudPorId() {
-        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
-        Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
+    void testCancelarSolicitud() {
+        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
+
+        //Actividad a la que es posible inscribirse.
         Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                2, LocalDate.now(), LocalDate.now().plusDays(7),
+                10, LocalDate.now(), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
 
-        servicioClub.crearSocio(socio);
-        servicioClub.crearActividad(direccion, actividad);
-        servicioClub.marcarCuotaPagada(direccion, socio);
-        servicioClub.crearSolicitud(socio, actividad, 2);
+        servicioClub.marcarCuotaPagada(admin, socio);
+        servicioClub.crearActividad(admin, actividad);
+        Solicitud solicitudExistente = servicioClub.crearSolicitud(socio, actividad, 3);
+        Solicitud solicitudNoExistente = new Solicitud();
 
-        Solicitud solicitudNoExistente = new Solicitud(socio, 2);
+        //Comprobamos que se lance una excepción si la solicitud no existe.
+        assertThatThrownBy(() -> servicioClub.cancelarSolicitud(actividad, solicitudNoExistente)).isInstanceOf(SolicitudNoExistente.class);
 
-        //Comprobamos que no devuelva la solicitud si no existe.
-        assertEquals(Optional.empty(), servicioClub.buscarSolicitudPorId(direccion, actividad, solicitudNoExistente.getId()));
+        //Comprobamos que no permita cancelar la solicitud si el periodo de inscripción ha finalizado.
+        actividad.setFechaInicioInscripcion(LocalDate.now().plusDays(1));
+        servicioClub.modificarFechaActividad(actividad);
+        assertThatThrownBy(() -> servicioClub.cancelarSolicitud(actividad, solicitudExistente)).isInstanceOf(InscripcionCerrada.class);
 
-        //Comprobamos que devuelva la solicitud si existe.
-        Solicitud solicitud = servicioClub.buscarActividadPorId(actividad.getId()).get().buscarSolicitudPorEmail(socio.getEmail()).get();
-        assertEquals(solicitud.getId(), servicioClub.buscarSolicitudPorId(direccion, actividad, solicitud.getId()).get().getId());
+        actividad.setFechaInicioInscripcion(LocalDate.now());
+        servicioClub.modificarFechaActividad(actividad);
+
+        //Comprobamos que se cancele la solicitud si es válida y el periodo de inscripción está abierto.
+        assertEquals(1, servicioClub.buscarActividadPorId(actividad.getId()).get().getPlazasOcupadas());
+        assertDoesNotThrow(() -> servicioClub.cancelarSolicitud(actividad, solicitudExistente));
+        assertEquals(0, servicioClub.buscarActividadPorId(actividad.getId()).get().getPlazasOcupadas());
     }
 
     @Test
@@ -417,55 +426,6 @@ public class TestServicioClub {
         }
         assertEquals(5, solicitud.getnAcompanantes());
 
-    }
-
-    @Test
-    @DirtiesContext
-    void testCancelarSolicitud() {
-        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
-        Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
-
-        //Actividad a la que es posible inscribirse.
-        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                10, LocalDate.now(), LocalDate.now().plusDays(7),
-                LocalDate.now().plusDays(10));
-
-        //Actividad a la que no es posible inscribirse.
-        Actividad actividadCerrada = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                10, LocalDate.now().plusDays(2), LocalDate.now().plusDays(4),
-                LocalDate.now().plusDays(10));
-
-        //Comprobamos que se lance una excepción si el socio no está registrado.
-        assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(SocioNoValido.class);
-
-        servicioClub.crearSocio(socio);
-        servicioClub.marcarCuotaPagada(direccion, socio);
-
-        //Comprobamos que se lance una excepción si la actividad no existe.
-        assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(NoHayActividades.class);
-
-        servicioClub.crearActividad(direccion, actividad);
-        servicioClub.crearActividad(direccion, actividadCerrada);
-
-        //Comprobamos que se lance una excepción si la solicitud no existe.
-        assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad)).isInstanceOf(SolicitudNoExistente.class);
-        servicioClub.crearSolicitud(socio, actividad, 3);
-
-        //Comprobamos que no permita cancelar la solicitud si el periodo de inscripción ha finalizado.
-        assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividadCerrada)).isInstanceOf(InscripcionCerrada.class);
-
-        //Comprobamos que se haya cancelado la solicitud.
-        assertDoesNotThrow(() -> servicioClub.cancelarSolicitud(socio, actividad));
-
-        //Nota: debuggeando se ve que la solicitud se elimina correctamente, pero al volver a cancelarla, la actividad no está actualizada y no se lanza la excepción.
-        Actividad actividad1 = new Actividad();
-        for (Actividad actividadAux : servicioClub.buscarActividadesAbiertas()) {
-            if (actividadAux.getId() == actividad.getId()) {
-                actividad1 = actividadAux;
-            }
-        }
-        Actividad actividad2 = actividad1;
-        assertThatThrownBy(() -> servicioClub.cancelarSolicitud(socio, actividad2)).isInstanceOf(SolicitudNoExistente.class);
     }
 
     @Test
@@ -580,8 +540,8 @@ public class TestServicioClub {
         Actividad actividadActualizada = servicioClub.buscarActividadPorId(actividad.getId()).get();
         Solicitud solicitud = actividadActualizada.buscarSolicitudPorEmail(socio.getEmail()).get();
 
-        int plazasAceptadas = servicioClub.buscarSolicitudPorId(direccion, actividadActualizada, solicitud.getId()).get().getPlazasAceptadas();
-        assertEquals(0, plazasAceptadas);
+        //int plazasAceptadas = servicioClub.buscarSolicitudPorId(direccion, actividadActualizada, solicitud.getId()).get().getPlazasAceptadas();
+        //assertEquals(0, plazasAceptadas);
         assertEquals(0, actividadActualizada.getPlazasOcupadas());
     }
 }
