@@ -231,7 +231,7 @@ public class ServicioClub {
     public void cancelarSolicitud(Actividad actividad, Solicitud solicitud) {
         actividad = repositorioActividades.buscarPorId(actividad.getId()).get();
         actividad.cancelarSolicitud(solicitud);
-        //TODO: borrar solicitud de la base de datos
+        repositorioActividades.borrarSolicitud(solicitud);
     }
 
     /**
