@@ -108,12 +108,29 @@ public class TestControladorClub {
     @DirtiesContext
     void testBuscarActividadesPorTemporada() {
 
-        DTOActividad actividad =new DTOActividad(0,"Actividad de prueba", "Actividad de prueba", 10,
-                10, 0,LocalDate.now().plusDays(2), LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
+        //hace login del socio direccion
+        var respuestaLogin= restTemplate.getForEntity("/socios/{email}?clave={clave}",
+                DTOSocio.class,
+                "admin@club.com","admin");
+        assertThat(respuestaLogin.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        DTOActividad actividad2 =new DTOActividad(1,"Actividad de prueba2", "Actividad de prueba2", 10,
-                10, 0,LocalDate.now().plusDays(2), LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
+//creo actividades abiertas
+        DTOActividad actividad =new DTOActividad(1,"Actividad de prueba", "Actividad de prueba", 10,
+                10, 0,LocalDate.now(), LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
+        DTOActividad actividad1 =new DTOActividad(2,"Actividad de prueba1", "Actividad de prueba1", 100,
+                100, 0,LocalDate.now(), LocalDate.now().plusDays(8), LocalDate.now().plusDays(11));
+
+        var respuesta = restTemplate.postForEntity("/actividades",actividad,DTOActividad.class);
+        assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        respuesta = restTemplate.postForEntity("/actividades",actividad1,DTOActividad.class);
+        assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
 
+        var respuestaConsulta= restTemplate.getForEntity("/actividades?anio={anio}",DTOActividad[].class,LocalDate.now().getYear());
+        assertThat(respuestaConsulta.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        assertThat(respuestaConsulta.getBody()).hasSize(2);
+        assertThat(respuestaConsulta.getBody()[0].id()).isEqualTo(1);
     }
 }
