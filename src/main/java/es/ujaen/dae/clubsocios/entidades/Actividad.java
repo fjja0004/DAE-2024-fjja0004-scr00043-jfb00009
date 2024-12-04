@@ -150,38 +150,46 @@ public class Actividad {
     }
 
     /**
-     * @param sol solicitud que se quiere cancelar
+     * @param solicitud solicitud que se quiere cancelar
+     * @throws SolicitudNoExistente en caso de que la solicitud no exista
+     * @throws InscripcionCerrada   en caso de que el período de inscripción esté cerrado
      * @brief Cancela una solicitud de inscripción a una actividad
      */
-    public void cancelarSolicitud(Solicitud sol) {
+    public void cancelarSolicitud(Solicitud solicitud) {
         if (!this.isAbierta())
             throw new InscripcionCerrada();
 
-        if (sol.getSocio() == null)
+        if (solicitud.getSocio() == null)
             throw new SolicitudNoExistente();
 
-        for (Solicitud solicitud : solicitudes) {
-            if (solicitud.getId() == sol.getId()) {
-                if (solicitud.getPlazasAceptadas() == 1) {
+        for (Solicitud sol : solicitudes) {
+            if (sol.getId() == solicitud.getId()) {
+                if (sol.getPlazasAceptadas() == 1) {
                     plazasOcupadas--;
                 }
-                solicitudes.remove(solicitud);
+                solicitudes.remove(sol);
                 break;
             }
         }
     }
 
     /**
-     * @param email         email del socio que realiza la solicitud
+     * @param solicitud     solicitud a modificar
      * @param nAcompanantes número de acompañantes
-     * @throws SolicitudNoValida en caso de que la solicitud no sea válida
+     * @throws SolicitudNoExistente en caso de que la solicitud no exista
      * @brief modifica el número de acompañantes que tendrá una solicitud
      */
-    public void modificarAcompanantes(String email, int nAcompanantes) {
-        if (!isAbierta()) throw new InscripcionCerrada();
-        buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> solicitud.modificarAcompanantes(nAcompanantes), () -> {
-            throw new SolicitudNoExistente();
-        });
+    public Solicitud modificarAcompanantes(Solicitud solicitud, int nAcompanantes) {
+        if (!this.isAbierta())
+            throw new InscripcionCerrada();
+
+        for (Solicitud sol : solicitudes) {
+            if (sol.getId() == solicitud.getId()) {
+                sol.modificarAcompanantes(nAcompanantes);
+                return sol;
+            }
+        }
+        throw new SolicitudNoExistente();
     }
 
     /**
@@ -240,6 +248,14 @@ public class Actividad {
         return titulo;
     }
 
+    public int getPrecio() {
+        return precio;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
     public LocalDate getFechaCelebracion() {
         return fechaCelebracion;
     }
@@ -288,4 +304,5 @@ public class Actividad {
     public @NotNull LocalDate getFechaFinInscripcion() {
         return fechaFinInscripcion;
     }
+
 }

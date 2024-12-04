@@ -231,19 +231,22 @@ public class ServicioClub {
     public void cancelarSolicitud(Actividad actividad, Solicitud solicitud) {
         actividad = repositorioActividades.buscarPorId(actividad.getId()).get();
         actividad.cancelarSolicitud(solicitud);
+        //TODO: borrar solicitud de la base de datos
     }
 
     /**
-     * @param socio         Socio que va a realizar la modificación
      * @param actividad     Actividad a la que se va a modificar el número de acompañantes
+     * @param solicitud     Solicitud que se va a modificar
      * @param nAcompanantes número entero de acompañantes
      * @throws NoHayActividades excepcion que se lanza en caso de que la actividad no exista
      * @brief modifica el número de acompañantes que tendrá un socio
      */
-    public void modificarAcompanantes(Socio socio, Actividad actividad, int nAcompanantes) {
-        if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
-            repositorioActividades.modificarAcompanantes(actividad, socio, nAcompanantes);
-        }
+    @Transactional
+    public Solicitud modificarSolicitud(Actividad actividad, Solicitud solicitud, int nAcompanantes) {
+        actividad = repositorioActividades.buscarPorId(actividad.getId()).get();
+        Solicitud solicitudActualizada = actividad.modificarAcompanantes(solicitud, nAcompanantes);
+        repositorioActividades.actualizar(solicitudActualizada);
+        return solicitudActualizada;
     }
 
     /**
