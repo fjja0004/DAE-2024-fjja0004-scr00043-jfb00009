@@ -69,19 +69,8 @@ public class RepositorioActividades {
         em.persist(solicitud);
     }
 
-    public void borrarReserva(Solicitud solicitud) {
+    public void borrarSolicitud(Solicitud solicitud) {
         em.remove(solicitud);
-    }
-
-    /**
-     * @param actividad     actividad a la que se inscribe
-     * @param socio         socio que realiza la solicitud
-     * @param nAcompanantes número de acompañantes
-     * @brief Modifica el número de acompañantes de una solicitud
-     */
-    public void modificarAcompanantes(Actividad actividad, Socio socio, int nAcompanantes) {
-        Optional<Actividad> a = Optional.ofNullable(em.find(actividad.getClass(), actividad.getId()));
-        a.get().modificarAcompanantes(socio.getEmail(), nAcompanantes);
     }
 
     public void modificarFechaActividad(Actividad actividad) {
