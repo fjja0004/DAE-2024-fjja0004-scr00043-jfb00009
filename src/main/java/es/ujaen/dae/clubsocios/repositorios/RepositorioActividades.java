@@ -70,7 +70,7 @@ public class RepositorioActividades {
     }
 
     public void borrarSolicitud(Solicitud solicitud) {
-        em.remove(solicitud);
+        em.remove(em.merge(solicitud));
     }
 
     public void modificarFechaActividad(Actividad actividad) {
