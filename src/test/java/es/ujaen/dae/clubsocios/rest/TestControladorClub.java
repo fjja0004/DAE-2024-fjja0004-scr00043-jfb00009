@@ -1,8 +1,10 @@
 package es.ujaen.dae.clubsocios.rest;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.rest.dto.DTOActividad;
 import es.ujaen.dae.clubsocios.rest.dto.DTOSocio;
+import es.ujaen.dae.clubsocios.rest.dto.DTOSolicitud;
 import jakarta.annotation.PostConstruct;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -73,6 +75,22 @@ public class TestControladorClub {
 
         respuesta= restTemplate.postForEntity("/actividades",actividad2, Void.class);
         assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
+
+    }
+
+    @Test
+    @DirtiesContext
+    void testNuevaSolicitud() {
+        DTOSocio socio=new DTOSocio("Socio", "Prueba", "socio_prueba@club.com", "621302025", "password123");
+        DTOActividad actividad =new DTOActividad(0,"Actividad de prueba", "Actividad de prueba", 10,
+                10, 0,LocalDate.now().plusDays(2), LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
+
+    }
+
+    @Test
+    @DirtiesContext
+    void testBuscarActividadesPorTemporada() {
+
 
     }
 }

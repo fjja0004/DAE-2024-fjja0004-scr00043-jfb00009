@@ -78,7 +78,7 @@ ServicioClub servicioClub;
     }
 
     @PostMapping("/solicitudes")
-    public ResponseEntity<Void> nuevaSolicitud(@RequestBody DTOSocio socio,DTOActividad actividad,int nAcompanantes) {
+    public ResponseEntity<Void> nuevaSolicitud(@RequestBody DTOSocio socio,@RequestBody DTOActividad actividad,@RequestParam int nAcompanantes) {
         try {
             servicioClub.crearSolicitud(mapeador.entidadSocio(socio),mapeador.entidadActividad(actividad),nAcompanantes);
         }
