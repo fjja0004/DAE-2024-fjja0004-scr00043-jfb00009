@@ -11,6 +11,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -264,7 +265,11 @@ public class Actividad {
     }
 
     public List<Solicitud> getSolicitudes() {
-        return solicitudes;
+        List<Solicitud> listaSolicitudes = new LinkedList<>();
+        for (Solicitud solicitud : solicitudes) {
+            listaSolicitudes.add(solicitud);
+        }
+        return listaSolicitudes;
     }
 
     @PositiveOrZero
