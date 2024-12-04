@@ -58,6 +58,23 @@ public class TestControladorClub {
     @Test
     @DirtiesContext
     void testLoginSocio() {
+        //Creo el socio con el que voy a hacer login
+        DTOSocio socio=new DTOSocio("Socio", "Prueba", "socio_prueba@club.com", "621302025", "password123");
+        var respuesta= restTemplate.postForEntity("/socios",socio, Void.class);
+        assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        //Login correcto
+        var respuestaLogin= restTemplate.getForEntity("/socios/{email}?clave={clave}",
+                DTOSocio.class,
+                "socio_prueba@club.com","password123");
+        assertThat(respuestaLogin.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+
+        //Login incorrecto
+        respuestaLogin=restTemplate.getForEntity("/socios/{email}?clave={clave}",
+                DTOSocio.class,"error@gmail.com","eRrOr");
+        assertThat(respuestaLogin.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+
     }
     @Test
     @DirtiesContext
@@ -90,6 +107,12 @@ public class TestControladorClub {
     @Test
     @DirtiesContext
     void testBuscarActividadesPorTemporada() {
+
+        DTOActividad actividad =new DTOActividad(0,"Actividad de prueba", "Actividad de prueba", 10,
+                10, 0,LocalDate.now().plusDays(2), LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
+
+        DTOActividad actividad2 =new DTOActividad(1,"Actividad de prueba2", "Actividad de prueba2", 10,
+                10, 0,LocalDate.now().plusDays(2), LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
 
 
     }
