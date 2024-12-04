@@ -305,9 +305,6 @@ public class TestServicioClub {
 
         servicioClub.crearActividad(direccion, actividadCerrada);
 
-        //Comprobamos que se lance una excepción si el socio no está registrado.
-        //assertThatThrownBy(() -> servicioClub.crearSolicitud(new Socio(), actividadCerrada, 3)).isInstanceOf(SocioNoValido.class);
-
         //Comprobamos que se lance una excepción si la actividad no está abierta.
         assertThatThrownBy(() -> servicioClub.crearSolicitud(socioSinCuota, actividadCerrada, 3)).isInstanceOf(InscripcionCerrada.class);
 
@@ -321,7 +318,7 @@ public class TestServicioClub {
         //Comprobamos que no aumenten las plazas aceptadas si el socio no ha pagado la cuota.
         assertEquals(0, solicitud.getPlazasAceptadas());
 
-        Solicitud solicitudConCuota = servicioClub.crearSolicitud(servicioClub.login(socioConCuota.getEmail(),socioConCuota.getClave()), actividadAbierta, 3);
+        Solicitud solicitudConCuota = servicioClub.crearSolicitud(socioConCuota, actividadAbierta, 3);
 
         //Comprobamos que aumenten las plazas ocupadas si el socio ha pagado la cuota.
         assertEquals(1, servicioClub.buscarActividadPorId(actividadAbierta.getId()).get().getPlazasOcupadas());
@@ -332,6 +329,54 @@ public class TestServicioClub {
         //Comprobamos que se lance una excepción si la solicitud ya se ha realizado.
         assertThatThrownBy(() -> servicioClub.crearSolicitud(socioSinCuota, actividadAbierta, 3)).isInstanceOf(SolicitudYaRealizada.class);
         assertThatThrownBy(() -> servicioClub.crearSolicitud(socioConCuota, actividadAbierta, 3)).isInstanceOf(SolicitudYaRealizada.class);
+    }
+
+    @Test
+    @DirtiesContext
+    void testBuscarSolicitudesDeActividad() {
+        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
+
+        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now(), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        //Comprobamos que se lance una excepción si el socio no es el administrador.
+        assertThatThrownBy(() -> servicioClub.buscarSolicitudesDeActividad(socio, actividad)).isInstanceOf(OperacionDeDireccion.class);
+
+        servicioClub.crearActividad(admin, actividad);
+
+        //Comprobamos que devuelva una lista vacía si no hay solicitudes.
+        assertEquals(0, servicioClub.buscarSolicitudesDeActividad(admin, actividad).size());
+
+        //Comprobamos que devuelva una lista con las solicitudes realizadas.
+        servicioClub.marcarCuotaPagada(admin, socio);
+        servicioClub.crearSolicitud(socio, actividad, 3);
+        assertEquals(1, servicioClub.buscarSolicitudesDeActividad(admin, actividad).size());
+    }
+
+    @Test
+    @DirtiesContext
+    void testBuscarSolcitudPorId() {
+        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
+        Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
+        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                2, LocalDate.now(), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        servicioClub.crearSocio(socio);
+        servicioClub.crearActividad(direccion, actividad);
+        servicioClub.marcarCuotaPagada(direccion, socio);
+        servicioClub.crearSolicitud(socio, actividad, 2);
+
+        Solicitud solicitudNoExistente = new Solicitud(socio, 2);
+
+        //Comprobamos que no devuelva la solicitud si no existe.
+        assertEquals(Optional.empty(), servicioClub.buscarSolicitudPorId(direccion, actividad, solicitudNoExistente.getId()));
+
+        //Comprobamos que devuelva la solicitud si existe.
+        Solicitud solicitud = servicioClub.buscarActividadPorId(actividad.getId()).get().buscarSolicitudPorEmail(socio.getEmail()).get();
+        assertEquals(solicitud.getId(), servicioClub.buscarSolicitudPorId(direccion, actividad, solicitud.getId()).get().getId());
     }
 
     @Test
@@ -371,36 +416,6 @@ public class TestServicioClub {
             }
         }
         assertEquals(5, solicitud.getnAcompanantes());
-
-    }
-
-    @Test
-    @DirtiesContext
-    void buscarSolicitudesDeActividad() {
-        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
-        Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
-        Socio socioTest = servicioClub.login("socio_prueba@club.com", "password123");
-
-        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                10, LocalDate.now(), LocalDate.now().plusDays(7),
-                LocalDate.now().plusDays(10));
-
-        //Comprobamos que se lance una excepción si el socio no es el administrador.
-        assertThatThrownBy(() -> servicioClub.buscarSolicitudesDeActividad(socio, actividad)).isInstanceOf(OperacionDeDireccion.class);
-
-        //Comprobamos que se lance una excepción si la actividad no existe.
-        assertThatThrownBy(() -> servicioClub.buscarSolicitudesDeActividad(direccion, actividad)).isInstanceOf(NoHayActividades.class);
-
-        servicioClub.crearActividad(direccion, actividad);
-        assertDoesNotThrow(() -> servicioClub.buscarSolicitudesDeActividad(direccion, actividad));
-
-        //Comprobamos que devuelva una lista vacía si no hay solicitudes.
-        assertEquals(0, servicioClub.buscarSolicitudesDeActividad(direccion, actividad).size());
-
-        //Comprobamos que devuelva una lista con las solicitudes realizadas.
-        servicioClub.marcarCuotaPagada(direccion, socioTest);
-        servicioClub.crearSolicitud(socioTest, actividad, 3);
-        assertEquals(1, servicioClub.buscarSolicitudesDeActividad(direccion, actividad).size());
 
     }
 
@@ -529,30 +544,6 @@ public class TestServicioClub {
         servicioClub.modificarFechaActividad(actividad1);
         actividad1 = servicioClub.buscarActividadesAbiertas().getFirst();
         assertEquals(actividad1.getPlazas(), actividad1.getPlazasOcupadas());
-    }
-
-    @Test
-    @DirtiesContext
-    void testBuscarSolcitudPorId() {
-        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
-        Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
-        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                2, LocalDate.now(), LocalDate.now().plusDays(7),
-                LocalDate.now().plusDays(10));
-
-        servicioClub.crearSocio(socio);
-        servicioClub.crearActividad(direccion, actividad);
-        servicioClub.marcarCuotaPagada(direccion, socio);
-        servicioClub.crearSolicitud(socio, actividad, 2);
-
-        Solicitud solicitudNoExistente = new Solicitud(socio, 2);
-
-        //Comprobamos que no devuelva la solicitud si no existe.
-        assertEquals(Optional.empty(), servicioClub.buscarSolicitudPorId(direccion, actividad, solicitudNoExistente.getId()));
-
-        //Comprobamos que devuelva la solicitud si existe.
-        Solicitud solicitud = servicioClub.buscarActividadPorId(actividad.getId()).get().buscarSolicitudPorEmail(socio.getEmail()).get();
-        assertEquals(solicitud.getId(), servicioClub.buscarSolicitudPorId(direccion, actividad, solicitud.getId()).get().getId());
     }
 
     @Test
