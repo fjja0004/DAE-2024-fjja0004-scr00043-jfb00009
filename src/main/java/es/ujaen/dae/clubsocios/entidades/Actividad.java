@@ -150,21 +150,25 @@ public class Actividad {
     }
 
     /**
-     * @param email email del solicitante
+     * @param sol solicitud que se quiere cancelar
      * @brief Cancela una solicitud de inscripción a una actividad
      */
-    public void cancelarSolicitud(String email) {
+    public void cancelarSolicitud(Solicitud sol) {
         if (!this.isAbierta())
             throw new InscripcionCerrada();
 
-        buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> {
-            if (solicitud.getPlazasAceptadas() == 1) {
-                plazasOcupadas--;
-            }
-            solicitudes.remove(solicitud);
-        }, () -> {
+        if (sol.getSocio() == null)
             throw new SolicitudNoExistente();
-        });
+
+        for (Solicitud solicitud : solicitudes) {
+            if (solicitud.getId() == sol.getId()) {
+                if (solicitud.getPlazasAceptadas() == 1) {
+                    plazasOcupadas--;
+                }
+                solicitudes.remove(solicitud);
+                break;
+            }
+        }
     }
 
     /**

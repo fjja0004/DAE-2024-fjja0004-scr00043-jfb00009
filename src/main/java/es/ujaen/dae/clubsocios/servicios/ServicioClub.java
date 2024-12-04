@@ -223,6 +223,17 @@ public class ServicioClub {
     }
 
     /**
+     * @param actividad actividad de la que se va a cancelar la solicitud
+     * @param solicitud Solicitud que se desea cancelar
+     * @brief Elimina la solicitud de inscripción de un socio a una actividad
+     */
+    @Transactional
+    public void cancelarSolicitud(Actividad actividad, Solicitud solicitud) {
+        actividad = repositorioActividades.buscarPorId(actividad.getId()).get();
+        actividad.cancelarSolicitud(solicitud);
+    }
+
+    /**
      * @param socio         Socio que va a realizar la modificación
      * @param actividad     Actividad a la que se va a modificar el número de acompañantes
      * @param nAcompanantes número entero de acompañantes
@@ -232,21 +243,6 @@ public class ServicioClub {
     public void modificarAcompanantes(Socio socio, Actividad actividad, int nAcompanantes) {
         if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
             repositorioActividades.modificarAcompanantes(actividad, socio, nAcompanantes);
-        }
-    }
-
-    /**
-     * @param socio     Socio que ha realizado la solicitud
-     * @param actividad Actividad a la que se ha solicitado la inscripción
-     * @brief Elimina la solicitud de inscripción de un socio a una actividad
-     */
-    public void cancelarSolicitud(Socio socio, Actividad actividad) {
-        Socio socioCancel = login(socio.getEmail(), socio.getClave());
-        if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
-            Actividad actCancel = repositorioActividades.buscarPorId(actividad.getId()).get();
-            repositorioActividades.cancelarSolicitud(socioCancel, actCancel);
-        } else {
-            throw new NoHayActividades();
         }
     }
 
