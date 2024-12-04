@@ -223,23 +223,6 @@ public class ServicioClub {
     }
 
     /**
-     * @param direccion Socio que realiza la operación
-     * @param actividad Actividad de la que se busca la solicitud
-     * @param id        id de la solicitud
-     * @return Solicitud con el id dado
-     * @brief Busca una solicitud por su id
-     */
-    public Optional<Solicitud> buscarSolicitudPorId(Socio direccion, Actividad actividad, int id) {
-        List<Solicitud> solicitudes = buscarSolicitudesDeActividad(direccion, actividad);
-        for (Solicitud solicitud : solicitudes) {
-            if (solicitud.getId() == id) {
-                return Optional.of(solicitud);
-            }
-        }
-        return Optional.empty();
-    }
-
-    /**
      * @param socio         Socio que va a realizar la modificación
      * @param actividad     Actividad a la que se va a modificar el número de acompañantes
      * @param nAcompanantes número entero de acompañantes

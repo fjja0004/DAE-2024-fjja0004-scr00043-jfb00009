@@ -357,30 +357,6 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
-    void testBuscarSolcitudPorId() {
-        Socio direccion = new Socio("administrador", "-", "admin@club.es", "111111111", "ElAdMiN");
-        Socio socio = new Socio("Socio", "Prueba", "socio@gmail.com", "621302025", "password123");
-        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
-                2, LocalDate.now(), LocalDate.now().plusDays(7),
-                LocalDate.now().plusDays(10));
-
-        servicioClub.crearSocio(socio);
-        servicioClub.crearActividad(direccion, actividad);
-        servicioClub.marcarCuotaPagada(direccion, socio);
-        servicioClub.crearSolicitud(socio, actividad, 2);
-
-        Solicitud solicitudNoExistente = new Solicitud(socio, 2);
-
-        //Comprobamos que no devuelva la solicitud si no existe.
-        assertEquals(Optional.empty(), servicioClub.buscarSolicitudPorId(direccion, actividad, solicitudNoExistente.getId()));
-
-        //Comprobamos que devuelva la solicitud si existe.
-        Solicitud solicitud = servicioClub.buscarActividadPorId(actividad.getId()).get().buscarSolicitudPorEmail(socio.getEmail()).get();
-        assertEquals(solicitud.getId(), servicioClub.buscarSolicitudPorId(direccion, actividad, solicitud.getId()).get().getId());
-    }
-
-    @Test
-    @DirtiesContext
     void testModificarAcompanantes() {
         Socio direccion = servicioClub.login("admin@club.com", "admin");
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
@@ -580,8 +556,8 @@ public class TestServicioClub {
         Actividad actividadActualizada = servicioClub.buscarActividadPorId(actividad.getId()).get();
         Solicitud solicitud = actividadActualizada.buscarSolicitudPorEmail(socio.getEmail()).get();
 
-        int plazasAceptadas = servicioClub.buscarSolicitudPorId(direccion, actividadActualizada, solicitud.getId()).get().getPlazasAceptadas();
-        assertEquals(0, plazasAceptadas);
+        //int plazasAceptadas = servicioClub.buscarSolicitudPorId(direccion, actividadActualizada, solicitud.getId()).get().getPlazasAceptadas();
+        //assertEquals(0, plazasAceptadas);
         assertEquals(0, actividadActualizada.getPlazasOcupadas());
     }
 }
