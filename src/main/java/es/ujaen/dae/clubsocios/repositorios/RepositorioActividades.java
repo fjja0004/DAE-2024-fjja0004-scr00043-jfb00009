@@ -84,13 +84,6 @@ public class RepositorioActividades {
         a.get().modificarAcompanantes(socio.getEmail(), nAcompanantes);
     }
 
-    public void cancelarSolicitud(Socio socio, Actividad actividad) {
-        socio = em.find(Socio.class, socio.getEmail());
-        actividad = em.find(actividad.getClass(), actividad.getId());
-        actividad.cancelarSolicitud(socio.getEmail());
-        actualizar(actividad);
-    }
-
     public void modificarFechaActividad(Actividad actividad) {
         actividad.fechasValidas();
         Actividad actividadOrig = em.find(Actividad.class, actividad.getId());
