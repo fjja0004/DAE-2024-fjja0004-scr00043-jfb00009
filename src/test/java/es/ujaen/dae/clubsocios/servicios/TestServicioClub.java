@@ -390,8 +390,8 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
-    void testModificarAcompanantes() {
-        Socio direccion = servicioClub.login("admin@club.com", "admin");
+    void testModificarSolicitud() {
+        Socio admin = servicioClub.login("admin@club.com", "admin");
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
 
         //Actividad a la que es posible inscribirse.
@@ -399,33 +399,18 @@ public class TestServicioClub {
                 10, LocalDate.now(), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
 
-        servicioClub.marcarCuotaPagada(direccion, socio);
-        servicioClub.crearActividad(direccion, actividadAbierta);
+        servicioClub.marcarCuotaPagada(admin, socio);
+        servicioClub.crearActividad(admin, actividadAbierta);
 
-        for (Actividad actividad : servicioClub.buscarActividadesAbiertas()) {
-            if (actividadAbierta.getTitulo().equals(actividad.getTitulo())) {
-                actividadAbierta = actividad;
-                break;
-            }
-        }
+        Solicitud solicitudNoExistente = new Solicitud();
 
         //Comprobamos que se lance una excepción si la solicitud no existe.
-        Actividad finalActividadAbierta = actividadAbierta; //para que funcionene las funciones lambda
-        assertThatThrownBy(() -> servicioClub.modificarAcompanantes(socio, finalActividadAbierta, 3)).isInstanceOf(SolicitudNoExistente.class);
+        assertThatThrownBy(() -> servicioClub.modificarSolicitud(actividadAbierta, solicitudNoExistente, 3)).isInstanceOf(SolicitudNoExistente.class);
 
-        //Comprobamos que no se lance una excepción si la modificación es correcta.
-        servicioClub.crearSolicitud(socio, actividadAbierta, 3);
-        assertDoesNotThrow(() -> servicioClub.modificarAcompanantes(socio, finalActividadAbierta, 5));
-
+        Solicitud solicitud = servicioClub.crearSolicitud(socio, actividadAbierta, 3);
+        solicitud = servicioClub.modificarSolicitud(actividadAbierta, solicitud, 5);
         //Comprobamos que se haya modificado el número de acompañantes.
-        Solicitud solicitud = new Solicitud();
-        for (Solicitud s : servicioClub.buscarSolicitudesDeActividad(direccion, finalActividadAbierta)) {
-            if (s.getSocio().equals(socio)) {
-                solicitud = s;
-            }
-        }
         assertEquals(5, solicitud.getnAcompanantes());
-
     }
 
     @Test
