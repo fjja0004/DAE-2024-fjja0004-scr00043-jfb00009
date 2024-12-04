@@ -245,23 +245,26 @@ public class ServicioClub {
     public Solicitud modificarSolicitud(Actividad actividad, Solicitud solicitud, int nAcompanantes) {
         actividad = repositorioActividades.buscarPorId(actividad.getId()).get();
         Solicitud solicitudActualizada = actividad.modificarAcompanantes(solicitud, nAcompanantes);
-        repositorioActividades.actualizar(solicitudActualizada);
+        repositorioActividades.actualizarSolicitud(solicitudActualizada);
         return solicitudActualizada;
     }
 
     /**
      * @param direccion Miembro de la dirección que realiza la operación
-     * @param socio     Socio que realiza la solicitud de inscripción
      * @param actividad Actividad a la que se solicita la inscripción
+     * @param solicitud Solicitud a la que se va a asignar una plaza
      * @brief Acepta una de las plazas solicitadas por un socio
      */
-    public void asignarPlaza(Socio direccion, Socio socio, Actividad actividad) {
+    @Transactional
+    public Solicitud asignarPlaza(Socio direccion, Actividad actividad, Solicitud solicitud) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
-        Socio solicitante = login(socio.getEmail(), socio.getClave());
-        if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
-            repositorioActividades.buscarPorId(actividad.getId()).get().aceptarPlaza(solicitante.getEmail());
-        }
+
+        actividad = repositorioActividades.buscarPorId(actividad.getId()).get();
+        solicitud = actividad.aceptarPlaza(solicitud);
+        repositorioActividades.actualizar(actividad);
+        repositorioActividades.actualizarSolicitud(solicitud);
+        return solicitud;
     }
 
     /**
@@ -278,7 +281,7 @@ public class ServicioClub {
             Actividad actividadSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
             Optional<Solicitud> solicitud = actividadSolicitada.quitarPlaza(solicitante.getEmail());
             repositorioActividades.actualizar(actividadSolicitada);
-            repositorioActividades.actualizar(solicitud.get());
+            repositorioActividades.actualizarSolicitud(solicitud.get());
         }
     }
 }

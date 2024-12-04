@@ -1,7 +1,6 @@
 package es.ujaen.dae.clubsocios.repositorios;
 
 import es.ujaen.dae.clubsocios.entidades.Actividad;
-import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.entidades.Solicitud;
 import es.ujaen.dae.clubsocios.excepciones.*;
 import jakarta.persistence.EntityManager;
@@ -57,7 +56,7 @@ public class RepositorioActividades {
         return em.merge(actividad);
     }
 
-    public Solicitud actualizar(Solicitud solicitud) {
+    public Solicitud actualizarSolicitud(Solicitud solicitud) {
         return em.merge(solicitud);
     }
 
