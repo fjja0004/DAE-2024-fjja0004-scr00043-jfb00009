@@ -3,6 +3,7 @@ package es.ujaen.dae.clubsocios.rest;
 import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.entidades.Solicitud;
+import es.ujaen.dae.clubsocios.excepciones.ActividadYaExistente;
 import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
@@ -60,11 +61,12 @@ ServicioClub servicioClub;
     }
 
     @PostMapping ("/actividades")
-    public ResponseEntity<Void> nuevaActivdad(@RequestBody DTOActividad actividad){
-    servicioClub.crearActividad(admin,mapeador.entidadActividad(actividad));
+    public ResponseEntity<Void> nuevaActividad(@RequestBody DTOActividad actividad){
 
-    return ResponseEntity.status(HttpStatus.CREATED).build();
+            servicioClub.crearActividad(admin, mapeador.entidadActividad(actividad));
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
     @GetMapping("/actividades")
     public ResponseEntity<List<DTOActividad>> buscarActividadPorTemporada(@RequestParam int anio) {
 

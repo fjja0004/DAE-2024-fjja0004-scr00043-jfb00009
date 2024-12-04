@@ -1,6 +1,7 @@
 package es.ujaen.dae.clubsocios.rest;
 
 import es.ujaen.dae.clubsocios.entidades.Socio;
+import es.ujaen.dae.clubsocios.rest.dto.DTOActividad;
 import es.ujaen.dae.clubsocios.rest.dto.DTOSocio;
 import jakarta.annotation.PostConstruct;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,9 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.time.LocalDate;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = es.ujaen.dae.clubsocios.app.ClubSocios.class,webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -52,5 +56,23 @@ public class TestControladorClub {
     @Test
     @DirtiesContext
     void testLoginSocio() {
+    }
+    @Test
+    @DirtiesContext
+    void testNuevaActividad() {
+        //creo actividad correcta
+        DTOActividad actividad =new DTOActividad(0,"Actividad de prueba", "Actividad de prueba", 10,
+                10, 0,LocalDate.now().plusDays(2), LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
+
+        var respuesta= restTemplate.postForEntity("/actividades",actividad, Void.class);
+        assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        //creo actividad invalida
+        DTOActividad actividad2 =new DTOActividad(0,"Actividad de prueba", "Actividad de prueba", -10,
+                -10, 0,LocalDate.now(), LocalDate.now(), LocalDate.now());
+
+        respuesta= restTemplate.postForEntity("/actividades",actividad2, Void.class);
+        assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
+
     }
 }
