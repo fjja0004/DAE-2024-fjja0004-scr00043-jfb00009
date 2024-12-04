@@ -193,19 +193,23 @@ public class Actividad {
     }
 
     /**
-     * @param email email del solicitante
+     * @param solicitud solicitud a la que se le acepta la plaza
      * @brief Acepta una plaza de una solicitud de inscripción a la actividad
      */
-    public void aceptarPlaza(String email) {
+    public Solicitud aceptarPlaza(Solicitud solicitud) {
         if (isAbierta()) throw new InscripcionAbierta();
-        if (plazas > plazasOcupadas) {
-            buscarSolicitudPorEmail(email).ifPresentOrElse(solicitud -> {
-                solicitud.aceptarPlaza();
+
+        if (plazasOcupadas == plazas)
+            throw new NoDisponibilidadPlazas();
+
+        for (Solicitud sol : solicitudes) {
+            if ((sol.getId() == solicitud.getId())) {
+                sol.aceptarPlaza();
                 plazasOcupadas++;
-            }, () -> {
-                throw new SolicitudNoExistente();
-            });
+                return sol;
+            }
         }
+        throw new SolicitudNoExistente();
     }
 
     /**
