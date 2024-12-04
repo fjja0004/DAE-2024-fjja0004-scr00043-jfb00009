@@ -200,24 +200,12 @@ public class ServicioClub {
      */
     @Transactional
     public Solicitud crearSolicitud(Socio solicitante, Actividad actividad, int nAcompanantes) {
-        Actividad actSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
+        solicitante = repositorioSocios.buscar(solicitante.getEmail()).get();
+        actividad = repositorioActividades.buscarPorId(actividad.getId()).get();
         Solicitud solicitud = new Solicitud(solicitante, nAcompanantes);
-        actSolicitada.crearSolicitud(solicitud);
+        actividad.crearSolicitud(solicitud);
         repositorioActividades.guardarSolicitud(solicitud);
         return solicitud;
-    }
-
-    /**
-     * @param socio         Socio que va a realizar la modificación
-     * @param actividad     Actividad a la que se va a modificar el número de acompañantes
-     * @param nAcompanantes número entero de acompañantes
-     * @throws NoHayActividades excepcion que se lanza en caso de que la actividad no exista
-     * @brief modifica el número de acompañantes que tendrá un socio
-     */
-    public void modificarAcompanantes(Socio socio, Actividad actividad, int nAcompanantes) {
-        if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
-            repositorioActividades.modificarAcompanantes(actividad, socio, nAcompanantes);
-        }
     }
 
     /**
@@ -226,16 +214,12 @@ public class ServicioClub {
      * @return lista de solicitudes de la actividad
      * @brief Devuelve una lista con las solicitudes de una actividad
      */
+    @Transactional
     public List<Solicitud> buscarSolicitudesDeActividad(Socio direccion, Actividad actividad) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
-
-        if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
-            Actividad act = repositorioActividades.buscarPorId(actividad.getId()).get();
-            return act.getSolicitudes();
-        } else {
-            throw new NoHayActividades();
-        }
+        actividad = repositorioActividades.buscarPorId(actividad.getId()).get();
+        return actividad.getSolicitudes();
     }
 
     /**
@@ -253,6 +237,19 @@ public class ServicioClub {
             }
         }
         return Optional.empty();
+    }
+
+    /**
+     * @param socio         Socio que va a realizar la modificación
+     * @param actividad     Actividad a la que se va a modificar el número de acompañantes
+     * @param nAcompanantes número entero de acompañantes
+     * @throws NoHayActividades excepcion que se lanza en caso de que la actividad no exista
+     * @brief modifica el número de acompañantes que tendrá un socio
+     */
+    public void modificarAcompanantes(Socio socio, Actividad actividad, int nAcompanantes) {
+        if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
+            repositorioActividades.modificarAcompanantes(actividad, socio, nAcompanantes);
+        }
     }
 
     /**
