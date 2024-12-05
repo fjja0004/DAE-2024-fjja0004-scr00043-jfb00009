@@ -88,5 +88,4 @@ public class Socio {
         throw new SocioNoValido();
     }
 
-
 }
