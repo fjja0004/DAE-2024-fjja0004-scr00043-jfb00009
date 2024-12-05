@@ -280,4 +280,15 @@ public class Actividad {
         return fechaFinInscripcion;
     }
 
+    public int getPrecio() {
+        return precio;
+    }
+
+    public int getPlazas() {
+        return plazas;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
 }

@@ -88,4 +88,15 @@ public class Socio {
         throw new SocioNoValido();
     }
 
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getApellidos() {
+        return apellidos;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
 }
