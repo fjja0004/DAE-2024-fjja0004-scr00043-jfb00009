@@ -213,20 +213,21 @@ public class Actividad {
     }
 
     /**
-     * @param email email del solicitante
+     * @param solicitud solicitud a la que se le acepta la plaza
      * @brief Retira una plaza de una solicitud de inscripción a la actividad
      */
-    public Optional<Solicitud> quitarPlaza(String email) {
+    public Solicitud quitarPlaza(Solicitud solicitud) {
         if (isAbierta()) throw new InscripcionAbierta();
 
-        Optional<Solicitud> solicitud = buscarSolicitudPorEmail(email);
-        if (solicitud.isPresent()) {
-            solicitud.get().quitarPlaza();
-            plazasOcupadas--;
-            return solicitud;
-        } else {
-            throw new SolicitudNoExistente();
+        for (Solicitud sol : solicitudes) {
+            if ((sol.getId() == solicitud.getId())) {
+                sol.quitarPlaza();
+                if (plazasOcupadas > 0)
+                    plazasOcupadas--;
+                return sol;
+            }
         }
+        throw new SolicitudNoExistente();
     }
 
     /**
