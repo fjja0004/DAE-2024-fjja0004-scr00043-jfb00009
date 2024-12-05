@@ -269,19 +269,18 @@ public class ServicioClub {
 
     /**
      * @param direccion Miembro de la dirección que realiza la operación
-     * @param socio     Socio que realiza la solicitud de inscripción
      * @param actividad Actividad a la que se solicita la inscripción
+     * @param solicitud Solicitud a la que se va a quitar una plaza
      * @brief Quita una de las plazas aceptadas a una solicitud
      */
-    public void quitarPlaza(Socio direccion, Socio socio, Actividad actividad) {
+    @Transactional
+    public Solicitud quitarPlaza(Socio direccion, Actividad actividad, Solicitud solicitud) {
         if (!esAdmin(direccion))
             throw new OperacionDeDireccion();
-        Socio solicitante = login(socio.getEmail(), socio.getClave());
-        if (repositorioActividades.buscarPorId(actividad.getId()).isPresent()) {
-            Actividad actividadSolicitada = repositorioActividades.buscarPorId(actividad.getId()).get();
-            Optional<Solicitud> solicitud = actividadSolicitada.quitarPlaza(solicitante.getEmail());
-            repositorioActividades.actualizar(actividadSolicitada);
-            repositorioActividades.actualizarSolicitud(solicitud.get());
-        }
+        actividad = repositorioActividades.buscarPorId(actividad.getId()).get();
+        solicitud = actividad.quitarPlaza(solicitud);
+        repositorioActividades.actualizar(actividad);
+        repositorioActividades.actualizarSolicitud(solicitud);
+        return solicitud;
     }
 }

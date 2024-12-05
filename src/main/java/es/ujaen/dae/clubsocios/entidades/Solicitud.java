@@ -42,7 +42,6 @@ public class Solicitud {
         this.plazasAceptadas = 0;
     }
 
-
     /**
      * @param nAcompanantes número entero de acompañantes
      * @brief modifica el número de acompañantes que tendrá una solicitud

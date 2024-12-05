@@ -106,23 +106,6 @@ public class Actividad {
     }
 
     /**
-     * @param id id de la solicitud
-     * @return optional de la solicitud con el id dado, o un optional vacío si no existe
-     * @brief Busca una solicitud por su id
-     */
-    public Optional<Solicitud> buscarSolicitudPorId(int id) {
-        if (solicitudes.isEmpty()) {
-            return Optional.empty();
-        }
-        for (Solicitud solicitud : solicitudes) {
-            if (solicitud.getId() == id) {
-                return Optional.of(solicitud);
-            }
-        }
-        return Optional.empty();
-    }
-
-    /**
      * @param solicitud solicitud a añadir
      * @brief Crea una solicitud de inscripción a la actividad
      */
@@ -213,20 +196,21 @@ public class Actividad {
     }
 
     /**
-     * @param email email del solicitante
+     * @param solicitud solicitud a la que se le acepta la plaza
      * @brief Retira una plaza de una solicitud de inscripción a la actividad
      */
-    public Optional<Solicitud> quitarPlaza(String email) {
+    public Solicitud quitarPlaza(Solicitud solicitud) {
         if (isAbierta()) throw new InscripcionAbierta();
 
-        Optional<Solicitud> solicitud = buscarSolicitudPorEmail(email);
-        if (solicitud.isPresent()) {
-            solicitud.get().quitarPlaza();
-            plazasOcupadas--;
-            return solicitud;
-        } else {
-            throw new SolicitudNoExistente();
+        for (Solicitud sol : solicitudes) {
+            if ((sol.getId() == solicitud.getId())) {
+                sol.quitarPlaza();
+                if (plazasOcupadas > 0)
+                    plazasOcupadas--;
+                return sol;
+            }
         }
+        throw new SolicitudNoExistente();
     }
 
     /**
@@ -250,14 +234,6 @@ public class Actividad {
 
     public String getTitulo() {
         return titulo;
-    }
-
-    public int getPrecio() {
-        return precio;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
     }
 
     public LocalDate getFechaCelebracion() {
@@ -294,11 +270,6 @@ public class Actividad {
     @PositiveOrZero
     public int getPlazasOcupadas() {
         return plazasOcupadas;
-    }
-
-    @Positive
-    public int getPlazas() {
-        return plazas;
     }
 
     public @NotNull LocalDate getFechaInicioInscripcion() {
