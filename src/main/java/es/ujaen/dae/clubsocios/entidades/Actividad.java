@@ -106,23 +106,6 @@ public class Actividad {
     }
 
     /**
-     * @param id id de la solicitud
-     * @return optional de la solicitud con el id dado, o un optional vacío si no existe
-     * @brief Busca una solicitud por su id
-     */
-    public Optional<Solicitud> buscarSolicitudPorId(int id) {
-        if (solicitudes.isEmpty()) {
-            return Optional.empty();
-        }
-        for (Solicitud solicitud : solicitudes) {
-            if (solicitud.getId() == id) {
-                return Optional.of(solicitud);
-            }
-        }
-        return Optional.empty();
-    }
-
-    /**
      * @param solicitud solicitud a añadir
      * @brief Crea una solicitud de inscripción a la actividad
      */
@@ -253,14 +236,6 @@ public class Actividad {
         return titulo;
     }
 
-    public int getPrecio() {
-        return precio;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
     public LocalDate getFechaCelebracion() {
         return fechaCelebracion;
     }
@@ -295,11 +270,6 @@ public class Actividad {
     @PositiveOrZero
     public int getPlazasOcupadas() {
         return plazasOcupadas;
-    }
-
-    @Positive
-    public int getPlazas() {
-        return plazas;
     }
 
     public @NotNull LocalDate getFechaInicioInscripcion() {
