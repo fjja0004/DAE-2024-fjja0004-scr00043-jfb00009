@@ -67,19 +67,27 @@ public class Socio {
         return getEmail().hashCode();
     }
 
-    public String getEmail() {return email;}
+    public String getEmail() {
+        return email;
+    }
 
-    public String getClave() {return clave;}
+    public String getClave() {
+        return clave;
+    }
 
-    public boolean isCuotaPagada() {return cuotaPagada;}
+    public boolean isCuotaPagada() {
+        return cuotaPagada;
+    }
 
-    public void setCuotaPagada(boolean cuotaPagada) {this.cuotaPagada = cuotaPagada;}
+    public void setCuotaPagada(boolean cuotaPagada) {
+        this.cuotaPagada = cuotaPagada;
+    }
 
     /**
-     * @brief Comprueba si la clave introducida es correcta
      * @param clave clave del socio
      * @return true si la clave es correcta
      * @throws SocioNoValido si la clave no es correcta
+     * @brief Comprueba si la clave introducida es correcta
      */
     public boolean comprobarCredenciales(String clave) {
         if (this.clave.equals(clave)) {

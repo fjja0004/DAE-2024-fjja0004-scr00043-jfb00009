@@ -2,7 +2,7 @@ package es.ujaen.dae.clubsocios.repositorios;
 
 import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.entidades.Solicitud;
-import es.ujaen.dae.clubsocios.excepciones.*;
+import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
