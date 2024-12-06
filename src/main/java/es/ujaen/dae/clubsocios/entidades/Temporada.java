@@ -1,7 +1,6 @@
 package es.ujaen.dae.clubsocios.entidades;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,8 +22,8 @@ public class Temporada {
     }
 
     /**
-     * @brief Añade una nueva actividad a la temporada
      * @param actividad actividad a añadir
+     * @brief Añade una nueva actividad a la temporada
      */
     public void nuevaActividad(Actividad actividad) {
         actividad.fechasValidas();

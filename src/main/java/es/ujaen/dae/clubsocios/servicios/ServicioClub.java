@@ -1,15 +1,19 @@
 package es.ujaen.dae.clubsocios.servicios;
 
-import es.ujaen.dae.clubsocios.entidades.*;
-import es.ujaen.dae.clubsocios.excepciones.*;
 import es.ujaen.dae.clubsocios.entidades.Actividad;
+import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.entidades.Solicitud;
+import es.ujaen.dae.clubsocios.entidades.Temporada;
+import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
+import es.ujaen.dae.clubsocios.excepciones.OperacionDeDireccion;
+import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
+import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 import es.ujaen.dae.clubsocios.repositorios.RepositorioActividades;
 import es.ujaen.dae.clubsocios.repositorios.RepositorioSocios;
 import es.ujaen.dae.clubsocios.repositorios.RepositorioTemporadas;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
@@ -17,7 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Repository
@@ -48,10 +53,7 @@ public class ServicioClub {
      * @brief Función que comprueba si un usuario es administrador.
      */
     boolean esAdmin(Socio socio) {
-        if (socio.getEmail().equals(admin.getEmail()) && socio.getClave().equals(admin.getClave())) {
-            return true;
-        }
-        return false;
+        return socio.getEmail().equals(admin.getEmail()) && socio.getClave().equals(admin.getClave());
     }
 
     /**

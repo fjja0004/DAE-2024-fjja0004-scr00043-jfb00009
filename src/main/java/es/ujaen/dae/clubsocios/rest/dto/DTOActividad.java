@@ -1,7 +1,5 @@
 package es.ujaen.dae.clubsocios.rest.dto;
 
-import org.springframework.cglib.core.Local;
-
 import java.time.LocalDate;
 
 public record DTOActividad(
@@ -14,6 +12,6 @@ public record DTOActividad(
         LocalDate fechaInicioInscripcion,
         LocalDate fechaFinInscripcion,
         LocalDate fechaCelebracion
-){
+) {
 
 }

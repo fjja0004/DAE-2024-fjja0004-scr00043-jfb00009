@@ -1,7 +1,9 @@
 package es.ujaen.dae.clubsocios.entidades;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import java.time.LocalDate;
 

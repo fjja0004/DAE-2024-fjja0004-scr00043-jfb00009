@@ -14,20 +14,23 @@ import java.time.LocalDate;
 public class Mapeador {
     @Autowired
     RepositorioSocios repositorioSocios;
-    public DTOSocio dtoSocio(Socio socio){
+
+    public DTOSocio dtoSocio(Socio socio) {
         return new DTOSocio(
                 socio.getNombre(),
                 socio.getApellidos(),
-                socio.getEmail(), socio.getTelefono(),"");
+                socio.getEmail(), socio.getTelefono(), "");
     }
-    public Socio entidadSocio(DTOSocio dtoSocio){
+
+    public Socio entidadSocio(DTOSocio dtoSocio) {
         return new Socio(dtoSocio.nombre(),
                 dtoSocio.apellidos(),
                 dtoSocio.email(),
                 dtoSocio.tlf(),
                 dtoSocio.clave());
     }
-    public DTOActividad dtoActividad(Actividad actividad){
+
+    public DTOActividad dtoActividad(Actividad actividad) {
         return new DTOActividad(actividad.getId(),
                 actividad.getTitulo(),
                 actividad.getDescripcion(),
@@ -36,9 +39,10 @@ public class Mapeador {
                 actividad.getPlazasOcupadas(),
                 actividad.getFechaInicioInscripcion(),
                 actividad.getFechaFinInscripcion(),
-                actividad.getFechaCelebracion() );
+                actividad.getFechaCelebracion());
     }
-    public Actividad entidadActividad(DTOActividad dtoActividad){
+
+    public Actividad entidadActividad(DTOActividad dtoActividad) {
 
         return new Actividad(dtoActividad.titulo(),
                 dtoActividad.descripcion(),
@@ -48,19 +52,23 @@ public class Mapeador {
                 dtoActividad.fechaFinInscripcion(),
                 dtoActividad.fechaCelebracion());
     }
-    public Temporada entidadTemporada(DTOTemporada dtoTemporada){
+
+    public Temporada entidadTemporada(DTOTemporada dtoTemporada) {
         return new Temporada();
     }
-    public DTOTemporada dtoTemporada(Temporada temporada){
+
+    public DTOTemporada dtoTemporada(Temporada temporada) {
         return new DTOTemporada(temporada.getAnio());
     }
-    public Solicitud entidadSolicitud(DTOSolicitud dtosolicitud){
+
+    public Solicitud entidadSolicitud(DTOSolicitud dtosolicitud) {
         return new Solicitud();
         //creo que aqui deberiamos de pasarle algo
         //pero no tenemos  constructores en solictud
         //con los valores que tiene un DTO
     }
-    public DTOSolicitud dtoSolicitud(Solicitud solicitud){
+
+    public DTOSolicitud dtoSolicitud(Solicitud solicitud) {
         return new DTOSolicitud(solicitud.getId(),
                 solicitud.getnAcompanantes(),
                 LocalDate.now(),
