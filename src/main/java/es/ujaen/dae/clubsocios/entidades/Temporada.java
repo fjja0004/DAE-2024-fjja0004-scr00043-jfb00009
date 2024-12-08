@@ -3,6 +3,7 @@ package es.ujaen.dae.clubsocios.entidades;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -19,6 +20,11 @@ public class Temporada {
      */
     public Temporada() {
         this.anio = LocalDate.now().getYear();
+    }
+
+    public Temporada(int anio) {
+        this.anio = anio;
+        this.actividades = new LinkedList<>();
     }
 
     /**

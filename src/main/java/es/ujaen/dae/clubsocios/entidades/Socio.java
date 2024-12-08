@@ -36,6 +36,15 @@ public class Socio {
         cuotaPagada = false;
     }
 
+    public Socio(String nombre, String apellidos, String email, String telefono, String clave, boolean cuotaPagada) {
+        this.nombre = nombre;
+        this.apellidos = apellidos;
+        this.email = email;
+        this.telefono = telefono;
+        this.clave = clave;
+        this.cuotaPagada = cuotaPagada;
+    }
+
     /**
      * @param nombre
      * @param apellidos
@@ -45,12 +54,7 @@ public class Socio {
      * @brief Contructor parametrizado de la clase Socio
      */
     public Socio(String nombre, String apellidos, String email, String telefono, String clave) {
-        this.nombre = nombre;
-        this.apellidos = apellidos;
-        this.email = email;
-        this.telefono = telefono;
-        this.clave = clave;
-        this.cuotaPagada = false;
+        this(nombre, apellidos, email, telefono, clave, false);
     }
 
     @Override
