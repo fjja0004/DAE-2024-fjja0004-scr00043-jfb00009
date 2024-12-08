@@ -50,12 +50,13 @@ public class Actividad {
         this.fechaCelebracion = LocalDate.now();
     }
 
-    public Actividad(int id, String titulo, String descripcion, int precio, int plazas, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion, LocalDate fechaCelebracion) {
+    public Actividad(int id, String titulo, String descripcion, int precio, int plazas, int plazasOcupadas, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion, LocalDate fechaCelebracion) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.precio = precio;
         this.plazas = plazas;
+        this.plazasOcupadas = plazasOcupadas;
         this.fechaInicioInscripcion = fechaInicioInscripcion;
         this.fechaFinInscripcion = fechaFinInscripcion;
         this.fechaCelebracion = fechaCelebracion;
@@ -73,7 +74,7 @@ public class Actividad {
      * @brief Constructor parametrizado de la clase Actividad
      */
     public Actividad(String titulo, String descripcion, int precio, int plazas, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion, LocalDate fechaCelebracion) {
-        this(0, titulo, descripcion, precio, plazas, fechaInicioInscripcion, fechaFinInscripcion, fechaCelebracion);
+        this(0, titulo, descripcion, precio, plazas, 0, fechaInicioInscripcion, fechaFinInscripcion, fechaCelebracion);
     }
 
     @Override

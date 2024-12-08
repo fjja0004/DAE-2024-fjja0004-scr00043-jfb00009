@@ -81,6 +81,10 @@ public class Solicitud {
         return id;
     }
 
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
     public void aceptarPlaza() {
         if (this.plazasAceptadas <= this.nAcompanantes) {
             this.plazasAceptadas++;

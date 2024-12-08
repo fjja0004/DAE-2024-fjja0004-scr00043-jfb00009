@@ -4,6 +4,7 @@ import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.entidades.Solicitud;
 import es.ujaen.dae.clubsocios.entidades.Temporada;
+import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
 import es.ujaen.dae.clubsocios.repositorios.RepositorioSocios;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,11 +20,14 @@ public class Mapeador {
         return new DTOSocio(
                 socio.getNombre(),
                 socio.getApellidos(),
-                socio.getEmail(), socio.getTelefono(), "");
+                socio.getEmail(),
+                socio.getTelefono(),
+                "");
     }
 
     public Socio entidadSocio(DTOSocio dtoSocio) {
-        return new Socio(dtoSocio.nombre(),
+        return new Socio(
+                dtoSocio.nombre(),
                 dtoSocio.apellidos(),
                 dtoSocio.email(),
                 dtoSocio.tlf(),
@@ -31,7 +35,8 @@ public class Mapeador {
     }
 
     public DTOActividad dtoActividad(Actividad actividad) {
-        return new DTOActividad(actividad.getId(),
+        return new DTOActividad(
+                actividad.getId(),
                 actividad.getTitulo(),
                 actividad.getDescripcion(),
                 actividad.getPrecio(),
@@ -43,36 +48,45 @@ public class Mapeador {
     }
 
     public Actividad entidadActividad(DTOActividad dtoActividad) {
-
-        return new Actividad(dtoActividad.titulo(),
+        return new Actividad(
+                dtoActividad.id(),
+                dtoActividad.titulo(),
                 dtoActividad.descripcion(),
                 dtoActividad.precio(),
                 dtoActividad.plazas(),
+                dtoActividad.plazasOcupadas(),
                 dtoActividad.fechaInicioInscripcion(),
                 dtoActividad.fechaFinInscripcion(),
                 dtoActividad.fechaCelebracion());
-    }
-
-    public Temporada entidadTemporada(DTOTemporada dtoTemporada) {
-        return new Temporada();
     }
 
     public DTOTemporada dtoTemporada(Temporada temporada) {
         return new DTOTemporada(temporada.getAnio());
     }
 
-    public Solicitud entidadSolicitud(DTOSolicitud dtosolicitud) {
-        return new Solicitud();
-        //creo que aqui deberiamos de pasarle algo
-        //pero no tenemos  constructores en solictud
-        //con los valores que tiene un DTO
+    public Temporada entidadTemporada(DTOTemporada dtoTemporada) {
+        return new Temporada(
+                dtoTemporada.anio()
+        );
     }
 
     public DTOSolicitud dtoSolicitud(Solicitud solicitud) {
-        return new DTOSolicitud(solicitud.getId(),
+        return new DTOSolicitud(
+                solicitud.getId(),
                 solicitud.getnAcompanantes(),
-                LocalDate.now(),
-                solicitud.getPlazasAceptadas());
+                solicitud.getFecha(),
+                solicitud.getPlazasAceptadas(),
+                solicitud.getSocio().getEmail());
     }
 
+    public Solicitud entidadSolicitud(DTOSolicitud dtosolicitud) {
+        Socio socio = repositorioSocios.buscar(dtosolicitud.emailSocio()).orElseThrow(SocioNoValido::new);
+
+        return new Solicitud(
+                dtosolicitud.id(),
+                socio,
+                dtosolicitud.nAcompanantes(),
+                dtosolicitud.fecha(),
+                dtosolicitud.plazasAceptadas());
+    }
 }
