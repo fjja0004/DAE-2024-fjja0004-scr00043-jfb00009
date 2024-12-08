@@ -6,5 +6,6 @@ public record DTOSolicitud(
         int id,
         int nAcompanantes,
         LocalDate fecha,
-        int plazasAceptadas) {
+        int plazasAceptadas,
+        String emailSocio) {
 }

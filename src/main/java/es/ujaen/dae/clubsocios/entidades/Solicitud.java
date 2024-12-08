@@ -32,16 +32,21 @@ public class Solicitud {
         this.socio = null;
     }
 
+    public Solicitud(int id, Socio socio, int nAcompanantes, LocalDate fecha, int plazasAceptadas) {
+        this.id = id;
+        this.nAcompanantes = nAcompanantes;
+        this.fecha = fecha;
+        this.socio = socio;
+        this.plazasAceptadas = plazasAceptadas;
+    }
+
     /**
      * @param nAcompanantes numero de acompañantes
      * @param socio         Socio que realiza la solicitud
      * @brief Constructor parametrizado
      */
     public Solicitud(Socio socio, int nAcompanantes) {
-        this.nAcompanantes = nAcompanantes;
-        this.fecha = LocalDate.now();
-        this.socio = socio;
-        this.plazasAceptadas = 0;
+        this(0, socio, nAcompanantes, LocalDate.now(), 0);
     }
 
     /**
@@ -74,6 +79,10 @@ public class Solicitud {
     @PositiveOrZero
     public int getId() {
         return id;
+    }
+
+    public LocalDate getFecha() {
+        return fecha;
     }
 
     public void aceptarPlaza() {
