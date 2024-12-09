@@ -34,6 +34,7 @@ public class ControladorClub {
         admin = servicioClub.login("admin@club.com", "admin");
     }
 
+    //Mapeado global de excepciones de validación de beans
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(ConstraintViolationException.class)
     public void mapeadoExcepcionContraintViolationException() {
@@ -62,7 +63,6 @@ public class ControladorClub {
 
     @PostMapping("/actividades")
     public ResponseEntity<Void> nuevaActividad(@RequestBody DTOActividad actividad) {
-
         servicioClub.crearActividad(admin, mapeador.entidadActividad(actividad));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
