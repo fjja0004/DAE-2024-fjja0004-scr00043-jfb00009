@@ -16,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -329,6 +330,53 @@ public class TestServicioClub {
         //Comprobamos que se lance una excepción si la solicitud ya se ha realizado.
         assertThatThrownBy(() -> servicioClub.crearSolicitud(socioSinCuota, actividadAbierta, 3)).isInstanceOf(SolicitudYaRealizada.class);
         assertThatThrownBy(() -> servicioClub.crearSolicitud(socioConCuota, actividadAbierta, 3)).isInstanceOf(SolicitudYaRealizada.class);
+    }
+
+    @Test
+    @DirtiesContext
+    void testSolicitudActividadConcurrente() {
+        Socio direccion = servicioClub.login("admin@club.com", "admin");
+        Socio socio1 = servicioClub.login("socio_prueba@club.com", "password123");
+        servicioClub.crearSocio(new Socio("Juan", "García", "jgarcia@club.com", "621102025", "password123"));
+        Socio socio2 = servicioClub.login("jgarcia@club.com", "password123");
+
+        //Actividad a la que es posible inscribirse.
+        Actividad actividad = new Actividad("Ruta de senderismo", "Actividad de prueba", 10,
+                1, LocalDate.now(), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+        servicioClub.crearActividad(direccion, actividad);
+
+        servicioClub.marcarCuotaPagada(direccion, socio1);
+        servicioClub.marcarCuotaPagada(direccion, socio2);
+
+        //Solicitud de socio1
+        var th = new Thread(() -> {
+            try {
+                servicioClub.crearSolicitud(socio1, actividad, 0);
+            } catch (Exception e) {
+                Logger.getLogger(servicioClub.getClass().getName()).warning("Solicitud del socio 1 sin disponibilidad");
+            }
+        });
+
+        th.start();
+
+        //Solicitud de socio2
+        try {
+            servicioClub.crearSolicitud(socio2, actividad, 0);
+        } catch (Exception e) {
+            Logger.getLogger(servicioClub.getClass().getName()).warning("Solicitud del socio 2 sin disponibilidad");
+        }
+
+        try {
+            th.join();
+        } catch (InterruptedException e) {
+        }
+
+        var actividadActualizada = servicioClub.buscarActividadPorId(actividad.getId()).get();
+        assertEquals(1, actividadActualizada.getPlazasOcupadas());
+        assertEquals(2, servicioClub.buscarSolicitudesDeActividad(direccion, actividad).size());
+        assertEquals(1, servicioClub.buscarSolicitudesDeActividad(direccion, actividad).get(0).getPlazasAceptadas());
+        assertEquals(0, servicioClub.buscarSolicitudesDeActividad(direccion, actividad).get(1).getPlazasAceptadas());
     }
 
     @Test
