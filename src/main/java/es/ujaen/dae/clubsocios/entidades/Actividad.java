@@ -45,9 +45,8 @@ public class Actividad {
         this.descripcion = "";
         this.precio = 0;
         this.plazas = 0;
-        this.fechaInicioInscripcion = LocalDate.now();
-        this.fechaFinInscripcion = LocalDate.now();
-        this.fechaCelebracion = LocalDate.now();
+        this.plazasOcupadas = 0;
+        this.solicitudes = new LinkedList<>();
     }
 
     public Actividad(int id, String titulo, String descripcion, int precio, int plazas, int plazasOcupadas, LocalDate fechaInicioInscripcion, LocalDate fechaFinInscripcion, LocalDate fechaCelebracion) {

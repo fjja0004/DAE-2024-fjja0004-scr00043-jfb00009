@@ -28,12 +28,7 @@ public class Socio {
      * @brief Constructor por defecto de la clase Socio
      */
     public Socio() {
-        nombre = "nombre";
-        apellidos = "apellidos";
-        email = "email@email.com";
-        telefono = "123456789";
-        clave = "clave";
-        cuotaPagada = false;
+        this.cuotaPagada = false;
     }
 
     public Socio(String nombre, String apellidos, String email, String telefono, String clave, boolean cuotaPagada) {
