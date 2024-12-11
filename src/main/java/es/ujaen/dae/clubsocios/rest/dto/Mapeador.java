@@ -34,6 +34,15 @@ public class Mapeador {
                 dtoSocio.clave());
     }
 
+    public Socio entidadNueva(DTOSocio dtoSocio) {
+        return new Socio(
+                dtoSocio.nombre(),
+                dtoSocio.apellidos(),
+                dtoSocio.email(),
+                dtoSocio.tlf(),
+                dtoSocio.clave()); //TODO: encriptar clave
+    }
+
     public DTOActividad dtoActividad(Actividad actividad) {
         return new DTOActividad(
                 actividad.getId(),
@@ -55,6 +64,17 @@ public class Mapeador {
                 dtoActividad.precio(),
                 dtoActividad.plazas(),
                 dtoActividad.plazasOcupadas(),
+                dtoActividad.fechaInicioInscripcion(),
+                dtoActividad.fechaFinInscripcion(),
+                dtoActividad.fechaCelebracion());
+    }
+
+    public Actividad entidadNueva(DTOActividad dtoActividad) {
+        return new Actividad(
+                dtoActividad.titulo(),
+                dtoActividad.descripcion(),
+                dtoActividad.precio(),
+                dtoActividad.plazas(),
                 dtoActividad.fechaInicioInscripcion(),
                 dtoActividad.fechaFinInscripcion(),
                 dtoActividad.fechaCelebracion());
@@ -88,5 +108,13 @@ public class Mapeador {
                 dtosolicitud.nAcompanantes(),
                 dtosolicitud.fecha(),
                 dtosolicitud.plazasAceptadas());
+    }
+
+    public Solicitud entidadNueva(DTOSolicitud dtosolicitud) {
+        Socio socio = repositorioSocios.buscar(dtosolicitud.emailSocio()).orElseThrow(SocioNoValido::new);
+
+        return new Solicitud(
+                socio,
+                dtosolicitud.nAcompanantes());
     }
 }
