@@ -79,6 +79,20 @@ public class ServicioClub {
     }
 
     /**
+     * Busca un socio por su email.
+     *
+     * @param email email del socio que se busca. Debe ser un email válido y no nulo.
+     * @return un Optional con el socio si existe.
+     * @throws SocioNoValido si el socio no existe.
+     */
+    public Optional<Socio> buscarSocio(@NotNull @Email String email) {
+        if (email.equals(admin.getEmail()))
+            return Optional.of(admin);
+
+        return repositorioSocios.buscar(email);
+    }
+
+    /**
      * @param socio Socio que se va a registrar
      * @throws SocioYaRegistrado en caso de que sea el mismo que el administrador
      * @throws SocioYaRegistrado en caso de que ya esté registrado
