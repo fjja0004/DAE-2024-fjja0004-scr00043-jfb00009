@@ -14,6 +14,7 @@ import es.ujaen.dae.clubsocios.repositorios.RepositorioTemporadas;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
@@ -73,6 +74,18 @@ public class ServicioClub {
             Socio socio = repositorioSocios.buscar(email).get();
             socio.comprobarCredenciales(clave);
             return socio;
+        } else {
+            throw new SocioNoValido();
+        }
+    }
+
+    //como ya no voy a usar el login implemento el buscarSocio
+    public Optional<Socio> buscarSocio(@NotNull @Email String email){
+
+        if (email.equals(admin.getEmail()))return Optional.of(admin);
+
+        if (repositorioSocios.buscar(email).isPresent()) {
+            return repositorioSocios.buscar(email);
         } else {
             throw new SocioNoValido();
         }
