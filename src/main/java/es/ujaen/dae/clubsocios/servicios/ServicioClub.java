@@ -79,16 +79,18 @@ public class ServicioClub {
         }
     }
 
-    //como ya no voy a usar el login implemento el buscarSocio
-    public Optional<Socio> buscarSocio(@NotNull @Email String email){
+    /**
+     * Busca un socio por su email.
+     *
+     * @param email email del socio que se busca. Debe ser un email válido y no nulo.
+     * @return un Optional con el socio si existe.
+     * @throws SocioNoValido si el socio no existe.
+     */
+    public Optional<Socio> buscarSocio(@NotNull @Email String email) {
+        if (email.equals(admin.getEmail()))
+            return Optional.of(admin);
 
-        if (email.equals(admin.getEmail()))return Optional.of(admin);
-
-        if (repositorioSocios.buscar(email).isPresent()) {
-            return repositorioSocios.buscar(email);
-        } else {
-            throw new SocioNoValido();
-        }
+        return repositorioSocios.buscar(email);
     }
 
     /**

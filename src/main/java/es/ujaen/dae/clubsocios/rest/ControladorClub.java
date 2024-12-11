@@ -43,7 +43,7 @@ public class ControladorClub {
     @PostMapping("/socios")
     public ResponseEntity<Void> nuevoSocio(@RequestBody DTOSocio socio) {
         try {
-            servicioClub.crearSocio(mapeador.entidadSocio(socio));
+            servicioClub.crearSocio(mapeador.entidadNueva(socio));
         } catch (SocioYaRegistrado e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
@@ -52,11 +52,12 @@ public class ControladorClub {
     }
 
     @GetMapping("/socios/{email}")
-    public ResponseEntity<DTOSocio> loginSocio(@PathVariable String email, @RequestParam String clave) {
+    public ResponseEntity<DTOSocio> obtenerSocio(@PathVariable String email) {
         try {
-            Socio socio = servicioClub.login(email, clave);
+            Socio socio = servicioClub.buscarSocio(email).orElseThrow(SocioNoValido::new);
             return ResponseEntity.ok(mapeador.dtoSocio(socio));
-        } catch (SocioNoValido e) {
+        }
+        catch(SocioNoValido e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
