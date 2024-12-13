@@ -102,24 +102,17 @@ public class TestControladorClub {
     @Test
     @DirtiesContext
     void testBuscarActividadesPorTemporada() {
-
-        //hace login del socio direccion
-        var respuestaLogin = restTemplate.getForEntity("/socios/{email}?clave={clave}",
-                DTOSocio.class,
-                "admin@club.com", "admin");
-        assertThat(respuestaLogin.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        //creo actividades abiertas
+//creo actividades abiertas
         DTOActividad actividad = new DTOActividad(1, "Actividad de prueba", "Actividad de prueba", 10,
                 10, 0, LocalDate.now(), LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
         DTOActividad actividad1 = new DTOActividad(2, "Actividad de prueba1", "Actividad de prueba1", 100,
                 100, 0, LocalDate.now(), LocalDate.now().plusDays(8), LocalDate.now().plusDays(11));
 
-        //var respuesta = restTemplate.postForEntity("/actividades", actividad, DTOActividad.class);
-
         var respuesta=restTemplate.withBasicAuth("admin@club.com", "admin").postForEntity("/actividades", actividad, DTOActividad.class);
-        assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-/*
+
+        //TODO AUTENTICAR CON EL ADMIN
+       assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
         respuesta = restTemplate.postForEntity("/actividades", actividad1, DTOActividad.class);
         assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
@@ -129,6 +122,6 @@ public class TestControladorClub {
 
         assertThat(respuestaConsulta.getBody()).hasSize(2);
         assertThat(respuestaConsulta.getBody()[0].id()).isEqualTo(1);
-   */
+
     }
 }
