@@ -27,12 +27,12 @@ public class ControladorClub {
     @Autowired
     ServicioClub servicioClub;
 
-    Socio admin;
+    //Socio admin;
 
-    @PostConstruct
+   /* @PostConstruct
     void loginDireccion() {
         admin = servicioClub.login("admin@club.com", "admin");
-    }
+    }*/
 
     //Mapeado global de excepciones de validación de beans
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -64,7 +64,7 @@ public class ControladorClub {
 
     @PostMapping("/actividades")
     public ResponseEntity<Void> nuevaActividad(@RequestBody DTOActividad actividad) {
-        servicioClub.crearActividad(admin, mapeador.entidadActividad(actividad));
+        servicioClub.crearActividad( mapeador.entidadActividad(actividad));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

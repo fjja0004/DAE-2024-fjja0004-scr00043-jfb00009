@@ -166,9 +166,9 @@ public class ServicioClub {
      * @brief creación de una actividad
      */
     @Transactional
-    public void crearActividad(Socio direccion, @Valid Actividad actividad) {
-        if (!esAdmin(direccion))
-            throw new OperacionDeDireccion();
+    public void crearActividad(@Valid Actividad actividad) {
+        /*if (!esAdmin(direccion))
+            throw new OperacionDeDireccion();*/
         repositorioTemporadas.temporadaActual().nuevaActividad(actividad);
         repositorioActividades.guardarActividad(actividad);
     }
