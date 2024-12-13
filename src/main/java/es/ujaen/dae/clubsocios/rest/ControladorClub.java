@@ -9,7 +9,6 @@ import es.ujaen.dae.clubsocios.rest.dto.DTOActividad;
 import es.ujaen.dae.clubsocios.rest.dto.DTOSocio;
 import es.ujaen.dae.clubsocios.rest.dto.Mapeador;
 import es.ujaen.dae.clubsocios.servicios.ServicioClub;
-import jakarta.annotation.PostConstruct;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -77,7 +76,7 @@ public class ControladorClub {
 
         return ResponseEntity.ok(actividades.stream().map(a -> mapeador.dtoActividad(a)).toList());
     }
-
+//TODO NUEVA SOLICITUD HAY QUE CORREGIRLA
     @PostMapping("/solicitudes")
     public ResponseEntity<Void> nuevaSolicitud(@RequestBody DTOSocio socio, @RequestBody DTOActividad actividad, @RequestParam int nAcompanantes) {
         try {
