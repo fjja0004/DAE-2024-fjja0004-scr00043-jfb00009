@@ -126,4 +126,14 @@ public class TestControladorClub {
         assertThat(respuestaConsulta.getBody()[0].id()).isEqualTo(1);
 
     }
+    @Test
+    @DirtiesContext
+    public void testNuevaTemporada() {
+
+        //prueba con socio erroneo
+        DTOSocio socio=new DTOSocio("socio","apellidos", "email@gmail.com", "tlf", "clave");
+        var respuesta = restTemplate.withBasicAuth(socio.email(), socio.clave()).postForEntity("/temporadas", null, Void.class);
+        assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+
+    }
 }
