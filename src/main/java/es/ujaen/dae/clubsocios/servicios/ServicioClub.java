@@ -139,7 +139,7 @@ public class ServicioClub {
      * @brief Crea una nueva temporada al inicio de cada año
      */
     @Scheduled(cron = "0 0 0 1 1 ?")
-    void crearNuevaTemporada() {
+    public void crearNuevaTemporada() {
         repositorioTemporadas.crearTemporada();
         repositorioSocios.marcarTodasCuotasNoPagadas();
     }
