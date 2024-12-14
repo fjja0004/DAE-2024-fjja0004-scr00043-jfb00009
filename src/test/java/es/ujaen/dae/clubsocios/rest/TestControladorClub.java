@@ -25,6 +25,9 @@ public class TestControladorClub {
 
     TestRestTemplate restTemplate;
 
+    /*
+     * Crear el RestTemplateBuilder para poder hacer las peticiones al servidor
+     */
     @PostConstruct
     void crearRestTemplateBuilder() {
         var restTemplateBuilder = new RestTemplateBuilder()
