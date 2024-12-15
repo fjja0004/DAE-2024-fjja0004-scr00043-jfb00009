@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,7 +85,6 @@ public class ServicioClub {
      *
      * @param email email del socio que se busca. Debe ser un email válido y no nulo.
      * @return un Optional con el socio si existe.
-     * @throws SocioNoValido si el socio no existe.
      */
     public Optional<Socio> buscarSocio(@NotNull @Email String email) {
         if (email.equals(admin.getEmail()))
@@ -101,7 +101,7 @@ public class ServicioClub {
      */
     public void crearSocio(@Valid Socio socio) {
         if (esAdmin(socio)) {
-            throw new SocioNoValido();
+            throw new SocioYaRegistrado();
         }
         repositorioSocios.guardar(socio);
     }
@@ -132,15 +132,24 @@ public class ServicioClub {
      */
     @PostConstruct
     void crearTemporadaInicial() {
-        crearNuevaTemporada();
+        crearTemporadaProgramada();
+    }
+
+    /**
+     * Crea una nueva temporada con el año dado.
+     * @param anio año de la temporada
+     */
+    public void crearTemporada(int anio){
+        repositorioTemporadas.crearTemporada(anio);
     }
 
     /**
      * @brief Crea una nueva temporada al inicio de cada año
      */
     @Scheduled(cron = "0 0 0 1 1 ?")
-    void crearNuevaTemporada() {
-        repositorioTemporadas.crearTemporada();
+    void crearTemporadaProgramada() {
+        int anio = LocalDate.now().getYear();
+        repositorioTemporadas.crearTemporada(anio);
         repositorioSocios.marcarTodasCuotasNoPagadas();
     }
 

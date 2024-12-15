@@ -13,5 +13,4 @@ public record DTOActividad(
         LocalDate fechaFinInscripcion,
         LocalDate fechaCelebracion
 ) {
-
 }

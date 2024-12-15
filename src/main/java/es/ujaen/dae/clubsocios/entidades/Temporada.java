@@ -22,6 +22,10 @@ public class Temporada {
         this.anio = LocalDate.now().getYear();
     }
 
+    /**
+     * @param anio año de la temporada
+     * @brief Constructor parametrizado de la clase Temporada
+     */
     public Temporada(int anio) {
         this.anio = anio;
         this.actividades = new LinkedList<>();

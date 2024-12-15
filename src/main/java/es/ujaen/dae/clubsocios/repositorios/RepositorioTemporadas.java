@@ -20,9 +20,9 @@ public class RepositorioTemporadas {
     /**
      * @brief Crea una nueva temporada
      */
-    public void crearTemporada() {
-        Temporada temporada = new Temporada();
-        if (!buscar(LocalDate.now().getYear()).isPresent()) {
+    public void crearTemporada(int anio) {
+        Temporada temporada = new Temporada(anio);
+        if (!buscar(anio).isPresent()) {
             em.persist(temporada);
         }
     }

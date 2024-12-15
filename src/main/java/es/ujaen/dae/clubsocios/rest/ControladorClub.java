@@ -48,40 +48,46 @@ public class ControladorClub {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
         return ResponseEntity.status(HttpStatus.CREATED).build();
-
     }
 
     @GetMapping("/socios/{email}")
     public ResponseEntity<DTOSocio> obtenerSocio(@PathVariable String email) {
         try {
-            Socio socio = servicioClub.buscarSocio(email).orElseThrow(SocioNoValido::new);
-            return ResponseEntity.ok(mapeador.dtoSocio(socio));
+            Socio usuario = servicioClub.buscarSocio(email).orElseThrow(SocioNoValido::new);
+            return ResponseEntity.ok(mapeador.dto(usuario));
         }
         catch(SocioNoValido e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 
+//    @GetMapping("/socios/{email}")
+//    public ResponseEntity<DTOSocio> obtenerSocio(@PathVariable String email) {
+//        try {
+//            Socio socio = servicioClub.buscarSocio(email).orElseThrow(SocioNoValido::new);
+//            return ResponseEntity.ok(mapeador.dto(socio));
+//        } catch (SocioNoValido e) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
+//    }
+
     @PostMapping("/actividades")
     public ResponseEntity<Void> nuevaActividad(@RequestBody DTOActividad actividad) {
-        servicioClub.crearActividad(admin, mapeador.entidadActividad(actividad));
+        servicioClub.crearActividad(admin, mapeador.entidadNueva(actividad));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping("/actividades")
-    public ResponseEntity<List<DTOActividad>> buscarActividadPorTemporada(@RequestParam int anio) {
-
+    public ResponseEntity<List<DTOActividad>> obtenerActividadesPorTemporada(@RequestParam int anio) {
         List<Actividad> actividades;
         actividades = servicioClub.buscarActividadesTemporada(anio);
-
-
-        return ResponseEntity.ok(actividades.stream().map(a -> mapeador.dtoActividad(a)).toList());
+        return ResponseEntity.ok(actividades.stream().map(a -> mapeador.dto(a)).toList());
     }
 
     @PostMapping("/solicitudes")
     public ResponseEntity<Void> nuevaSolicitud(@RequestBody DTOSocio socio, @RequestBody DTOActividad actividad, @RequestParam int nAcompanantes) {
         try {
-            servicioClub.crearSolicitud(mapeador.entidadSocio(socio), mapeador.entidadActividad(actividad), nAcompanantes);
+            servicioClub.crearSolicitud(mapeador.entidad(socio), mapeador.entidad(actividad), nAcompanantes);
         } catch (SolicitudYaRealizada e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
