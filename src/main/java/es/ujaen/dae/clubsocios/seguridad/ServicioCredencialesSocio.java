@@ -20,7 +20,7 @@ public class ServicioCredencialesSocio {
         Socio socio=servicioClub.buscarSocio(userName).orElseThrow(() -> new UsernameNotFoundException(""));
         return User.withUsername(socio.getEmail())
                 .password(socio.getClave())
-                .roles(socio.getNombre().equals("direccion") ? "DIRECCION": "CLIENTE")
+                .roles(socio.getNombre().equals("administrador") ? "DIRECCION": "CLIENTE")
                 .build();
 
     }
