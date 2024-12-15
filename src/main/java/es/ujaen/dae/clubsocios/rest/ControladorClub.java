@@ -55,21 +55,10 @@ public class ControladorClub {
         try {
             Socio usuario = servicioClub.buscarSocio(email).orElseThrow(SocioNoValido::new);
             return ResponseEntity.ok(mapeador.dto(usuario));
-        }
-        catch(SocioNoValido e) {
+        } catch (SocioNoValido e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-
-//    @GetMapping("/socios/{email}")
-//    public ResponseEntity<DTOSocio> obtenerSocio(@PathVariable String email) {
-//        try {
-//            Socio socio = servicioClub.buscarSocio(email).orElseThrow(SocioNoValido::new);
-//            return ResponseEntity.ok(mapeador.dto(socio));
-//        } catch (SocioNoValido e) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//    }
 
     @PostMapping("/actividades")
     public ResponseEntity<Void> nuevaActividad(@RequestBody DTOActividad actividad) {
