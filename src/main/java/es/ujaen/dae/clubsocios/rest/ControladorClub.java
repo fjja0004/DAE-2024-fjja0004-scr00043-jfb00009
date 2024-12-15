@@ -48,7 +48,6 @@ public class ControladorClub {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
         return ResponseEntity.status(HttpStatus.CREATED).build();
-
     }
 
     @GetMapping("/socios/{email}")
@@ -83,7 +82,6 @@ public class ControladorClub {
         actividades = servicioClub.buscarActividadesTemporada(anio);
         return ResponseEntity.ok(actividades.stream().map(a -> mapeador.dto(a)).toList());
     }
-
 
     @PostMapping("/solicitudes")
     public ResponseEntity<Void> nuevaSolicitud(@RequestBody DTOSocio socio, @RequestBody DTOActividad actividad, @RequestParam int nAcompanantes) {

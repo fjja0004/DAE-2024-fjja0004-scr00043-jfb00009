@@ -99,29 +99,28 @@ public class TestControladorClub {
     @Test
     @DirtiesContext
     void testBuscarActividadesPorTemporada() {
+        var actividad1 = new DTOActividad(0, "Primera actividad", "Actividad de prueba", 10,
+                10, 0, LocalDate.now(), LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
 
-        //hace login del socio direccion
+        var actividad2 = new DTOActividad(0, "Segunda actividad", "Actividad de prueba", 20,
+                20, 0, LocalDate.now(), LocalDate.now().plusDays(5), LocalDate.now().plusDays(7));
+
+        //Login como administador
         var respuestaLogin = restTemplate.getForEntity("/socios/{email}?clave={clave}",
                 DTOSocio.class,
                 "admin@club.com", "admin");
         assertThat(respuestaLogin.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        //creo actividades abiertas
-        DTOActividad actividad = new DTOActividad(1, "Actividad de prueba", "Actividad de prueba", 10,
-                10, 0, LocalDate.now(), LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
-        DTOActividad actividad1 = new DTOActividad(2, "Actividad de prueba1", "Actividad de prueba1", 100,
-                100, 0, LocalDate.now(), LocalDate.now().plusDays(8), LocalDate.now().plusDays(11));
-
-        var respuesta = restTemplate.postForEntity("/actividades", actividad, DTOActividad.class);
+        //Creación de actividades
+        var respuesta = restTemplate.postForEntity("/actividades", actividad1, DTOActividad.class);
         assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-        respuesta = restTemplate.postForEntity("/actividades", actividad1, DTOActividad.class);
+        respuesta = restTemplate.postForEntity("/actividades", actividad2, DTOActividad.class);
         assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
-
+        //Consulta de actividades. La lista de actividades debe tener tamaño igual a 2
         var respuestaConsulta = restTemplate.getForEntity("/actividades?anio={anio}", DTOActividad[].class, LocalDate.now().getYear());
         assertThat(respuestaConsulta.getStatusCode()).isEqualTo(HttpStatus.OK);
-
         assertThat(respuestaConsulta.getBody()).hasSize(2);
         assertThat(respuestaConsulta.getBody()[0].id()).isEqualTo(1);
     }
