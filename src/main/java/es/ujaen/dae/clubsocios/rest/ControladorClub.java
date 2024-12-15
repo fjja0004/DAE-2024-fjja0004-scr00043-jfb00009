@@ -84,13 +84,10 @@ public class ControladorClub {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-
-    @PostMapping ("/temporadas")
-    public ResponseEntity<DTOTemporada> nuevaTemporada() {
-        servicioClub.crearNuevaTemporada();
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-
-
-    }
+    //TODO: debe pasarse el año de la temporada a crear
+//    @PostMapping("/temporadas")
+//    public ResponseEntity<DTOTemporada> nuevaTemporada() {
+//        servicioClub.crearNuevaTemporada();
+//        return ResponseEntity.status(HttpStatus.CREATED).build();
+//    }
 }
