@@ -68,8 +68,9 @@ public class TestControladorClub {
         assertThat(respuestaLogin.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
 
         //Login con contraseña incorrecta
-        respuestaLogin = restTemplate.getForEntity("/socios/{email}?clave={clave}",
-                DTOSocio.class, socio.email(), "1111");
+        respuestaLogin = restTemplate.withBasicAuth(socio.email(), "Error").getForEntity("/socios/{email}",
+                DTOSocio.class, socio.email());
+
         assertThat(respuestaLogin.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
 
         //Login correcto
@@ -123,5 +124,16 @@ public class TestControladorClub {
         assertThat(respuestaConsulta.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(respuestaConsulta.getBody()).hasSize(2);
         assertThat(respuestaConsulta.getBody()[0].id()).isEqualTo(1);
+
+    }
+    @Test
+    @DirtiesContext
+    public void testNuevaTemporada() {
+
+        //prueba con socio erroneo
+        DTOSocio socio=new DTOSocio("socio","apellidos", "email@gmail.com", "tlf", "clave");
+        var respuesta = restTemplate.withBasicAuth(socio.email(), socio.clave()).postForEntity("/temporadas", null, Void.class);
+        assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+
     }
 }

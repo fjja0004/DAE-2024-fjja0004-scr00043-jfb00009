@@ -147,7 +147,7 @@ public class ServicioClub {
      * @brief Crea una nueva temporada al inicio de cada año
      */
     @Scheduled(cron = "0 0 0 1 1 ?")
-    void crearTemporadaProgramada() {
+    public void crearTemporadaProgramada() {
         int anio = LocalDate.now().getYear();
         repositorioTemporadas.crearTemporada(anio);
         repositorioSocios.marcarTodasCuotasNoPagadas();
@@ -175,9 +175,7 @@ public class ServicioClub {
      * @brief creación de una actividad
      */
     @Transactional
-    public void crearActividad(Socio direccion, @Valid Actividad actividad) {
-        if (!esAdmin(direccion))
-            throw new OperacionDeDireccion();
+    public void crearActividad(@Valid Actividad actividad) {
         repositorioTemporadas.temporadaActual().nuevaActividad(actividad);
         repositorioActividades.guardarActividad(actividad);
     }

@@ -7,12 +7,15 @@ import es.ujaen.dae.clubsocios.entidades.Temporada;
 import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
 import es.ujaen.dae.clubsocios.repositorios.RepositorioSocios;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class Mapeador {
     @Autowired
     RepositorioSocios repositorioSocios;
+    @Autowired
+    PasswordEncoder codificadorClaves;
 
     public DTOSocio dto(Socio socio) {
         return new DTOSocio(
@@ -38,7 +41,8 @@ public class Mapeador {
                 dtoSocio.apellidos(),
                 dtoSocio.email(),
                 dtoSocio.tlf(),
-                dtoSocio.clave()); //TODO: Encriptar clave
+                codificadorClaves.encode(dtoSocio.clave()));
+                //                dtoSocio.clave()); //TODO: Encriptar clave
     }
 
     public DTOActividad dto(Actividad actividad) {

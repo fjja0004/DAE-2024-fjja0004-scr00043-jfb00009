@@ -7,9 +7,9 @@ import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
 import es.ujaen.dae.clubsocios.rest.dto.DTOActividad;
 import es.ujaen.dae.clubsocios.rest.dto.DTOSocio;
+import es.ujaen.dae.clubsocios.rest.dto.DTOTemporada;
 import es.ujaen.dae.clubsocios.rest.dto.Mapeador;
 import es.ujaen.dae.clubsocios.servicios.ServicioClub;
-import jakarta.annotation.PostConstruct;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,12 +27,12 @@ public class ControladorClub {
     @Autowired
     ServicioClub servicioClub;
 
-    Socio admin;
+    //Socio admin;
 
-    @PostConstruct
+   /* @PostConstruct
     void loginDireccion() {
         admin = servicioClub.login("admin@club.com", "admin");
-    }
+    }*/
 
     //Mapeado global de excepciones de validación de beans
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -62,7 +62,7 @@ public class ControladorClub {
 
     @PostMapping("/actividades")
     public ResponseEntity<Void> nuevaActividad(@RequestBody DTOActividad actividad) {
-        servicioClub.crearActividad(admin, mapeador.entidadNueva(actividad));
+        servicioClub.crearActividad(mapeador.entidadNueva(actividad));
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -73,6 +73,7 @@ public class ControladorClub {
         return ResponseEntity.ok(actividades.stream().map(a -> mapeador.dto(a)).toList());
     }
 
+    //TODO NUEVA SOLICITUD HAY QUE CORREGIRLA
     @PostMapping("/solicitudes")
     public ResponseEntity<Void> nuevaSolicitud(@RequestBody DTOSocio socio, @RequestBody DTOActividad actividad, @RequestParam int nAcompanantes) {
         try {
@@ -83,4 +84,13 @@ public class ControladorClub {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+
+    @PostMapping ("/temporadas")
+    public ResponseEntity<DTOTemporada> nuevaTemporada() {
+        servicioClub.crearNuevaTemporada();
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+
+
+    }
 }
