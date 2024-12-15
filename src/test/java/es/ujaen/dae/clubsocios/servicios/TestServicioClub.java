@@ -75,7 +75,7 @@ public class TestServicioClub {
         Socio admin = servicioClub.login("admin@club.com", "admin");
 
         //Comprobamos que no se pueda añadir un socio igual al administrador.
-        assertThatThrownBy(() -> servicioClub.crearSocio(admin)).isInstanceOf(SocioNoValido.class);
+        assertThatThrownBy(() -> servicioClub.crearSocio(admin)).isInstanceOf(SocioYaRegistrado.class);
 
         //Comprobamos que no se pueda añadir un socio igual al otro usuario ya registrado.
         Socio socioRepetido = servicioClub.login("socio_prueba@club.com", "password123");
