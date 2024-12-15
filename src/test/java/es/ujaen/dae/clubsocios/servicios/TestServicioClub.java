@@ -131,11 +131,16 @@ public class TestServicioClub {
     void testCrearNuevaTemporada() {
         //Verificamos que no se cree una nueva temporada si ya existe.
         int numeroTemporadas = servicioClub.buscarTodasTemporadas().size();
-        servicioClub.crearNuevaTemporada();
+        servicioClub.crearTemporadaProgramada();
         assertEquals(numeroTemporadas, servicioClub.buscarTodasTemporadas().size());
 
         //Verificamos que se ha creado la temporada del año actual.
         assertEquals(LocalDate.now().getYear(), servicioClub.buscarTemporadaPorAnio(LocalDate.now().getYear()).get().getAnio());
+
+        //Verificamos que se ha creado la temporada del año siguiente.
+        int anioSiguiente = LocalDate.now().getYear() + 1;
+        servicioClub.crearTemporada(anioSiguiente);
+        assertEquals(anioSiguiente, servicioClub.buscarTemporadaPorAnio(anioSiguiente).get().getAnio());
     }
 
     @Test
