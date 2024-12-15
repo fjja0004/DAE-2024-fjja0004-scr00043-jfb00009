@@ -14,6 +14,7 @@ import es.ujaen.dae.clubsocios.repositorios.RepositorioTemporadas;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
@@ -83,7 +84,6 @@ public class ServicioClub {
      *
      * @param email email del socio que se busca. Debe ser un email válido y no nulo.
      * @return un Optional con el socio si existe.
-     * @throws SocioNoValido si el socio no existe.
      */
     public Optional<Socio> buscarSocio(@NotNull @Email String email) {
         if (email.equals(admin.getEmail()))
@@ -100,7 +100,7 @@ public class ServicioClub {
      */
     public void crearSocio(@Valid Socio socio) {
         if (esAdmin(socio)) {
-            throw new SocioNoValido();
+            throw new SocioYaRegistrado();
         }
         repositorioSocios.guardar(socio);
     }

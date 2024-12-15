@@ -41,11 +41,15 @@ public class Actividad {
      * @brief Constructor por defecto de la clase Actividad
      */
     public Actividad() {
+        this.id = 0;
         this.titulo = "";
         this.descripcion = "";
         this.precio = 0;
         this.plazas = 0;
         this.plazasOcupadas = 0;
+        this.fechaInicioInscripcion = null;
+        this.fechaFinInscripcion = null;
+        this.fechaCelebracion = null;
         this.solicitudes = new LinkedList<>();
     }
 
