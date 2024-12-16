@@ -60,16 +60,6 @@ public class ControladorClub {
         }
     }
 
-//    @GetMapping("/socios/{email}")
-//    public ResponseEntity<DTOSocio> obtenerSocio(@PathVariable String email) {
-//        try {
-//            Socio socio = servicioClub.buscarSocio(email).orElseThrow(SocioNoValido::new);
-//            return ResponseEntity.ok(mapeador.dto(socio));
-//        } catch (SocioNoValido e) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//    }
-
     @PostMapping("/temporadas")
     public ResponseEntity<Void> nuevaTemporada(@RequestBody DTOTemporada temporada) {
         servicioClub.crearTemporada(temporada.anio());
@@ -104,11 +94,4 @@ public class ControladorClub {
         }
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
-
-    //TODO: debe pasarse el año de la temporada a crear
-//    @PostMapping("/temporadas")
-//    public ResponseEntity<DTOTemporada> nuevaTemporada() {
-//        servicioClub.crearNuevaTemporada();
-//        return ResponseEntity.status(HttpStatus.CREATED).build();
-//    }
 }
