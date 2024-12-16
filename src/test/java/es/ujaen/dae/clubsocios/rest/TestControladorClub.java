@@ -2,6 +2,7 @@ package es.ujaen.dae.clubsocios.rest;
 
 import es.ujaen.dae.clubsocios.rest.dto.DTOActividad;
 import es.ujaen.dae.clubsocios.rest.dto.DTOSocio;
+import es.ujaen.dae.clubsocios.rest.dto.DTOTemporada;
 import jakarta.annotation.PostConstruct;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -83,6 +84,39 @@ public class TestControladorClub {
 
     @Test
     @DirtiesContext
+    void testNuevaTemporada() {
+        var temporada = new DTOTemporada(LocalDate.now().getYear() + 1);
+
+        //Login como administador
+        var respuestaLogin = restTemplate.getForEntity("/socios/{email}?clave={clave}",
+                DTOSocio.class,
+                "admin@club.com", "admin");
+        assertThat(respuestaLogin.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        //Creación de una nueva temporada
+        var respuesta = restTemplate.postForEntity("/temporadas", temporada, DTOTemporada.class);
+        assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    @DirtiesContext
+    void testObtenerTemporadas() {
+        var temporada1 = new DTOTemporada(LocalDate.now().getYear() + 1);
+        var temporada2 = new DTOTemporada(LocalDate.now().getYear() + 2);
+
+        var respuesta = restTemplate.postForEntity("/temporadas", temporada1, DTOTemporada.class);
+        assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        respuesta = restTemplate.postForEntity("/temporadas", temporada2, DTOTemporada.class);
+        assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        var respuestaConsulta = restTemplate.getForEntity("/temporadas", DTOTemporada[].class);
+        assertThat(respuestaConsulta.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(respuestaConsulta.getBody()).hasSize(3);
+        assertThat(respuestaConsulta.getBody()[0].anio()).isEqualTo(LocalDate.now().getYear());
+    }
+
+    @Test
+    @DirtiesContext
     void testNuevaActividad() {
         var actividad = new DTOActividad(0, "Actividad de prueba", "Actividad de prueba", 10,
                 10, 0, LocalDate.now(), LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
@@ -96,7 +130,6 @@ public class TestControladorClub {
         assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 
-
     @Test
     @DirtiesContext
     void testBuscarActividadesPorTemporada() {
@@ -105,12 +138,6 @@ public class TestControladorClub {
 
         var actividad2 = new DTOActividad(0, "Segunda actividad", "Actividad de prueba", 20,
                 20, 0, LocalDate.now(), LocalDate.now().plusDays(5), LocalDate.now().plusDays(7));
-
-        //Login como administador
-        var respuestaLogin = restTemplate.getForEntity("/socios/{email}?clave={clave}",
-                DTOSocio.class,
-                "admin@club.com", "admin");
-        assertThat(respuestaLogin.getStatusCode()).isEqualTo(HttpStatus.OK);
 
         //Creación de actividades
         var respuesta = restTemplate.postForEntity("/actividades", actividad1, DTOActividad.class);
@@ -137,3 +164,4 @@ public class TestControladorClub {
 
     }
 }
+
