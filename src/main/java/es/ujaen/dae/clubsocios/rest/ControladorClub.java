@@ -7,6 +7,7 @@ import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
 import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
 import es.ujaen.dae.clubsocios.rest.dto.DTOActividad;
 import es.ujaen.dae.clubsocios.rest.dto.DTOSocio;
+import es.ujaen.dae.clubsocios.rest.dto.DTOTemporada;
 import es.ujaen.dae.clubsocios.rest.dto.Mapeador;
 import es.ujaen.dae.clubsocios.servicios.ServicioClub;
 import jakarta.annotation.PostConstruct;
@@ -69,6 +70,17 @@ public class ControladorClub {
 //            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 //        }
 //    }
+
+    @PostMapping("/temporadas")
+    public ResponseEntity<Void> nuevaTemporada(@RequestBody DTOTemporada temporada) {
+        servicioClub.crearTemporada(temporada.anio());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/temporadas")
+    public ResponseEntity<List<DTOTemporada>> obtenerTemporadas() {
+        return ResponseEntity.ok(servicioClub.buscarTodasTemporadas().stream().map(t -> new DTOTemporada(t.getAnio())).toList());
+    }
 
     @PostMapping("/actividades")
     public ResponseEntity<Void> nuevaActividad(@RequestBody DTOActividad actividad) {
