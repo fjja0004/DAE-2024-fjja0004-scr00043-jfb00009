@@ -79,7 +79,6 @@ public class ControladorClub {
         return ResponseEntity.ok(actividades.stream().map(a -> mapeador.dto(a)).toList());
     }
 
-    //TODO NUEVA SOLICITUD HAY QUE CORREGIRLA
     @PostMapping("/actividades/{id}/solicitudes")
     public ResponseEntity<DTOSolicitud> nuevaSolicitud(@PathVariable int id, @RequestBody DTOSolicitud solicitud) {
         try {
