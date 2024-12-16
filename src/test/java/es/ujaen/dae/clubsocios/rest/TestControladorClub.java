@@ -2,6 +2,7 @@ package es.ujaen.dae.clubsocios.rest;
 
 import es.ujaen.dae.clubsocios.rest.dto.DTOActividad;
 import es.ujaen.dae.clubsocios.rest.dto.DTOSocio;
+import es.ujaen.dae.clubsocios.rest.dto.DTOSolicitud;
 import es.ujaen.dae.clubsocios.rest.dto.DTOTemporada;
 import jakarta.annotation.PostConstruct;
 import org.junit.jupiter.api.Test;
@@ -147,11 +148,48 @@ public class TestControladorClub {
         assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         //Consulta de actividades. La lista de actividades debe tener tamaño igual a 2
-        var respuestaConsulta = restTemplate.getForEntity("/actividades?anio={anio}", DTOActividad[].class, LocalDate.now().getYear());
+        var respuestaConsulta = restTemplate.getForEntity(
+                "/actividades?anio={anio}",
+                DTOActividad[].class,
+                LocalDate.now().getYear());
         assertThat(respuestaConsulta.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(respuestaConsulta.getBody()).hasSize(2);
         assertThat(respuestaConsulta.getBody()[0].id()).isEqualTo(1);
 
+    }
+
+    @Test
+    @DirtiesContext
+    void testNuevaSolictud() {
+        var actividad = new DTOActividad(0, "Actividad de prueba", "Actividad de prueba", 10,
+                10, 0, LocalDate.now(), LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
+        var respuestaActividad = restTemplate.postForEntity(
+                "/actividades",
+                actividad,
+                DTOActividad.class);
+        assertThat(respuestaActividad.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        var socio = new DTOSocio("Socio", "Prueba", "socio@club.com", "621302025", "password123");
+        var respuestaSocio = restTemplate.postForEntity(
+                "/socios",
+                socio,
+                Void.class);
+        assertThat(respuestaSocio.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        var actividadGuardada = restTemplate.getForEntity(
+                "/actividades?anio={anio}",
+                DTOActividad[].class,
+                LocalDate.now().getYear()
+        ).getBody()[0];
+
+        var solicitud = new DTOSolicitud(0, 3, LocalDate.now(), 0, socio.email());
+        var respuestaSolicitud = restTemplate.postForEntity(
+                "/actividades/{id}/solicitudes",
+                solicitud,
+                DTOSolicitud.class,
+                actividadGuardada.id());
+
+        assertThat(respuestaSolicitud.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 }
 
