@@ -2,13 +2,8 @@ package es.ujaen.dae.clubsocios.rest;
 
 import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.entidades.Socio;
-import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
-import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
-import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
-import es.ujaen.dae.clubsocios.rest.dto.DTOActividad;
-import es.ujaen.dae.clubsocios.rest.dto.DTOSocio;
-import es.ujaen.dae.clubsocios.rest.dto.DTOTemporada;
-import es.ujaen.dae.clubsocios.rest.dto.Mapeador;
+import es.ujaen.dae.clubsocios.excepciones.*;
+import es.ujaen.dae.clubsocios.rest.dto.*;
 import es.ujaen.dae.clubsocios.servicios.ServicioClub;
 import jakarta.annotation.PostConstruct;
 import jakarta.validation.ConstraintViolationException;
@@ -95,14 +90,24 @@ public class ControladorClub {
         return ResponseEntity.ok(actividades.stream().map(a -> mapeador.dto(a)).toList());
     }
 
-    @PostMapping("/solicitudes")
-    public ResponseEntity<Void> nuevaSolicitud(@RequestBody DTOSocio socio, @RequestBody DTOActividad actividad, @RequestParam int nAcompanantes) {
+    @PostMapping("/actividades/{id}/solicitudes")
+    public ResponseEntity<DTOSolicitud> nuevaSolicitud(@PathVariable int id, @RequestBody DTOSolicitud solicitud) {
         try {
-            servicioClub.crearSolicitud(mapeador.entidad(socio), mapeador.entidad(actividad), nAcompanantes);
-        } catch (SolicitudYaRealizada e) {
+            Actividad actividad = servicioClub.buscarActividadPorId(id).orElseThrow(ActividadNoRegistrada::new);
+            Socio socio = servicioClub.buscarSocio(solicitud.emailSocio()).orElseThrow(SocioNoValido::new);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(mapeador.dto(servicioClub.crearSolicitud(
+                    socio,
+                    actividad,
+                    solicitud.nAcompanantes()
+            )));
+
+        } catch (SocioNoValido | ActividadNoRegistrada e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (SolicitudYaRealizada | InscripcionCerrada e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+
     }
 
 }
