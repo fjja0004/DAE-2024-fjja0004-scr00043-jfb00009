@@ -4,7 +4,6 @@ import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.entidades.Solicitud;
 import es.ujaen.dae.clubsocios.entidades.Temporada;
-import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
 import es.ujaen.dae.clubsocios.excepciones.OperacionDeDireccion;
 import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;

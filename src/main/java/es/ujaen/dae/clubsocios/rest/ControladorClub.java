@@ -6,6 +6,7 @@ import es.ujaen.dae.clubsocios.entidades.Solicitud;
 import es.ujaen.dae.clubsocios.excepciones.*;
 import es.ujaen.dae.clubsocios.rest.dto.*;
 import es.ujaen.dae.clubsocios.servicios.ServicioClub;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,12 +24,12 @@ public class ControladorClub {
     @Autowired
     ServicioClub servicioClub;
 
-    //Socio admin;
+    Socio admin;
 
-   /* @PostConstruct
+    @PostConstruct
     void loginDireccion() {
         admin = servicioClub.login("admin@club.com", "admin");
-    }*/
+    }
 
     //Mapeado global de excepciones de validación de beans
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
