@@ -2,6 +2,7 @@ package es.ujaen.dae.clubsocios.rest;
 
 import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.entidades.Socio;
+import es.ujaen.dae.clubsocios.entidades.Solicitud;
 import es.ujaen.dae.clubsocios.excepciones.*;
 import es.ujaen.dae.clubsocios.rest.dto.*;
 import es.ujaen.dae.clubsocios.servicios.ServicioClub;
@@ -96,6 +97,23 @@ public class ControladorClub {
         } catch (SolicitudYaRealizada | InscripcionCerrada e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
+    }
 
+    @PutMapping("/actividades/{id}/solicitudes/{idSolicitud}")
+    public ResponseEntity<DTOSolicitud> modificarAcompanantes(@PathVariable int id, @RequestBody DTOSolicitud solicitud) {
+        try {
+            Actividad actividad = servicioClub.buscarActividadPorId(id).orElseThrow(ActividadNoRegistrada::new);
+            Solicitud solicitud_ent = mapeador.entidad(solicitud);
+
+            return ResponseEntity.status(HttpStatus.OK).body(mapeador.dto(servicioClub.modificarSolicitud(
+                    actividad,
+                    solicitud_ent,
+                    solicitud.nAcompanantes()
+            )));
+        } catch (SolicitudNoExistente e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (InscripcionCerrada e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 }
