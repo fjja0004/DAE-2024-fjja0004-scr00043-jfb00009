@@ -131,4 +131,14 @@ public class ControladorClub {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
     }
+
+    @GetMapping("/actividades/{id}/solicitudes")
+    public ResponseEntity<List<DTOSolicitud>> obtenerSolicitudesActividad(@PathVariable int id) {
+        try {
+            Actividad actividad = servicioClub.buscarActividadPorId(id).orElseThrow(ActividadNoRegistrada::new);
+            return ResponseEntity.ok(servicioClub.buscarSolicitudesDeActividad(admin, actividad).stream().map(s -> mapeador.dto(s)).toList());
+        } catch (ActividadNoRegistrada e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
 }
