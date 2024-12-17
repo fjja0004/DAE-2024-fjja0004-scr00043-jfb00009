@@ -97,7 +97,7 @@ public class Mapeador {
                 solicitud.getSocio().getEmail());
     }
 
-    public Solicitud entidadSolicitud(DTOSolicitud dtosolicitud) {
+    public Solicitud entidad(DTOSolicitud dtosolicitud) {
         Socio socio = repositorioSocios.buscar(dtosolicitud.emailSocio()).orElseThrow(SocioNoValido::new);
 
         return new Solicitud(

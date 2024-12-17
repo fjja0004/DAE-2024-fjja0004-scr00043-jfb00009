@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
@@ -188,6 +190,57 @@ public class TestControladorClub {
                 actividadGuardada.id());
 
         assertThat(respuestaSolicitud.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+    }
+
+    @Test
+    @DirtiesContext
+    void testModificarAcompanantes() {
+        var actividad = new DTOActividad(0, "Actividad de prueba", "Actividad de prueba", 10,
+                10, 0, LocalDate.now(), LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
+        var respuestaActividad = restTemplate.postForEntity(
+                "/actividades",
+                actividad,
+                DTOActividad.class);
+        assertThat(respuestaActividad.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        var socio = new DTOSocio("Socio", "Prueba", "socio@club.com", "621302025", "password123");
+        var respuestaSocio = restTemplate.postForEntity(
+                "/socios",
+                socio,
+                Void.class);
+        assertThat(respuestaSocio.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        var actividadGuardada = restTemplate.getForEntity(
+                "/actividades?anio={anio}",
+                DTOActividad[].class,
+                LocalDate.now().getYear()
+        ).getBody()[0];
+
+        var solicitud = new DTOSolicitud(0, 3, LocalDate.now(), 0, socio.email());
+        var respuestaSolicitud = restTemplate.postForEntity(
+                "/actividades/{id}/solicitudes",
+                solicitud,
+                DTOSolicitud.class,
+                actividadGuardada.id());
+        assertThat(respuestaSolicitud.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        var solicitudGuardada = respuestaSolicitud.getBody();
+        var solicitudModificada = new DTOSolicitud(
+                solicitudGuardada.id(),
+                5,
+                solicitudGuardada.fecha(),
+                solicitudGuardada.plazasAceptadas(),
+                solicitudGuardada.emailSocio());
+        var respuestaModificacion = restTemplate.exchange(
+                "/actividades/{id}/solicitudes/{idSolicitud}",
+                HttpMethod.PUT,
+                new HttpEntity<>(solicitudModificada),
+                DTOSolicitud.class,
+                actividadGuardada.id(),
+                solicitudGuardada.id());
+        
+        assertThat(respuestaModificacion.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(respuestaModificacion.getBody().nAcompanantes()).isEqualTo(5);
     }
 }
 

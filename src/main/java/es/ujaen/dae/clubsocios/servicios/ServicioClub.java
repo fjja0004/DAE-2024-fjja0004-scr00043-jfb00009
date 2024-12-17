@@ -264,7 +264,6 @@ public class ServicioClub {
      * @param actividad     Actividad a la que se va a modificar el número de acompañantes
      * @param solicitud     Solicitud que se va a modificar
      * @param nAcompanantes número entero de acompañantes
-     * @throws NoHayActividades excepcion que se lanza en caso de que la actividad no exista
      * @brief modifica el número de acompañantes que tendrá un socio
      */
     @Transactional
