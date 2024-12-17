@@ -137,9 +137,10 @@ public class ServicioClub {
 
     /**
      * Crea una nueva temporada con el año dado.
+     *
      * @param anio año de la temporada
      */
-    public void crearTemporada(int anio){
+    public void crearTemporada(int anio) {
         repositorioTemporadas.crearTemporada(anio);
     }
 
@@ -246,6 +247,12 @@ public class ServicioClub {
             throw new OperacionDeDireccion();
         actividad = repositorioActividades.buscarPorId(actividad.getId()).get();
         return actividad.getSolicitudes();
+    }
+
+    @Transactional
+    public Optional<Solicitud> buscarSolicitudPorId(int idActividad, int idSolicitud) {
+        Actividad actividad = repositorioActividades.buscarPorId(idActividad).get();
+        return actividad.buscarSolicitudPorId(idSolicitud);
     }
 
     /**

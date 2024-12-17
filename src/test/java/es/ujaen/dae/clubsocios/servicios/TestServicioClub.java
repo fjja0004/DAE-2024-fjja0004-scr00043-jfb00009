@@ -360,6 +360,24 @@ public class TestServicioClub {
 
     @Test
     @DirtiesContext
+    void testBuscarSolicitudPorId() {
+        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
+
+        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now(), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        servicioClub.crearActividad(admin, actividad);
+
+        //Comprobamos que devuelva la solicitud si existe.
+        servicioClub.marcarCuotaPagada(admin, socio);
+        Solicitud solicitud = servicioClub.crearSolicitud(socio, actividad, 3);
+        assertEquals(1, servicioClub.buscarSolicitudPorId(actividad.getId(), solicitud.getId()).get().getId());
+    }
+
+    @Test
+    @DirtiesContext
     void testCancelarSolicitud() {
         Socio admin = servicioClub.login("admin@club.com", "admin");
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");

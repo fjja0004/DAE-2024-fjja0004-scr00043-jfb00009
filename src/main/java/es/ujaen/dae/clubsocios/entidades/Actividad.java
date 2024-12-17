@@ -113,6 +113,24 @@ public class Actividad {
     }
 
     /**
+     * @param id id de la solicitud
+     * @return solicitud de inscripción a la actividad
+     * @brief Busca una solicitud de inscripción a la actividad
+     */
+    public Optional<Solicitud> buscarSolicitudPorId(int id) {
+
+        if (solicitudes.isEmpty()) {
+            return Optional.empty();
+        }
+        for (Solicitud solicitud : solicitudes) {
+            if (solicitud.getId() == id) {
+                return Optional.of(solicitud);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
      * @param solicitud solicitud a añadir
      * @brief Crea una solicitud de inscripción a la actividad
      */
