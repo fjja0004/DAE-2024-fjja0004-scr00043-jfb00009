@@ -244,5 +244,49 @@ public class TestControladorClub {
         assertThat(respuestaModificacion.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(respuestaModificacion.getBody().nAcompanantes()).isEqualTo(5);
     }
+
+    @Test
+    @DirtiesContext
+    void testEliminarSolicitud() {
+        var actividad = new DTOActividad(0, "Actividad de prueba", "Actividad de prueba", 10,
+                10, 0, LocalDate.now(), LocalDate.now().plusDays(7), LocalDate.now().plusDays(10));
+        var respuestaActividad = restTemplate.postForEntity(
+                "/actividades",
+                actividad,
+                DTOActividad.class);
+        assertThat(respuestaActividad.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        var socio = new DTOSocio("Socio", "Prueba", "socio@club.com", "621302025", "password123");
+        var respuestaSocio = restTemplate.postForEntity(
+                "/socios",
+                socio,
+                Void.class);
+        assertThat(respuestaSocio.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        var actividadGuardada = restTemplate.getForEntity(
+                "/actividades?anio={anio}",
+                DTOActividad[].class,
+                LocalDate.now().getYear()
+        ).getBody()[0];
+
+        var solicitud = new DTOSolicitud(0, 3, LocalDate.now(), 0, socio.email());
+        var respuestaSolicitud = restTemplate.postForEntity(
+                "/actividades/{id}/solicitudes",
+                solicitud,
+                DTOSolicitud.class,
+                actividadGuardada.id());
+        assertThat(respuestaSolicitud.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        var solicitudGuardada = respuestaSolicitud.getBody();
+        var respuestaEliminacion = restTemplate.exchange(
+                "/actividades/{id}/solicitudes/{idSolicitud}",
+                HttpMethod.DELETE,
+                null,
+                Void.class,
+                actividadGuardada.id(),
+                solicitudGuardada.id());
+
+        assertThat(respuestaEliminacion.getStatusCode()).isEqualTo(HttpStatus.OK);
+    }
 }
 

@@ -103,14 +103,28 @@ public class ControladorClub {
     public ResponseEntity<DTOSolicitud> modificarAcompanantes(@PathVariable int id, @RequestBody DTOSolicitud solicitud) {
         try {
             Actividad actividad = servicioClub.buscarActividadPorId(id).orElseThrow(ActividadNoRegistrada::new);
-            Solicitud solicitud_ent = mapeador.entidad(solicitud);
+            Solicitud solicitudEnt = mapeador.entidad(solicitud);
 
             return ResponseEntity.status(HttpStatus.OK).body(mapeador.dto(servicioClub.modificarSolicitud(
                     actividad,
-                    solicitud_ent,
+                    solicitudEnt,
                     solicitud.nAcompanantes()
             )));
-        } catch (SolicitudNoExistente e) {
+        } catch (SolicitudNoExistente | ActividadNoRegistrada e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (InscripcionCerrada e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
+
+    @DeleteMapping("/actividades/{id}/solicitudes/{idSolicitud}")
+    public ResponseEntity<Void> eliminarSolicitud(@PathVariable int id, @PathVariable int idSolicitud) {
+        try {
+            Actividad actividad = servicioClub.buscarActividadPorId(id).orElseThrow(ActividadNoRegistrada::new);
+            Solicitud solicitudEnt = servicioClub.buscarSolicitudPorId(id, idSolicitud).orElseThrow(SolicitudNoExistente::new);
+            servicioClub.cancelarSolicitud(actividad, solicitudEnt);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (ActividadNoRegistrada | SolicitudNoExistente e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (InscripcionCerrada e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
