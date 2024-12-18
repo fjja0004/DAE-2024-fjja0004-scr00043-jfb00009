@@ -38,7 +38,7 @@ public class ServicioClub {
     RepositorioTemporadas repositorioTemporadas;
 
     // Socio especial que representa al administrador del club
-    private static final Socio admin = new Socio("administrador", "-", "admin@club.com", "666666666", "admin");
+    private static final Socio admin = new Socio("administrador", "-", "admin@club.com", "666666666", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
 
     /**
      * @brief constructor por defecto de la clase ServicioClub

@@ -42,7 +42,6 @@ public class Mapeador {
                 dtoSocio.email(),
                 dtoSocio.tlf(),
                 codificadorClaves.encode(dtoSocio.clave()));
-                //                dtoSocio.clave()); //TODO: encriptar clave
     }
 
     public DTOActividad dtoActividad(Actividad actividad) {

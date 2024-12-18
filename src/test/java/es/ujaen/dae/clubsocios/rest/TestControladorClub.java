@@ -1,11 +1,9 @@
 package es.ujaen.dae.clubsocios.rest;
 
-import es.ujaen.dae.clubsocios.rest.dto.DTOActividad;
-import es.ujaen.dae.clubsocios.rest.dto.DTOSocio;
-import es.ujaen.dae.clubsocios.rest.dto.DTOSolicitud;
-import es.ujaen.dae.clubsocios.rest.dto.DTOTemporada;
+import es.ujaen.dae.clubsocios.rest.dto.*;
 import jakarta.annotation.PostConstruct;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -28,6 +26,8 @@ public class TestControladorClub {
     int localPort;
 
     TestRestTemplate restTemplate;
+    @Autowired
+    private Mapeador mapeador;
 
     /*
      * Crear el RestTemplateBuilder para poder hacer las peticiones al servidor
@@ -63,6 +63,7 @@ public class TestControladorClub {
     void testLoginSocio() {
         //Creo el socio con el que voy a hacer login
         DTOSocio socio = new DTOSocio("Socio", "Prueba", "socio@club.com", "621302025", "password123");
+        var nuevoSocio = mapeador.entidadNueva(socio);
         var respuesta = restTemplate.postForEntity("/socios", socio, Void.class);
         assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
