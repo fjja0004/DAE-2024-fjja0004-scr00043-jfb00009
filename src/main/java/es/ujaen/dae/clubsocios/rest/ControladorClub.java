@@ -1,14 +1,11 @@
 package es.ujaen.dae.clubsocios.rest;
 
-import es.ujaen.dae.clubsocios.entidades.Actividad;
-import es.ujaen.dae.clubsocios.entidades.Socio;
-import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
-import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
-import es.ujaen.dae.clubsocios.excepciones.SolicitudYaRealizada;
 import es.ujaen.dae.clubsocios.rest.dto.DTOActividad;
 import es.ujaen.dae.clubsocios.rest.dto.DTOSocio;
 import es.ujaen.dae.clubsocios.rest.dto.DTOTemporada;
 import es.ujaen.dae.clubsocios.rest.dto.Mapeador;
+import es.ujaen.dae.clubsocios.entidades.Actividad;
+import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.entidades.Solicitud;
 import es.ujaen.dae.clubsocios.excepciones.*;
 import es.ujaen.dae.clubsocios.rest.dto.*;

@@ -4,7 +4,6 @@ import es.ujaen.dae.clubsocios.entidades.Actividad;
 import es.ujaen.dae.clubsocios.entidades.Socio;
 import es.ujaen.dae.clubsocios.entidades.Solicitud;
 import es.ujaen.dae.clubsocios.entidades.Temporada;
-import es.ujaen.dae.clubsocios.excepciones.NoHayActividades;
 import es.ujaen.dae.clubsocios.excepciones.OperacionDeDireccion;
 import es.ujaen.dae.clubsocios.excepciones.SocioNoValido;
 import es.ujaen.dae.clubsocios.excepciones.SocioYaRegistrado;
@@ -148,7 +147,7 @@ public class ServicioClub {
      * @brief Crea una nueva temporada al inicio de cada año
      */
     @Scheduled(cron = "0 0 0 1 1 ?")
-    void crearTemporadaProgramada() {
+    public void crearTemporadaProgramada() {
         int anio = LocalDate.now().getYear();
         repositorioTemporadas.crearTemporada(anio);
         repositorioSocios.marcarTodasCuotasNoPagadas();
