@@ -99,6 +99,11 @@ public class TestControladorClub {
         //Creación de una nueva temporada
         var respuesta = restTemplate.postForEntity("/temporadas", temporada, DTOTemporada.class);
         assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+
+        //prueba con socio erroneo
+        DTOSocio socio=new DTOSocio("socio","apellidos", "email@gmail.com", "tlf", "clave");
+        var respuesta1 = restTemplate.withBasicAuth(socio.email(), socio.clave()).postForEntity("/temporadas", null, Void.class);
+        assertThat(respuesta1.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
     }
 
     @Test
@@ -157,16 +162,6 @@ public class TestControladorClub {
         assertThat(respuestaConsulta.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(respuestaConsulta.getBody()).hasSize(2);
         assertThat(respuestaConsulta.getBody()[0].id()).isEqualTo(1);
-
-    }
-    @Test
-    @DirtiesContext
-    public void testNuevaTemporada() {
-
-        //prueba con socio erroneo
-        DTOSocio socio=new DTOSocio("socio","apellidos", "email@gmail.com", "tlf", "clave");
-        var respuesta = restTemplate.withBasicAuth(socio.email(), socio.clave()).postForEntity("/temporadas", null, Void.class);
-        assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
 
     }
 
