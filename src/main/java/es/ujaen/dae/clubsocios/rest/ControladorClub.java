@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -58,7 +59,7 @@ public class ControladorClub {
     public ResponseEntity<DTOSocio> obtenerSocio(@PathVariable String email) {
         try {
             Socio socio = servicioClub.buscarSocio(email).orElseThrow(SocioNoValido::new);
-            return ResponseEntity.ok(mapeador.dtoSocio(socio));
+            return ResponseEntity.ok(mapeador.dto(socio));
         } catch (SocioNoValido e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -86,7 +87,6 @@ public class ControladorClub {
         List<Actividad> actividades;
         actividades = servicioClub.buscarActividadesTemporada(anio);
         return ResponseEntity.ok(actividades.stream().map(a -> mapeador.dtoActividad(a)).toList());
-        return ResponseEntity.ok(actividades.stream().map(a -> mapeador.dto(a)).toList());
     }
 
     @PostMapping("/actividades/{id}/solicitudes")
@@ -129,7 +129,7 @@ public class ControladorClub {
 
     @PostMapping ("/temporadas")
     public ResponseEntity<DTOTemporada> nuevaTemporada() {
-        servicioClub.crearNuevaTemporada();
+        servicioClub.crearTemporada(LocalDate.now().getYear());
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
 
