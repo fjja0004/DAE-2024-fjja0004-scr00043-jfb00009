@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,7 +85,6 @@ public class ServicioClub {
      *
      * @param email email del socio que se busca. Debe ser un email válido y no nulo.
      * @return un Optional con el socio si existe.
-     * @throws SocioNoValido si el socio no existe.
      */
     public Optional<Socio> buscarSocio(@NotNull @Email String email) {
         if (email.equals(admin.getEmail()))
@@ -101,7 +101,7 @@ public class ServicioClub {
      */
     public void crearSocio(@Valid Socio socio) {
         if (esAdmin(socio)) {
-            throw new SocioNoValido();
+            throw new SocioYaRegistrado();
         }
         repositorioSocios.guardar(socio);
     }
@@ -132,15 +132,25 @@ public class ServicioClub {
      */
     @PostConstruct
     void crearTemporadaInicial() {
-        crearNuevaTemporada();
+        crearTemporadaProgramada();
+    }
+
+    /**
+     * Crea una nueva temporada con el año dado.
+     *
+     * @param anio año de la temporada
+     */
+    public void crearTemporada(int anio) {
+        repositorioTemporadas.crearTemporada(anio);
     }
 
     /**
      * @brief Crea una nueva temporada al inicio de cada año
      */
     @Scheduled(cron = "0 0 0 1 1 ?")
-    public void crearNuevaTemporada() {
-        repositorioTemporadas.crearTemporada();
+    void crearTemporadaProgramada() {
+        int anio = LocalDate.now().getYear();
+        repositorioTemporadas.crearTemporada(anio);
         repositorioSocios.marcarTodasCuotasNoPagadas();
     }
 
@@ -237,6 +247,12 @@ public class ServicioClub {
         return actividad.getSolicitudes();
     }
 
+    @Transactional
+    public Optional<Solicitud> buscarSolicitudPorId(int idActividad, int idSolicitud) {
+        Actividad actividad = repositorioActividades.buscarPorId(idActividad).get();
+        return actividad.buscarSolicitudPorId(idSolicitud);
+    }
+
     /**
      * @param actividad actividad de la que se va a cancelar la solicitud
      * @param solicitud Solicitud que se desea cancelar
@@ -253,7 +269,6 @@ public class ServicioClub {
      * @param actividad     Actividad a la que se va a modificar el número de acompañantes
      * @param solicitud     Solicitud que se va a modificar
      * @param nAcompanantes número entero de acompañantes
-     * @throws NoHayActividades excepcion que se lanza en caso de que la actividad no exista
      * @brief modifica el número de acompañantes que tendrá un socio
      */
     @Transactional

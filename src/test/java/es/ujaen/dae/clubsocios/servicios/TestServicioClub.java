@@ -75,7 +75,7 @@ public class TestServicioClub {
         Socio admin = servicioClub.login("admin@club.com", "admin");
 
         //Comprobamos que no se pueda añadir un socio igual al administrador.
-        assertThatThrownBy(() -> servicioClub.crearSocio(admin)).isInstanceOf(SocioNoValido.class);
+        assertThatThrownBy(() -> servicioClub.crearSocio(admin)).isInstanceOf(SocioYaRegistrado.class);
 
         //Comprobamos que no se pueda añadir un socio igual al otro usuario ya registrado.
         Socio socioRepetido = servicioClub.login("socio_prueba@club.com", "password123");
@@ -131,11 +131,16 @@ public class TestServicioClub {
     void testCrearNuevaTemporada() {
         //Verificamos que no se cree una nueva temporada si ya existe.
         int numeroTemporadas = servicioClub.buscarTodasTemporadas().size();
-        servicioClub.crearNuevaTemporada();
+        servicioClub.crearTemporadaProgramada();
         assertEquals(numeroTemporadas, servicioClub.buscarTodasTemporadas().size());
 
         //Verificamos que se ha creado la temporada del año actual.
         assertEquals(LocalDate.now().getYear(), servicioClub.buscarTemporadaPorAnio(LocalDate.now().getYear()).get().getAnio());
+
+        //Verificamos que se ha creado la temporada del año siguiente.
+        int anioSiguiente = LocalDate.now().getYear() + 1;
+        servicioClub.crearTemporada(anioSiguiente);
+        assertEquals(anioSiguiente, servicioClub.buscarTemporadaPorAnio(anioSiguiente).get().getAnio());
     }
 
     @Test
@@ -349,6 +354,24 @@ public class TestServicioClub {
         servicioClub.marcarCuotaPagada(admin, socio);
         servicioClub.crearSolicitud(socio, actividad, 3);
         assertEquals(1, servicioClub.buscarSolicitudesDeActividad(admin, actividad).size());
+    }
+
+    @Test
+    @DirtiesContext
+    void testBuscarSolicitudPorId() {
+        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
+
+        Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
+                10, LocalDate.now(), LocalDate.now().plusDays(7),
+                LocalDate.now().plusDays(10));
+
+        servicioClub.crearActividad(admin, actividad);
+
+        //Comprobamos que devuelva la solicitud si existe.
+        servicioClub.marcarCuotaPagada(admin, socio);
+        Solicitud solicitud = servicioClub.crearSolicitud(socio, actividad, 3);
+        assertEquals(1, servicioClub.buscarSolicitudPorId(actividad.getId(), solicitud.getId()).get().getId());
     }
 
     @Test

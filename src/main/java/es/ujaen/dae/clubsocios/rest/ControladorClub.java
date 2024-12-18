@@ -9,7 +9,11 @@ import es.ujaen.dae.clubsocios.rest.dto.DTOActividad;
 import es.ujaen.dae.clubsocios.rest.dto.DTOSocio;
 import es.ujaen.dae.clubsocios.rest.dto.DTOTemporada;
 import es.ujaen.dae.clubsocios.rest.dto.Mapeador;
+import es.ujaen.dae.clubsocios.entidades.Solicitud;
+import es.ujaen.dae.clubsocios.excepciones.*;
+import es.ujaen.dae.clubsocios.rest.dto.*;
 import es.ujaen.dae.clubsocios.servicios.ServicioClub;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,12 +31,12 @@ public class ControladorClub {
     @Autowired
     ServicioClub servicioClub;
 
-    //Socio admin;
+    Socio admin;
 
-   /* @PostConstruct
+    @PostConstruct
     void loginDireccion() {
         admin = servicioClub.login("admin@club.com", "admin");
-    }*/
+    }
 
     //Mapeado global de excepciones de validación de beans
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
@@ -48,7 +52,6 @@ public class ControladorClub {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
         return ResponseEntity.status(HttpStatus.CREATED).build();
-
     }
 
     @GetMapping("/socios/{email}")
@@ -59,6 +62,17 @@ public class ControladorClub {
         } catch (SocioNoValido e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+
+    @PostMapping("/temporadas")
+    public ResponseEntity<Void> nuevaTemporada(@RequestBody DTOTemporada temporada) {
+        servicioClub.crearTemporada(temporada.anio());
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @GetMapping("/temporadas")
+    public ResponseEntity<List<DTOTemporada>> obtenerTemporadas() {
+        return ResponseEntity.ok(servicioClub.buscarTodasTemporadas().stream().map(t -> new DTOTemporada(t.getAnio())).toList());
     }
 
     @PostMapping("/actividades")
@@ -72,17 +86,44 @@ public class ControladorClub {
         List<Actividad> actividades;
         actividades = servicioClub.buscarActividadesTemporada(anio);
         return ResponseEntity.ok(actividades.stream().map(a -> mapeador.dtoActividad(a)).toList());
+        return ResponseEntity.ok(actividades.stream().map(a -> mapeador.dto(a)).toList());
     }
 
-    //TODO NUEVA SOLICITUD HAY QUE CORREGIRLA
-    @PostMapping("/solicitudes")
-    public ResponseEntity<Void> nuevaSolicitud(@RequestBody DTOSocio socio, @RequestBody DTOActividad actividad, @RequestParam int nAcompanantes) {
+    @PostMapping("/actividades/{id}/solicitudes")
+    public ResponseEntity<DTOSolicitud> nuevaSolicitud(@PathVariable int id, @RequestBody DTOSolicitud solicitud) {
         try {
-            servicioClub.crearSolicitud(mapeador.entidadSocio(socio), mapeador.entidadActividad(actividad), nAcompanantes);
-        } catch (SolicitudYaRealizada e) {
+            Actividad actividad = servicioClub.buscarActividadPorId(id).orElseThrow(ActividadNoRegistrada::new);
+            Socio socio = servicioClub.buscarSocio(solicitud.emailSocio()).orElseThrow(SocioNoValido::new);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(mapeador.dto(servicioClub.crearSolicitud(
+                    socio,
+                    actividad,
+                    solicitud.nAcompanantes()
+            )));
+
+        } catch (SocioNoValido | ActividadNoRegistrada e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (SolicitudYaRealizada | InscripcionCerrada e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PutMapping("/actividades/{id}/solicitudes/{idSolicitud}")
+    public ResponseEntity<DTOSolicitud> modificarAcompanantes(@PathVariable int id, @RequestBody DTOSolicitud solicitud) {
+        try {
+            Actividad actividad = servicioClub.buscarActividadPorId(id).orElseThrow(ActividadNoRegistrada::new);
+            Solicitud solicitudEnt = mapeador.entidad(solicitud);
+
+            return ResponseEntity.status(HttpStatus.OK).body(mapeador.dto(servicioClub.modificarSolicitud(
+                    actividad,
+                    solicitudEnt,
+                    solicitud.nAcompanantes()
+            )));
+        } catch (SolicitudNoExistente | ActividadNoRegistrada e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (InscripcionCerrada e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 
 
@@ -93,5 +134,28 @@ public class ControladorClub {
         return ResponseEntity.status(HttpStatus.CREATED).build();
 
 
+    }
+    @DeleteMapping("/actividades/{id}/solicitudes/{idSolicitud}")
+    public ResponseEntity<Void> eliminarSolicitud(@PathVariable int id, @PathVariable int idSolicitud) {
+        try {
+            Actividad actividad = servicioClub.buscarActividadPorId(id).orElseThrow(ActividadNoRegistrada::new);
+            Solicitud solicitudEnt = servicioClub.buscarSolicitudPorId(id, idSolicitud).orElseThrow(SolicitudNoExistente::new);
+            servicioClub.cancelarSolicitud(actividad, solicitudEnt);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (ActividadNoRegistrada | SolicitudNoExistente e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (InscripcionCerrada e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    }
+
+    @GetMapping("/actividades/{id}/solicitudes")
+    public ResponseEntity<List<DTOSolicitud>> obtenerSolicitudesActividad(@PathVariable int id) {
+        try {
+            Actividad actividad = servicioClub.buscarActividadPorId(id).orElseThrow(ActividadNoRegistrada::new);
+            return ResponseEntity.ok(servicioClub.buscarSolicitudesDeActividad(admin, actividad).stream().map(s -> mapeador.dto(s)).toList());
+        } catch (ActividadNoRegistrada e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 }

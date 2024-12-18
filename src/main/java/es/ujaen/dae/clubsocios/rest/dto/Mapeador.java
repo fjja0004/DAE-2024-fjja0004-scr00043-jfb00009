@@ -10,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-
 @Service
 public class Mapeador {
     @Autowired
@@ -19,7 +17,7 @@ public class Mapeador {
     @Autowired
     PasswordEncoder codificadorClaves;
 
-    public DTOSocio dtoSocio(Socio socio) {
+    public DTOSocio dto(Socio socio) {
         return new DTOSocio(
                 socio.getNombre(),
                 socio.getApellidos(),
@@ -28,7 +26,7 @@ public class Mapeador {
                 "");
     }
 
-    public Socio entidadSocio(DTOSocio dtoSocio) {
+    public Socio entidad(DTOSocio dtoSocio) {
         return new Socio(
                 dtoSocio.nombre(),
                 dtoSocio.apellidos(),
@@ -60,7 +58,7 @@ public class Mapeador {
                 actividad.getFechaCelebracion());
     }
 
-    public Actividad entidadActividad(DTOActividad dtoActividad) {
+    public Actividad entidad(DTOActividad dtoActividad) {
         return new Actividad(
                 dtoActividad.id(),
                 dtoActividad.titulo(),
@@ -84,17 +82,17 @@ public class Mapeador {
                 dtoActividad.fechaCelebracion());
     }
 
-    public DTOTemporada dtoTemporada(Temporada temporada) {
+    public DTOTemporada dto(Temporada temporada) {
         return new DTOTemporada(temporada.getAnio());
     }
 
-    public Temporada entidadTemporada(DTOTemporada dtoTemporada) {
+    public Temporada entidad(DTOTemporada dtoTemporada) {
         return new Temporada(
                 dtoTemporada.anio()
         );
     }
 
-    public DTOSolicitud dtoSolicitud(Solicitud solicitud) {
+    public DTOSolicitud dto(Solicitud solicitud) {
         return new DTOSolicitud(
                 solicitud.getId(),
                 solicitud.getnAcompanantes(),
@@ -103,7 +101,7 @@ public class Mapeador {
                 solicitud.getSocio().getEmail());
     }
 
-    public Solicitud entidadSolicitud(DTOSolicitud dtosolicitud) {
+    public Solicitud entidad(DTOSolicitud dtosolicitud) {
         Socio socio = repositorioSocios.buscar(dtosolicitud.emailSocio()).orElseThrow(SocioNoValido::new);
 
         return new Solicitud(

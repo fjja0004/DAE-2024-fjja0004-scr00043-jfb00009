@@ -41,11 +41,15 @@ public class Actividad {
      * @brief Constructor por defecto de la clase Actividad
      */
     public Actividad() {
+        this.id = 0;
         this.titulo = "";
         this.descripcion = "";
         this.precio = 0;
         this.plazas = 0;
         this.plazasOcupadas = 0;
+        this.fechaInicioInscripcion = null;
+        this.fechaFinInscripcion = null;
+        this.fechaCelebracion = null;
         this.solicitudes = new LinkedList<>();
     }
 
@@ -102,6 +106,24 @@ public class Actividad {
         }
         for (Solicitud solicitud : solicitudes) {
             if (solicitud.getSocio().getEmail().equals(email)) {
+                return Optional.of(solicitud);
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * @param id id de la solicitud
+     * @return solicitud de inscripción a la actividad
+     * @brief Busca una solicitud de inscripción a la actividad
+     */
+    public Optional<Solicitud> buscarSolicitudPorId(int id) {
+
+        if (solicitudes.isEmpty()) {
+            return Optional.empty();
+        }
+        for (Solicitud solicitud : solicitudes) {
+            if (solicitud.getId() == id) {
                 return Optional.of(solicitud);
             }
         }
