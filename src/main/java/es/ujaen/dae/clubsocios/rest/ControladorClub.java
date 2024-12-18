@@ -36,7 +36,7 @@ public class ControladorClub {
 
     @PostConstruct
     void loginDireccion() {
-        admin = servicioClub.login("admin@club.com", "admin");
+        admin = servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
     }
 
     //Mapeado global de excepciones de validación de beans

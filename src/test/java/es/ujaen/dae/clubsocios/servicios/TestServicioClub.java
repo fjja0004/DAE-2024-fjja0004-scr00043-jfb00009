@@ -33,7 +33,7 @@ public class TestServicioClub {
     @DirtiesContext
     public void testLogin() {
         // Verifica el login con el administrador.
-        assertEquals("admin@club.com", servicioClub.login("admin@club.com", "admin").getEmail());
+        assertEquals("admin@club.com", servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG").getEmail());
 
         // Verifica el login con el administrador pero con la contraseña incorrecta.
         assertThatThrownBy(() -> servicioClub.login("admin@club.es", "wrongpassword")).isInstanceOf(SocioNoValido.class);
@@ -59,7 +59,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     public void testEsAdmin() {
-        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio admin = servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
 
         //Comprobamos que devuelva true si el socio es el administrador.
@@ -72,7 +72,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testCrearSocio() {
-        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio admin = servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
 
         //Comprobamos que no se pueda añadir un socio igual al administrador.
         assertThatThrownBy(() -> servicioClub.crearSocio(admin)).isInstanceOf(SocioYaRegistrado.class);
@@ -89,7 +89,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testBuscarTodosSocios() {
-        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio admin = servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
         Socio socioNuevo = new Socio("Socio", "-", "socio_nuevo@club.com", "623456789", "password123");
 
@@ -105,7 +105,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testMarcarCuotaPagada() {
-        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio admin = servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
 
         //Compruebamos que se hace como administrador.
@@ -163,7 +163,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testCrearActividad() {
-        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio admin = servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
 
         Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
@@ -193,7 +193,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testBuscarActividadPorId() {
-        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio admin = servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
         Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
                 2, LocalDate.now(), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
@@ -210,7 +210,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void buscarActividadesAbiertas() {
-        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio admin = servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
 
         //Actividad a la que es posible inscribirse.
         Actividad actividadAbierta = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
@@ -239,7 +239,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testBuscarActividadesTemporada() {
-        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio admin = servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
 
         Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
                 2, LocalDate.now(), LocalDate.now().plusDays(7),
@@ -257,7 +257,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testModificarFechaActividad() {
-        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio admin = servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
 
         Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
                 2, LocalDate.now(), LocalDate.now().plusDays(7),
@@ -287,7 +287,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testCrearSolicitud() {
-        Socio direccion = servicioClub.login("admin@club.com", "admin");
+        Socio direccion = servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
         Socio socioSinCuota = servicioClub.login("socio_prueba@club.com", "password123");
         Socio socioConCuota = new Socio("Socio", "Prueba", "socio_cuota@club.com", "621302025", "password123");
 
@@ -335,7 +335,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testBuscarSolicitudesDeActividad() {
-        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio admin = servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
 
         Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
@@ -359,7 +359,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testBuscarSolicitudPorId() {
-        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio admin = servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
 
         Actividad actividad = new Actividad("Actividad de prueba", "Actividad de prueba", 10,
@@ -377,7 +377,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testCancelarSolicitud() {
-        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio admin = servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
 
         //Actividad a la que es posible inscribirse.
@@ -410,7 +410,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testModificarSolicitud() {
-        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio admin = servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
 
         //Actividad a la que es posible inscribirse.
@@ -435,7 +435,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testAsignarPlaza() {
-        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio admin = servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
 
         //Actividad a la que es posible inscribirse.
@@ -492,7 +492,7 @@ public class TestServicioClub {
     @Test
     @DirtiesContext
     void testQuitarPlaza() {
-        Socio admin = servicioClub.login("admin@club.com", "admin");
+        Socio admin = servicioClub.login("admin@club.com", "$2a$10$JAfCuJzY1t.zIfTfhX7Zb.ep0zj0J/c4i7LXDa6.cAg0b6ikt94LG");
         Socio socio = servicioClub.login("socio_prueba@club.com", "password123");
 
         //Actividad a la que es posible inscribirse.
