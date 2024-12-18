@@ -65,12 +65,6 @@ public class ControladorClub {
         }
     }
 
-    @PostMapping("/temporadas")
-    public ResponseEntity<Void> nuevaTemporada(@RequestBody DTOTemporada temporada) {
-        servicioClub.crearTemporada(temporada.anio());
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
     @GetMapping("/temporadas")
     public ResponseEntity<List<DTOTemporada>> obtenerTemporadas() {
         return ResponseEntity.ok(servicioClub.buscarTodasTemporadas().stream().map(t -> new DTOTemporada(t.getAnio())).toList());

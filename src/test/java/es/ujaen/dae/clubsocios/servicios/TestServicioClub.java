@@ -366,7 +366,7 @@ public class TestServicioClub {
                 10, LocalDate.now(), LocalDate.now().plusDays(7),
                 LocalDate.now().plusDays(10));
 
-        servicioClub.crearActividad(admin, actividad);
+        servicioClub.crearActividad(actividad);
 
         //Comprobamos que devuelva la solicitud si existe.
         servicioClub.marcarCuotaPagada(admin, socio);
