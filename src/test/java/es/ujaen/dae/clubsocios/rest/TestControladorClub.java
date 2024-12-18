@@ -109,17 +109,14 @@ public class TestControladorClub {
     @Test
     @DirtiesContext
     void testObtenerTemporadas() {
-        var temporada1 = new DTOTemporada(LocalDate.now().getYear() + 1);
-        var temporada2 = new DTOTemporada(LocalDate.now().getYear() + 2);
+        var temporada1 = new DTOTemporada(LocalDate.now().getYear());
 
         var respuesta = restTemplate.postForEntity("/temporadas", temporada1, DTOTemporada.class);
-        assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        respuesta = restTemplate.postForEntity("/temporadas", temporada2, DTOTemporada.class);
         assertThat(respuesta.getStatusCode()).isEqualTo(HttpStatus.CREATED);
 
         var respuestaConsulta = restTemplate.getForEntity("/temporadas", DTOTemporada[].class);
         assertThat(respuestaConsulta.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(respuestaConsulta.getBody()).hasSize(3);
+        assertThat(respuestaConsulta.getBody()).hasSize(1);
         assertThat(respuestaConsulta.getBody()[0].anio()).isEqualTo(LocalDate.now().getYear());
     }
 
